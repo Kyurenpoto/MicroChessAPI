@@ -6,6 +6,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Dict
 
 from domain.dto.trains import Action, ActionResult, State
+from domain.trace import TrainsTrace
 
 class TrainsBase(metaclass=ABCMeta):
     @abstractmethod
@@ -24,8 +25,15 @@ class Fake(TrainsBase):
         return {"success": True}
 
 class Trains(TrainsBase):
+    __slots__ = ["__trace"]
+
+    __trace: TrainsTrace
+
+    def __init__(self):
+        self.__trace = TrainsTrace()
+
     async def move(self, action: Action) -> ActionResult:
-        return ActionResult(fens=[], statuses=[], next_move_lists=[])
+        return self.__trace.move(action)
 
     async def reset(self, state: State) -> Dict[str, bool]:
-        return {"success": True}
+        return {"success": self.__trace.reset(state)}

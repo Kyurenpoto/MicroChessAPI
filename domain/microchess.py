@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from abc import ABCMeta, abstractmethod
-from typing import List
 from enum import Enum
 
 import chess
@@ -47,5 +46,3 @@ class MicroBoard(MicroBoardBase):
 
     def move(self, move: MicroMove) -> MicroBoardBase:
         pass
-
-boards: List[MicroBoard]

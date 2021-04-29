@@ -5,8 +5,9 @@
 from abc import ABCMeta, abstractmethod
 from typing import Dict
 
-from domain.dto.tests import Action, ActionResult, State
 from domain.microchess import MicroBoardStatus
+from domain.dto.tests import Action, ActionResult, State
+from domain.trace import TestsTrace
 
 class TestsBase(metaclass=ABCMeta):
     @abstractmethod
@@ -25,8 +26,15 @@ class Fake(TestsBase):
         return {"success": True}
 
 class Tests(TestsBase):
+    __slots__ = ["__trace"]
+
+    __trace: TestsTrace
+
+    def __init__(self):
+        self.__trace = TestsTrace()
+
     async def move(self, action: Action) -> ActionResult:
-        return ActionResult(fen="", status=MicroBoardStatus.NONE, next_move_list=[])
+        return self.__trace.move(action)
 
     async def reset(self, state: State) -> Dict[str, bool]:
-        return {"success": True}
+        return {"success": self.__trace.reset(state)}
