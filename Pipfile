@@ -10,6 +10,8 @@ unicorn = {extras = ["standard"], version = "*"}
 uvicorn = {extras = ["standard"], version = "*"}
 
 [dev-packages]
+pytest = "*"
+requests = "*"
 
 [requires]
 python_version = "3.9"
