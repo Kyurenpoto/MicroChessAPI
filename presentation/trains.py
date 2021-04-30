@@ -20,4 +20,9 @@ async def action(action: Action) -> JSONResponse:
 
 @router.post("/state", status_code=status.HTTP_201_CREATED)
 async def state(state: State) -> Dict[str, bool]:
-    return await trains.reset(state)
+    if await trains.reset(state):
+        return True
+    else:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={"msg": "Invalid FEN"})

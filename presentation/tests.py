@@ -24,4 +24,10 @@ class State(BaseModel):
 
 @router.post("/state", status_code=status.HTTP_201_CREATED)
 async def state(state: State) -> Dict[str, bool]:
-    return await tests.reset(state)
+    result: bool = await tests.reset(state)
+    if result["success"] is True:
+        return result
+    else:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={"msg": "Invalid FEN"})
