@@ -5,11 +5,11 @@
 from abc import ABCMeta, abstractmethod
 from typing import Dict
 
-from domain.microchess import MicroBoardStatus, MICRO_STARTING_FEN
-from domain.dto.tests import Action, ActionResult, State
-from domain.trace import TestsTrace
+from domain.microchess import MICRO_STARTING_FEN
+from domain.dto.trains import Action, ActionResult, State
+from domain.trace import TrainChessTrace
 
-class TestsBase(metaclass=ABCMeta):
+class MultiChessEnvironment(metaclass=ABCMeta):
     @abstractmethod
     async def move(self, action: Action) -> ActionResult:
         pass
@@ -18,23 +18,23 @@ class TestsBase(metaclass=ABCMeta):
     async def reset(self, state: State) -> Dict[str, bool]:
         pass
 
-class Fake(TestsBase):
+class Fake(MultiChessEnvironment):
     async def move(self, action: Action) -> ActionResult:
         return ActionResult(
-            fen=MICRO_STARTING_FEN,
-            status=MicroBoardStatus.NONE,
-            next_move_list=[])
+            fens=[MICRO_STARTING_FEN],
+            statuses=[],
+            next_move_lists=[])
 
     async def reset(self, state: State) -> Dict[str, bool]:
         return {"success": True}
 
-class Tests(TestsBase):
+class TrainChessEnvironment(MultiChessEnvironment):
     __slots__ = ["__trace"]
 
-    __trace: TestsTrace
+    __trace: TrainChessTrace
 
     def __init__(self):
-        self.__trace = TestsTrace()
+        self.__trace = TrainChessTrace()
 
     async def move(self, action: Action) -> ActionResult:
         return self.__trace.move(action)

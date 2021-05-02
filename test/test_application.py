@@ -6,14 +6,14 @@ from typing import Dict
 
 import pytest
 
-from application import tests as apptests, trains as apptrains
 from domain.dto import tests as dtotests, trains as dtotrains
+from application import testenv, trainenv
 
 from domain.microchess import MicroBoardStatus, MICRO_STARTING_FEN
 
 @pytest.mark.asyncio
 async def test_tests_move() -> None:
-    fake: apptests.Fake = apptests.Fake()
+    fake: testenv.Fake = testenv.Fake()
     result: dtotests.ActionResult = await fake.move(dtotests.Action(
         fen=MICRO_STARTING_FEN,
         move=""))
@@ -24,7 +24,7 @@ async def test_tests_move() -> None:
 
 @pytest.mark.asyncio
 async def test_trains_move() -> None:
-    fake: apptrains.Fake = apptrains.Fake()
+    fake: trainenv.Fake = trainenv.Fake()
     result: dtotrains.ActionResult = await fake.move(dtotrains.Action(
         fens=[MICRO_STARTING_FEN],
         moves=[]))
@@ -35,14 +35,14 @@ async def test_trains_move() -> None:
 
 @pytest.mark.asyncio
 async def test_tests_reset() -> None:
-    fake: apptests.Fake = apptests.Fake()
+    fake: testenv.Fake = testenv.Fake()
     state: dtotests.State = dtotests.State(fen=MICRO_STARTING_FEN)
     result: Dict[str, bool] = await fake.reset(state)
     assert result == {"success": True}
 
 @pytest.mark.asyncio
 async def test_trains_reset() -> None:
-    fake: apptrains.Fake = apptrains.Fake()
+    fake: trainenv.Fake = trainenv.Fake()
     state: dtotrains.State = dtotrains.State(fens=[MICRO_STARTING_FEN])
     result: Dict[str, bool] = await fake.reset(state)
     assert result == {"success": True}

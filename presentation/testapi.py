@@ -10,10 +10,10 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from domain.dto.tests import Action, State
-from application.tests import Tests
+from application.testenv import TestChessEnvironment
 
 router: APIRouter = APIRouter(prefix="/tests")
-tests: Tests = Tests()
+tests: TestChessEnvironment = TestChessEnvironment()
 
 @router.put("/action", status_code=status.HTTP_200_OK)
 async def action(action: Action) -> JSONResponse:
