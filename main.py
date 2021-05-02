@@ -4,9 +4,9 @@
 
 from fastapi import FastAPI
 
-from presentation import tests, trains
+from presentation import testapi, trainapi
 
 app: FastAPI = FastAPI()
 
-app.include_router(tests.router)
-app.include_router(trains.router)
+app.include_router(testapi.router)
+app.include_router(trainapi.router)
