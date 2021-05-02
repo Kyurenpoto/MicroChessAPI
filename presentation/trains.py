@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict
+from typing import Union, Dict
 
 from fastapi import APIRouter, status
 from fastapi.encoders import jsonable_encoder
@@ -19,9 +19,10 @@ async def action(action: Action) -> JSONResponse:
     return JSONResponse(content=jsonable_encoder(await trains.move(action)))
 
 @router.post("/state", status_code=status.HTTP_201_CREATED)
-async def state(state: State) -> Dict[str, bool]:
-    if await trains.reset(state):
-        return True
+async def state(state: State) -> Union[Dict[str, bool], JSONResponse]:
+    result: Dict[str, bool] = await trains.reset(state)
+    if result["success"] is True:
+        return result
     else:
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,

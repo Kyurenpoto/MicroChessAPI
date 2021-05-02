@@ -6,28 +6,45 @@ import pytest
 from httpx import AsyncClient
 from fastapi import status
 
+from domain.microchess import MICRO_STARTING_FEN
 from main import app
 
 client = AsyncClient(app=app, base_url="http://test")
 
 @pytest.mark.asyncio
-async def test_tests_action():
-    response = await client.put(url="/tests/action", json={"fen": "", "move": ""})
+async def test_tests_action() -> None:
+    response = await client.put(
+        url="/tests/action",
+        json={"fen": MICRO_STARTING_FEN,
+        "move": ""})
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"fen": "", "status": 0, "next_move_list": []}
+    assert response.json() == {
+        "fen": MICRO_STARTING_FEN,
+        "status": 0,
+        "next_move_list": []}
 
 @pytest.mark.asyncio
-async def test_trains_action():
-    response = await client.put(url="/trains/action", json={"fens": [], "moves": []})
+async def test_trains_action() -> None:
+    response = await client.put(
+        url="/trains/action",
+        json={"fens": [MICRO_STARTING_FEN],
+        "moves": []})
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"fens": [], "statuses": [], "next_move_lists": []}
+    assert response.json() == {
+        "fens": [MICRO_STARTING_FEN],
+        "statuses": [],
+        "next_move_lists": []}
 
 @pytest.mark.asyncio
-async def test_tests_state():
-    response = await client.post(url="/tests/state", json={"fen": ""})
+async def test_tests_state() -> None:
+    response = await client.post(
+        url="/tests/state",
+        json={"fen": MICRO_STARTING_FEN})
     assert response.status_code == status.HTTP_201_CREATED
 
 @pytest.mark.asyncio
-async def test_trains_state():
-    response = await client.post(url="/trains/state", json={"fens": []})
+async def test_trains_state() -> None:
+    response = await client.post(
+        url="/trains/state",
+        json={"fens": [MICRO_STARTING_FEN]})
     assert response.status_code == status.HTTP_201_CREATED
