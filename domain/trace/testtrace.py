@@ -5,26 +5,26 @@
 from abc import ABCMeta, abstractmethod
 from typing import Optional
 
-from ..microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus, MICRO_STARTING_FEN
-from ..dto import testdto
+from domain.microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus, MICRO_STARTING_FEN
+from domain.dto.testdto import Action, ActionResult, State
 
 class ChessSingleTrace(metaclass=ABCMeta):
     @abstractmethod
-    def move(self, action: testdto.Action) -> testdto.ActionResult:
+    def move(self, action: Action) -> ActionResult:
         pass
 
     @abstractmethod
-    def reset(self, state: testdto.State) -> bool:
+    def reset(self, state: State) -> bool:
         pass
 
 class Fake(ChessSingleTrace):
-    def move(self, action: testdto.Action) -> testdto.ActionResult:
-        return testdto.ActionResult(
+    def move(self, action: Action) -> ActionResult:
+        return ActionResult(
             fen=MICRO_STARTING_FEN,
             status=MicroBoardStatus.NONE, 
             next_move_list=[])
 
-    def reset(self, state: testdto.State) -> bool:
+    def reset(self, state: State) -> bool:
         return True
 
 class ChessTestTrace(ChessSingleTrace):
@@ -32,16 +32,19 @@ class ChessTestTrace(ChessSingleTrace):
     
     __board: MicroBoard
 
-    def __init__(self):
-        self.__board = MicroBoard()
+    def __init__(self, board: MicroBoard = MicroBoard()):
+        self.__board = board
 
-    def move(self, action: testdto.Action) -> testdto.ActionResult:
-        return testdto.ActionResult(
+    def __eq__(self, other) -> bool:
+        return self.__board.fen() == other.__board.fen()
+
+    def move(self, action: Action) -> ActionResult:
+        return ActionResult(
             fen=MICRO_STARTING_FEN,
             status=MicroBoardStatus.NONE, 
             next_move_list=[])
 
-    def reset(self, state: testdto.State) -> bool:
+    def reset(self, state: State) -> bool:
         created: Optional[MicroBoard] = CreatedMicroBoard(state.fen).value()
         if created is None:
             return False

@@ -5,26 +5,26 @@
 from abc import ABCMeta, abstractmethod
 from typing import List
 
-from ..microchess import MicroBoard, CreatedMicroBoard, MICRO_STARTING_FEN
-from ..dto import traindto
+from domain.microchess import MicroBoard, CreatedMicroBoard, MICRO_STARTING_FEN
+from domain.dto.traindto import Action, ActionResult, State
 
 class ChessMultiTrace(metaclass=ABCMeta):
     @abstractmethod
-    def move(self, action: traindto.Action) -> traindto.ActionResult:
+    def move(self, action: Action) -> ActionResult:
         pass
 
     @abstractmethod
-    def reset(self, state: traindto.State) -> bool:
+    def reset(self, state: State) -> bool:
         pass
 
 class Fake(ChessMultiTrace):
-    def move(self, action: traindto.Action) -> traindto.ActionResult:
-        return traindto.ActionResult(
+    def move(self, action: Action) -> ActionResult:
+        return ActionResult(
             fens=[MICRO_STARTING_FEN],
             statuses=[],
             next_move_lists=[])
 
-    def reset(self, state: traindto.State) -> bool:
+    def reset(self, state: State) -> bool:
         return True
 
 class ChessTrainTrace(ChessMultiTrace):
@@ -32,16 +32,27 @@ class ChessTrainTrace(ChessMultiTrace):
     
     __boards: List[MicroBoard]
 
-    def __init__(self):
-        self.__boards = []
+    def __init__(self, boards: List[MicroBoard] = []):
+        self.__boards = boards
 
-    def move(self, action: traindto.Action) -> traindto.ActionResult:
-        return traindto.ActionResult(
+    def __eq__(self, other) -> bool:
+        size: int = len(self.__boards)
+        if size != len(other.__boards):
+            return False
+        
+        for i in range(0, size):
+            if self.__boards[i].fen() != other.__boards[i].fen():
+                return False
+        
+        return True
+
+    def move(self, action: Action) -> ActionResult:
+        return ActionResult(
             fens=[MICRO_STARTING_FEN],
             statuses=[],
             next_move_lists=[])
 
-    def reset(self, state: traindto.State) -> bool:
+    def reset(self, state: State) -> bool:
         creates: List[MicroBoard] = []
         for fen in state.fens:
             created = CreatedMicroBoard(fen).value()
