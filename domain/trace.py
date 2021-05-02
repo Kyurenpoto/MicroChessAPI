@@ -2,12 +2,22 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
+from abc import ABCMeta, abstractmethod
 from typing import List, Optional
 
 from .microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus, MICRO_STARTING_FEN
 from .dto import tests, trains
 
-class TestsTrace:
+class SingleChessTrace:
+    @abstractmethod
+    def move(self, action: tests.Action) -> tests.ActionResult:
+        pass
+
+    @abstractmethod
+    def reset(self, state: tests.State) -> bool:
+        pass
+
+class TestChessTrace(SingleChessTrace):
     __slots__ = ["__board"]
     
     __board: MicroBoard
@@ -30,7 +40,16 @@ class TestsTrace:
 
         return True
 
-class TrainsTrace:
+class MultiChessTrace:
+    @abstractmethod
+    def move(self, action: trains.Action) -> trains.ActionResult:
+        pass
+
+    @abstractmethod
+    def reset(self, state: trains.State) -> bool:
+        pass
+
+class TrainChessTrace(MultiChessTrace):
     __slots__ = ["__boards"]
     
     __boards: List[MicroBoard]
