@@ -24,27 +24,8 @@ async def test_tests_action() -> None:
         "next_move_list": []}
 
 @pytest.mark.asyncio
-async def test_trains_action() -> None:
-    response = await client.put(
-        url="/trains/action",
-        json={"fens": [MICRO_STARTING_FEN],
-        "moves": []})
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {
-        "fens": [MICRO_STARTING_FEN],
-        "statuses": [],
-        "next_move_lists": []}
-
-@pytest.mark.asyncio
 async def test_tests_state() -> None:
     response = await client.post(
         url="/tests/state",
         json={"fen": MICRO_STARTING_FEN})
-    assert response.status_code == status.HTTP_201_CREATED
-
-@pytest.mark.asyncio
-async def test_trains_state() -> None:
-    response = await client.post(
-        url="/trains/state",
-        json={"fens": [MICRO_STARTING_FEN]})
     assert response.status_code == status.HTTP_201_CREATED
