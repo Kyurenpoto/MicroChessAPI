@@ -9,11 +9,10 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from domain.dto.testdto import Action, State
-from domain.trace.testtrace import ChessTestTrace
 from application.chessenv.testenv import ChessTestEnvironment
 
 router: APIRouter = APIRouter(prefix="/tests")
-tests: ChessTestEnvironment = ChessTestEnvironment(ChessTestTrace())
+tests: ChessTestEnvironment = ChessTestEnvironment()
 
 @router.put("/action", status_code=status.HTTP_200_OK)
 async def action(action: Action) -> JSONResponse:
