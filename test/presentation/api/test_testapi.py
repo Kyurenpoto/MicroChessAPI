@@ -9,14 +9,14 @@ from fastapi import status
 from domain.microchess import MICRO_STARTING_FEN
 from main import app
 
-client = AsyncClient(app=app, base_url="http://test")
-
 @pytest.mark.asyncio
 async def test_tests_action() -> None:
+    client = AsyncClient(app=app, base_url="http://test")
     response = await client.put(
         url="/tests/action",
         json={"fen": MICRO_STARTING_FEN,
         "move": ""})
+    await client.aclose()
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
@@ -26,8 +26,10 @@ async def test_tests_action() -> None:
 
 @pytest.mark.asyncio
 async def test_tests_state() -> None:
+    client = AsyncClient(app=app, base_url="http://test")
     response = await client.post(
         url="/tests/state",
         json={"fen": MICRO_STARTING_FEN})
+    await client.aclose()
         
     assert response.status_code == status.HTTP_201_CREATED
