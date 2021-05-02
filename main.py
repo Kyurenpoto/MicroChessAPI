@@ -4,7 +4,7 @@
 
 from fastapi import FastAPI
 
-from presentation import testapi, trainapi
+from presentation.api import testapi, trainapi
 
 app: FastAPI = FastAPI()
 

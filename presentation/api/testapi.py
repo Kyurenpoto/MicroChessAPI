@@ -7,10 +7,9 @@ from typing import Union, Dict
 from fastapi import APIRouter, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 
 from domain.dto.tests import Action, State
-from application.testenv import TestChessEnvironment
+from application.env.testenv import TestChessEnvironment
 
 router: APIRouter = APIRouter(prefix="/tests")
 tests: TestChessEnvironment = TestChessEnvironment()
