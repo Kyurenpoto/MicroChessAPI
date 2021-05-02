@@ -17,6 +17,7 @@ async def test_move() -> None:
     result: ActionResult = await env.move(Action(
         fen=MICRO_STARTING_FEN,
         move=""))
+        
     assert result == ActionResult(
         fen=MICRO_STARTING_FEN,
         status=MicroBoardStatus.NONE.value,
@@ -27,4 +28,5 @@ async def test_reset() -> None:
     env: ChessTestEnvironment = ChessTestEnvironment(Fake())
     state: State = State(fen=MICRO_STARTING_FEN)
     result: Dict[str, bool] = await env.reset(state)
+
     assert result == {"success": True}

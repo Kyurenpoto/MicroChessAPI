@@ -8,7 +8,7 @@ from typing import Optional
 from ..microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus, MICRO_STARTING_FEN
 from ..dto import testdto
 
-class SingleChessTrace(metaclass=ABCMeta):
+class ChessSingleTrace(metaclass=ABCMeta):
     @abstractmethod
     def move(self, action: testdto.Action) -> testdto.ActionResult:
         pass
@@ -17,7 +17,7 @@ class SingleChessTrace(metaclass=ABCMeta):
     def reset(self, state: testdto.State) -> bool:
         pass
 
-class Fake(SingleChessTrace):
+class Fake(ChessSingleTrace):
     def move(self, action: testdto.Action) -> testdto.ActionResult:
         return testdto.ActionResult(
             fen=MICRO_STARTING_FEN,
@@ -27,7 +27,7 @@ class Fake(SingleChessTrace):
     def reset(self, state: testdto.State) -> bool:
         return True
 
-class TestChessTrace(SingleChessTrace):
+class ChessTestTrace(ChessSingleTrace):
     __slots__ = ["__board"]
     
     __board: MicroBoard

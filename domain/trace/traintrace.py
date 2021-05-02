@@ -8,7 +8,7 @@ from typing import List
 from ..microchess import MicroBoard, CreatedMicroBoard, MICRO_STARTING_FEN
 from ..dto import traindto
 
-class MultiChessTrace(metaclass=ABCMeta):
+class ChessMultiTrace(metaclass=ABCMeta):
     @abstractmethod
     def move(self, action: traindto.Action) -> traindto.ActionResult:
         pass
@@ -17,7 +17,7 @@ class MultiChessTrace(metaclass=ABCMeta):
     def reset(self, state: traindto.State) -> bool:
         pass
 
-class Fake(MultiChessTrace):
+class Fake(ChessMultiTrace):
     def move(self, action: traindto.Action) -> traindto.ActionResult:
         return traindto.ActionResult(
             fens=[MICRO_STARTING_FEN],
@@ -27,7 +27,7 @@ class Fake(MultiChessTrace):
     def reset(self, state: traindto.State) -> bool:
         return True
 
-class TrainChessTrace(MultiChessTrace):
+class ChessTrainTrace(ChessMultiTrace):
     __slots__ = ["__boards"]
     
     __boards: List[MicroBoard]

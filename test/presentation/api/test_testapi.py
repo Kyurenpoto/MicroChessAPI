@@ -17,6 +17,7 @@ async def test_tests_action() -> None:
         url="/tests/action",
         json={"fen": MICRO_STARTING_FEN,
         "move": ""})
+
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
         "fen": MICRO_STARTING_FEN,
@@ -28,4 +29,5 @@ async def test_tests_state() -> None:
     response = await client.post(
         url="/tests/state",
         json={"fen": MICRO_STARTING_FEN})
+        
     assert response.status_code == status.HTTP_201_CREATED

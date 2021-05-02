@@ -5,14 +5,14 @@
 from typing import Dict
 
 from domain.dto.traindto import Action, ActionResult, State
-from domain.trace.traintrace import MultiChessTrace
+from domain.trace.traintrace import ChessMultiTrace
 
 class ChessTrainEnvironment:
     __slots__ = ["__trace"]
 
-    __trace: MultiChessTrace
+    __trace: ChessMultiTrace
 
-    def __init__(self, trace: MultiChessTrace):
+    def __init__(self, trace: ChessMultiTrace):
         self.__trace = trace
 
     async def move(self, action: Action) -> ActionResult:

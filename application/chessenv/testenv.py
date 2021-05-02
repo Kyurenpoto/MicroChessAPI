@@ -5,14 +5,14 @@
 from typing import Dict
 
 from domain.dto.testdto import Action, ActionResult, State
-from domain.trace.testtrace import SingleChessTrace
+from domain.trace.testtrace import ChessSingleTrace
 
 class ChessTestEnvironment:
     __slots__ = ["__trace"]
 
-    __trace: SingleChessTrace
+    __trace: ChessSingleTrace
 
-    def __init__(self, trace: SingleChessTrace):
+    def __init__(self, trace: ChessSingleTrace):
         self.__trace = trace
 
     async def move(self, action: Action) -> ActionResult:
