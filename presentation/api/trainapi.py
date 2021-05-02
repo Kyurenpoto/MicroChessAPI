@@ -8,7 +8,7 @@ from fastapi import APIRouter, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from domain.dto.trains import Action, State
+from domain.dto.traindto import Action, State
 from application.env.trainenv import TrainChessEnvironment
 
 router: APIRouter = APIRouter(prefix="/trains")

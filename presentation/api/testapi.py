@@ -8,7 +8,7 @@ from fastapi import APIRouter, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from domain.dto.tests import Action, State
+from domain.dto.testdto import Action, State
 from application.env.testenv import TestChessEnvironment
 
 router: APIRouter = APIRouter(prefix="/tests")

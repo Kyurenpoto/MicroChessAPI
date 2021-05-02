@@ -6,15 +6,15 @@ from abc import ABCMeta, abstractmethod
 from typing import List, Optional
 
 from .microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus, MICRO_STARTING_FEN
-from .dto import tests, trains
+from .dto import testdto, traindto
 
 class SingleChessTrace:
     @abstractmethod
-    def move(self, action: tests.Action) -> tests.ActionResult:
+    def move(self, action: testdto.Action) -> testdto.ActionResult:
         pass
 
     @abstractmethod
-    def reset(self, state: tests.State) -> bool:
+    def reset(self, state: testdto.State) -> bool:
         pass
 
 class TestChessTrace(SingleChessTrace):
@@ -25,13 +25,13 @@ class TestChessTrace(SingleChessTrace):
     def __init__(self):
         self.__board = MicroBoard()
 
-    def move(self, action: tests.Action) -> tests.ActionResult:
-        return tests.ActionResult(
+    def move(self, action: testdto.Action) -> testdto.ActionResult:
+        return testdto.ActionResult(
             fen=MICRO_STARTING_FEN,
             status=MicroBoardStatus.NONE, 
             next_move_list=[])
 
-    def reset(self, state: tests.State) -> bool:
+    def reset(self, state: testdto.State) -> bool:
         created: Optional[MicroBoard] = CreatedMicroBoard(state.fen).value()
         if created is None:
             return False
@@ -42,11 +42,11 @@ class TestChessTrace(SingleChessTrace):
 
 class MultiChessTrace:
     @abstractmethod
-    def move(self, action: trains.Action) -> trains.ActionResult:
+    def move(self, action: traindto.Action) -> traindto.ActionResult:
         pass
 
     @abstractmethod
-    def reset(self, state: trains.State) -> bool:
+    def reset(self, state: traindto.State) -> bool:
         pass
 
 class TrainChessTrace(MultiChessTrace):
@@ -57,13 +57,13 @@ class TrainChessTrace(MultiChessTrace):
     def __init__(self):
         self.__boards = []
 
-    def move(self, action: trains.Action) -> trains.ActionResult:
-        return trains.ActionResult(
+    def move(self, action: traindto.Action) -> traindto.ActionResult:
+        return traindto.ActionResult(
             fens=[MICRO_STARTING_FEN],
             statuses=[],
             next_move_lists=[])
 
-    def reset(self, state: trains.State) -> bool:
+    def reset(self, state: traindto.State) -> bool:
         creates: List[MicroBoard] = []
         for fen in state.fens:
             created = CreatedMicroBoard(fen).value()
