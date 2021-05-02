@@ -9,7 +9,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from domain.dto.traindto import Action, State
-from application.env.trainenv import TrainChessEnvironment
+from application.chessenv.trainenv import TrainChessEnvironment
 
 router: APIRouter = APIRouter(prefix="/trains")
 trains: TrainChessEnvironment = TrainChessEnvironment()
