@@ -9,11 +9,11 @@ import pytest
 from domain.dto.traindto import Action, ActionResult, State
 from domain.microchess import MICRO_STARTING_FEN
 from domain.trace.traintrace import Fake
-from application.chessenv.trainenv import TrainChessEnvironment
+from application.chessenv.trainenv import ChessTrainEnvironment
 
 @pytest.mark.asyncio
 async def test_move() -> None:
-    env: TrainChessEnvironment = TrainChessEnvironment(Fake())
+    env: ChessTrainEnvironment = ChessTrainEnvironment(Fake())
     result: ActionResult = await env.move(Action(
         fens=[MICRO_STARTING_FEN],
         moves=[]))
@@ -24,7 +24,7 @@ async def test_move() -> None:
 
 @pytest.mark.asyncio
 async def test_reset() -> None:
-    env: TrainChessEnvironment = TrainChessEnvironment(Fake())
+    env: ChessTrainEnvironment = ChessTrainEnvironment(Fake())
     state: State = State(fens=[MICRO_STARTING_FEN])
     result: Dict[str, bool] = await env.reset(state)
     assert result == {"success": True}

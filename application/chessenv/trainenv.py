@@ -7,7 +7,7 @@ from typing import Dict
 from domain.dto.traindto import Action, ActionResult, State
 from domain.trace.traintrace import MultiChessTrace
 
-class TrainChessEnvironment:
+class ChessTrainEnvironment:
     __slots__ = ["__trace"]
 
     __trace: MultiChessTrace

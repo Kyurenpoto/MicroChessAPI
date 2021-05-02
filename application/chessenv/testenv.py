@@ -7,7 +7,7 @@ from typing import Dict
 from domain.dto.testdto import Action, ActionResult, State
 from domain.trace.testtrace import SingleChessTrace
 
-class TestChessEnvironment:
+class ChessTestEnvironment:
     __slots__ = ["__trace"]
 
     __trace: SingleChessTrace
