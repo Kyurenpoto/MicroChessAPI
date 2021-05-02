@@ -17,6 +17,16 @@ class MultiChessTrace(metaclass=ABCMeta):
     def reset(self, state: traindto.State) -> bool:
         pass
 
+class Fake(MultiChessTrace):
+    def move(self, action: traindto.Action) -> traindto.ActionResult:
+        return traindto.ActionResult(
+            fens=[MICRO_STARTING_FEN],
+            statuses=[],
+            next_move_lists=[])
+
+    def reset(self, state: traindto.State) -> bool:
+        return True
+
 class TrainChessTrace(MultiChessTrace):
     __slots__ = ["__boards"]
     

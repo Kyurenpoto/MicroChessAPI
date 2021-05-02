@@ -17,6 +17,16 @@ class SingleChessTrace(metaclass=ABCMeta):
     def reset(self, state: testdto.State) -> bool:
         pass
 
+class Fake(SingleChessTrace):
+    def move(self, action: testdto.Action) -> testdto.ActionResult:
+        return testdto.ActionResult(
+            fen=MICRO_STARTING_FEN,
+            status=MicroBoardStatus.NONE, 
+            next_move_list=[])
+
+    def reset(self, state: testdto.State) -> bool:
+        return True
+
 class TestChessTrace(SingleChessTrace):
     __slots__ = ["__board"]
     

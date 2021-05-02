@@ -7,14 +7,14 @@ from typing import Dict
 import pytest
 
 from domain.dto.traindto import Action, ActionResult, State
-from application.chessenv.trainenv import Fake
-
 from domain.microchess import MICRO_STARTING_FEN
+from domain.trace.traintrace import Fake
+from application.chessenv.trainenv import TrainChessEnvironment
 
 @pytest.mark.asyncio
 async def test_move() -> None:
-    fake: Fake = Fake()
-    result: ActionResult = await fake.move(Action(
+    env: TrainChessEnvironment = TrainChessEnvironment(Fake())
+    result: ActionResult = await env.move(Action(
         fens=[MICRO_STARTING_FEN],
         moves=[]))
     assert result == ActionResult(
@@ -24,7 +24,7 @@ async def test_move() -> None:
 
 @pytest.mark.asyncio
 async def test_reset() -> None:
-    fake: Fake = Fake()
+    env: TrainChessEnvironment = TrainChessEnvironment(Fake())
     state: State = State(fens=[MICRO_STARTING_FEN])
-    result: Dict[str, bool] = await fake.reset(state)
+    result: Dict[str, bool] = await env.reset(state)
     assert result == {"success": True}

@@ -2,39 +2,18 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from abc import ABCMeta, abstractmethod
 from typing import Dict
 
-from domain.microchess import MICRO_STARTING_FEN
 from domain.dto.traindto import Action, ActionResult, State
-from domain.trace.traintrace import TrainChessTrace
+from domain.trace.traintrace import MultiChessTrace
 
-class MultiChessEnvironment(metaclass=ABCMeta):
-    @abstractmethod
-    async def move(self, action: Action) -> ActionResult:
-        pass
-
-    @abstractmethod
-    async def reset(self, state: State) -> Dict[str, bool]:
-        pass
-
-class Fake(MultiChessEnvironment):
-    async def move(self, action: Action) -> ActionResult:
-        return ActionResult(
-            fens=[MICRO_STARTING_FEN],
-            statuses=[],
-            next_move_lists=[])
-
-    async def reset(self, state: State) -> Dict[str, bool]:
-        return {"success": True}
-
-class TrainChessEnvironment(MultiChessEnvironment):
+class TrainChessEnvironment:
     __slots__ = ["__trace"]
 
-    __trace: TrainChessTrace
+    __trace: MultiChessTrace
 
-    def __init__(self):
-        self.__trace = TrainChessTrace()
+    def __init__(self, trace: MultiChessTrace):
+        self.__trace = trace
 
     async def move(self, action: Action) -> ActionResult:
         return self.__trace.move(action)
