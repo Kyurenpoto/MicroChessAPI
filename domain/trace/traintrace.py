@@ -16,7 +16,7 @@ class ChessMultiTrace(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def reset(self, state: State) -> bool:
+    def reset(self, state: State) -> None:
         pass
 
 class Fake(ChessMultiTrace):
@@ -26,8 +26,8 @@ class Fake(ChessMultiTrace):
             statuses=[MicroBoardStatus.NONE],
             next_move_lists=[MICRO_FIRST_NEXT_MOVE_LIST])
 
-    def reset(self, state: State) -> bool:
-        return True
+    def reset(self, state: State) -> None:
+        pass
 
 class ChessTrainTrace(ChessMultiTrace):
     __slots__ = ["__boards"]
@@ -54,15 +54,13 @@ class ChessTrainTrace(ChessMultiTrace):
             statuses=[MicroBoardStatus.NONE],
             next_move_lists=[MICRO_FIRST_NEXT_MOVE_LIST])
 
-    def reset(self, state: State) -> bool:
+    def reset(self, state: State) -> None:
         creates: List[MicroBoard] = []
-        for fen in state.fens:
+        for i, fen in enumerate(state.fens):
             created = CreatedMicroBoard(fen).value()
             if created is None:
-                return False
+                raise RuntimeError(f"Invalid {i}th FEN")
             
             creates.append(created)
 
         self.__boards = creates[:]
-
-        return True

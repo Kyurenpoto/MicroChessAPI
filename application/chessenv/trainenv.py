@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict
-
 from domain.dto.traindto import Action, ActionResult, State
 from domain.trace.traintrace import ChessMultiTrace, ChessTrainTrace
 
@@ -18,5 +16,5 @@ class ChessTrainEnvironment:
     async def move(self, action: Action) -> ActionResult:
         return self.__trace.move(action)
 
-    async def reset(self, state: State) -> Dict[str, bool]:
-        return {"success": self.__trace.reset(state)}
+    async def reset(self, state: State) -> None:
+        self.__trace.reset(state)

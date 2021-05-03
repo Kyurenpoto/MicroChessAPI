@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict
-
 import pytest
 
 from domain.dto.traindto import Action, ActionResult, State
@@ -12,6 +10,7 @@ from domain.trace.traintrace import Fake
 from application.chessenv.trainenv import ChessTrainEnvironment
 
 from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_MOVE_SAN, MICRO_FIRST_NEXT_MOVE_LIST
+
 @pytest.mark.asyncio
 async def test_move() -> None:
     env: ChessTrainEnvironment = ChessTrainEnvironment(Fake())
@@ -28,6 +27,4 @@ async def test_move() -> None:
 async def test_reset() -> None:
     env: ChessTrainEnvironment = ChessTrainEnvironment(Fake())
     state: State = State(fens=[MICRO_STARTING_FEN])
-    result: Dict[str, bool] = await env.reset(state)
-    
-    assert result == {"success": True}
+    await env.reset(state)

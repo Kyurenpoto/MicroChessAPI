@@ -16,7 +16,7 @@ class ChessSingleTrace(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def reset(self, state: State) -> bool:
+    def reset(self, state: State) -> None:
         pass
 
 class Fake(ChessSingleTrace):
@@ -26,8 +26,8 @@ class Fake(ChessSingleTrace):
             status=MicroBoardStatus.NONE, 
             next_move_list=MICRO_FIRST_NEXT_MOVE_LIST)
 
-    def reset(self, state: State) -> bool:
-        return True
+    def reset(self, state: State) -> None:
+        pass
 
 class ChessTestTrace(ChessSingleTrace):
     __slots__ = ["__board"]
@@ -46,11 +46,9 @@ class ChessTestTrace(ChessSingleTrace):
             status=MicroBoardStatus.NONE, 
             next_move_list=MICRO_FIRST_NEXT_MOVE_LIST)
 
-    def reset(self, state: State) -> bool:
+    def reset(self, state: State) -> None:
         created: Optional[MicroBoard] = CreatedMicroBoard(state.fen).value()
         if created is None:
-            return False
+            raise RuntimeError("Invalid FEN")
 
         self.__board = created
-
-        return True

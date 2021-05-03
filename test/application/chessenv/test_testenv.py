@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict
-
 import pytest
 
 from domain.dto.testdto import Action, ActionResult, State
@@ -29,6 +27,4 @@ async def test_move() -> None:
 async def test_reset() -> None:
     env: ChessTestEnvironment = ChessTestEnvironment(Fake())
     state: State = State(fen=MICRO_STARTING_FEN)
-    result: Dict[str, bool] = await env.reset(state)
-
-    assert result == {"success": True}
+    await env.reset(state)
