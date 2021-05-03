@@ -4,8 +4,7 @@
 
 from typing import Optional, cast
 
-import chess
-
+from infra.rawboardstring import RawBoardString
 from .extendtype import Nullable
 from .boardstring import FEN, BoardString, ValidMicroBoardString
 
@@ -17,15 +16,10 @@ class CreatedBoard:
     def __init__(self, fen: FEN):
         self.__fen = fen
 
-    def value(self) -> Optional[chess.Board]:
-        try:
-            board: chess.Board = chess.Board(str(self.__fen))
-            if BoardString(board).empty() is True:
-                return None
-        except:
-            return None
-        else:
-            return board
+    def value(self) -> Optional[RawBoardString]:
+        board: RawBoardString = RawBoardString(str(self.__fen))
+
+        return None if BoardString(board).empty() else board
 
 class BoardPartValidMicroFen:
     __slots__ = ["__fen"]
@@ -37,7 +31,7 @@ class BoardPartValidMicroFen:
 
     def value(self) -> Optional[FEN]:
         return Nullable(CreatedBoard(self.__fen).value()).op(
-            lambda x: BoardString(cast(chess.Board, x))).op(
+            lambda x: BoardString(cast(RawBoardString, x))).op(
             lambda x: ValidMicroBoardString(x).value()).op(
             lambda x: None if x is None else self.__fen).value()
 

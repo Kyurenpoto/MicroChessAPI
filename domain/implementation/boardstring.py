@@ -4,8 +4,7 @@
 
 from typing import Final, Optional, List, Dict, NewType, cast
 
-import chess
-
+from infra.rawboardstring import RawBoardString
 from .extendtype import Nullable
 
 FEN = NewType('FEN', str)
@@ -15,7 +14,7 @@ class BoardString:
 
     __board: List[str]
 
-    def __init__(self, board: chess.Board):
+    def __init__(self, board: RawBoardString):
         self.__board = ["".join(line.split(" ")) for line in str(board).split("\n")]
 
     def value(self) -> List[str]:
