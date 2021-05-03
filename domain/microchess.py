@@ -4,47 +4,13 @@
 
 from __future__ import annotations
 from enum import Enum
-from typing import Optional, Final, cast
-
-import chess
+from typing import Optional, Final
 
 from .implementation.extendtype import Nullable
-from .implementation.boardstring import FEN, BoardString, ValidMicroBoardString
-
-class CreatedBoard:
-    __slots__ = ["__board", "__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
-
-    def value(self) -> Optional[chess.Board]:
-        try:
-            board: chess.Board = chess.Board(str(self.__fen))
-            if BoardString(board).empty() is True:
-                return None
-        except:
-            return None
-        else:
-            return board
+from .implementation.boardstring import FEN
+from .implementation.microfen import ValidMicroFen
 
 MICRO_STARTING_FEN: Final[FEN] = FEN("4kbnr/4p3/8/7P/4RNBK/8/8/8 w Kk - 0 1")
-
-class ValidMicroFen:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
-
-    def value(self) -> Optional[FEN]:
-        return Nullable(CreatedBoard(self.__fen).value()).op(
-            lambda x: BoardString(cast(chess.Board, x))).op(
-            lambda x: ValidMicroBoardString(x)).op(
-            lambda x: x.value()).op(
-            lambda x: None if x is None else self.__fen).value()
 
 class MicroMove:
     def __init__(self, move: str):

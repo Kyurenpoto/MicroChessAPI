@@ -83,7 +83,7 @@ class PieceRange:
     def contained(self, x: int) -> bool:
         return self.min_val <= x <= self.max_val
 
-MICROCHESS_PIECE_RANGES: Final[Dict] = dict(zip(
+MICROCHESS_PIECE_RANGES: Final[Dict[str, PieceRange]] = dict(zip(
     CHESS_PIECES,
     ([PieceRange(1, 1)] * 2) + ([PieceRange(0, 1)] * 4) + ([PieceRange(0, 2)] * 6)))
 
@@ -119,7 +119,5 @@ class ValidMicroBoardString:
 
     def value(self) -> Optional[BoardString]:
         return Nullable(self.__board).op(
-            lambda x: PieceRangeValidMicroBoardString(x)).op(
-            lambda x: x.value()).op(
-            lambda x: PieceCountValidMicroBoardString(x)).op(
-            lambda x: x.value()).value()
+            lambda x: PieceRangeValidMicroBoardString(x).value()).op(
+            lambda x: PieceCountValidMicroBoardString(x).value()).value()
