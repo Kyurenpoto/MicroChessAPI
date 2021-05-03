@@ -5,8 +5,10 @@
 from abc import ABCMeta, abstractmethod
 from typing import List
 
-from domain.microchess import MicroBoard, CreatedMicroBoard, MICRO_STARTING_FEN
+from domain.microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus
 from domain.dto.traindto import Action, ActionResult, State
+
+from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_NEXT_MOVE_LIST
 
 class ChessMultiTrace(metaclass=ABCMeta):
     @abstractmethod
@@ -20,9 +22,9 @@ class ChessMultiTrace(metaclass=ABCMeta):
 class Fake(ChessMultiTrace):
     def move(self, action: Action) -> ActionResult:
         return ActionResult(
-            fens=[MICRO_STARTING_FEN],
-            statuses=[],
-            next_move_lists=[])
+            fens=[MICRO_FIRST_MOVE_FEN],
+            statuses=[MicroBoardStatus.NONE],
+            next_move_lists=[MICRO_FIRST_NEXT_MOVE_LIST])
 
     def reset(self, state: State) -> bool:
         return True
@@ -48,9 +50,9 @@ class ChessTrainTrace(ChessMultiTrace):
 
     def move(self, action: Action) -> ActionResult:
         return ActionResult(
-            fens=[MICRO_STARTING_FEN],
-            statuses=[],
-            next_move_lists=[])
+            fens=[MICRO_FIRST_MOVE_FEN],
+            statuses=[MicroBoardStatus.NONE],
+            next_move_lists=[MICRO_FIRST_NEXT_MOVE_LIST])
 
     def reset(self, state: State) -> bool:
         creates: List[MicroBoard] = []

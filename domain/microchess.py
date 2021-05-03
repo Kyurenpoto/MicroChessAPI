@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 from enum import Enum
-from typing import Optional, Final
+from typing import Optional, Final, NewType
 
 from .implementation.extendtype import Nullable
 from .implementation.boardstring import FEN
@@ -12,8 +12,11 @@ from .implementation.microfen import ValidMicroFen
 
 MICRO_STARTING_FEN: Final[FEN] = FEN("4kbnr/4p3/8/7P/4RNBK/8/8/8 w Kk - 0 1")
 
-class MicroMove:
-    def __init__(self, move: str):
+SAN = NewType('SAN', str)
+
+MICRO_CASTLING_SAN: Final[SAN] = SAN("O-O")
+
+class ValidMicroSAN:
         pass
 
 class MicroBoardStatus(Enum):

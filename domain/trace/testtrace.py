@@ -8,6 +8,8 @@ from typing import Optional
 from domain.microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus, MICRO_STARTING_FEN
 from domain.dto.testdto import Action, ActionResult, State
 
+from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_NEXT_MOVE_LIST
+
 class ChessSingleTrace(metaclass=ABCMeta):
     @abstractmethod
     def move(self, action: Action) -> ActionResult:
@@ -20,9 +22,9 @@ class ChessSingleTrace(metaclass=ABCMeta):
 class Fake(ChessSingleTrace):
     def move(self, action: Action) -> ActionResult:
         return ActionResult(
-            fen=MICRO_STARTING_FEN,
+            fen=MICRO_FIRST_MOVE_FEN,
             status=MicroBoardStatus.NONE, 
-            next_move_list=[])
+            next_move_list=MICRO_FIRST_NEXT_MOVE_LIST)
 
     def reset(self, state: State) -> bool:
         return True
@@ -40,9 +42,9 @@ class ChessTestTrace(ChessSingleTrace):
 
     def move(self, action: Action) -> ActionResult:
         return ActionResult(
-            fen=MICRO_STARTING_FEN,
+            fen=MICRO_FIRST_MOVE_FEN,
             status=MicroBoardStatus.NONE, 
-            next_move_list=[])
+            next_move_list=MICRO_FIRST_NEXT_MOVE_LIST)
 
     def reset(self, state: State) -> bool:
         created: Optional[MicroBoard] = CreatedMicroBoard(state.fen).value()

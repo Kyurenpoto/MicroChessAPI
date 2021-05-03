@@ -11,17 +11,19 @@ from domain.microchess import MicroBoardStatus, MICRO_STARTING_FEN
 from domain.trace.testtrace import Fake
 from application.chessenv.testenv import ChessTestEnvironment
 
+from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_MOVE_SAN, MICRO_FIRST_NEXT_MOVE_LIST
+
 @pytest.mark.asyncio
 async def test_move() -> None:
     env: ChessTestEnvironment = ChessTestEnvironment(Fake())
     result: ActionResult = await env.move(Action(
         fen=MICRO_STARTING_FEN,
-        move=""))
+        san=MICRO_FIRST_MOVE_SAN))
         
     assert result == ActionResult(
-        fen=MICRO_STARTING_FEN,
+        fen=MICRO_FIRST_MOVE_FEN,
         status=MicroBoardStatus.NONE.value,
-        next_move_list=[])
+        next_move_list=MICRO_FIRST_NEXT_MOVE_LIST)
 
 @pytest.mark.asyncio
 async def test_reset() -> None:

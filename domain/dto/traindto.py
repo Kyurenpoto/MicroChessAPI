@@ -10,7 +10,7 @@ from domain.microchess import MicroBoardStatus
 
 class Action(BaseModel):
     fens: List[str]
-    moves: List[str]
+    sans: List[str]
 
 class ActionResult(BaseModel):
     fens: List[str]
