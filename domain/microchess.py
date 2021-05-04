@@ -47,6 +47,9 @@ class CreatedMicroBoard:
     def __init__(self, fen: str):
         self.__fen = FEN(fen)
 
-    def value(self) -> Optional[MicroBoard]:
-        return Nullable(ValidMicroFen(self.__fen).value()).op(
-            lambda x: (None if x is None else MicroBoard(x))).value()
+    def value(self) -> MicroBoard:
+        fen: Optional[FEN] = ValidMicroFen(self.__fen).value()
+        if fen is None:
+            raise RuntimeError("Invalid FEN")
+        
+        return MicroBoard(fen)

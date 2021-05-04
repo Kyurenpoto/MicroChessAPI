@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Optional
 
-from domain.microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus, MICRO_STARTING_FEN
+from domain.microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus, MovedMicroBoard
 from domain.dto.testdto import Action, ActionResult, State
 
 from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_NEXT_MOVE_LIST
@@ -41,14 +41,12 @@ class ChessTestTrace(ChessSingleTrace):
         return self.__board.fen() == other.__board.fen()
 
     def move(self, action: Action) -> ActionResult:
+        moved: MicroBoard = MovedMicroBoard(action.fen, action.san).value()
+
         return ActionResult(
             fen=MICRO_FIRST_MOVE_FEN,
             status=MicroBoardStatus.NONE, 
             next_move_list=MICRO_FIRST_NEXT_MOVE_LIST)
 
     def reset(self, state: State) -> None:
-        created: Optional[MicroBoard] = CreatedMicroBoard(state.fen).value()
-        if created is None:
-            raise RuntimeError("Invalid FEN")
-
-        self.__board = created
+        self.__board = CreatedMicroBoard(state.fen).value()

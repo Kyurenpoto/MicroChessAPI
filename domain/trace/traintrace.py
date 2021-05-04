@@ -57,10 +57,9 @@ class ChessTrainTrace(ChessMultiTrace):
     def reset(self, state: State) -> None:
         creates: List[MicroBoard] = []
         for i, fen in enumerate(state.fens):
-            created = CreatedMicroBoard(fen).value()
-            if created is None:
-                raise RuntimeError(f"Invalid {i}th FEN")
-            
-            creates.append(created)
+            try:
+                creates.append(CreatedMicroBoard(fen).value())
+            except RuntimeError as ex:
+                raise RuntimeError(f"Invalid {i}th FEN") from ex
 
         self.__boards = creates[:]
