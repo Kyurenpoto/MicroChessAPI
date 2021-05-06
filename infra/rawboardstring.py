@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Optional
-
 import chess
 
 EMPTY_BOARD = "\n".join(". . . . . . . .")
@@ -19,5 +17,5 @@ class RawBoardString:
     def __str__(self) -> str:
         try:
             return str(chess.Board(str(self.__fen)))
-        except:
+        except ValueError:
             return EMPTY_BOARD

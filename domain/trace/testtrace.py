@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from abc import ABCMeta, abstractmethod
-from typing import Optional
 
+from domain.implementation.boardstring import FEN
 from domain.microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus, MovedMicroBoard
 from domain.dto.testdto import Action, ActionResult, State
 
@@ -41,10 +41,10 @@ class ChessTestTrace(ChessSingleTrace):
         return self.__board.fen() == other.__board.fen()
 
     def move(self, action: Action) -> ActionResult:
-        moved: MicroBoard = MovedMicroBoard(action.fen, action.san).value()
+        moved: FEN = MovedMicroBoard(action.fen, action.san).value().fen()
 
         return ActionResult(
-            fen=MICRO_FIRST_MOVE_FEN,
+            fen=moved,
             status=MicroBoardStatus.NONE, 
             next_move_list=MICRO_FIRST_NEXT_MOVE_LIST)
 

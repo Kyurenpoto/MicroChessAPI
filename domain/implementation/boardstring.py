@@ -32,7 +32,7 @@ class MicroPartBoardString:
         self.__board = board.value()
 
     def value(self) -> str:
-        return "".join([i[4:8] for i in self.__board[0:5]])
+        return "".join([i[4:] for i in self.__board[0:5]])
 
 class MicroPartBoardPiece:
     __slots__ = ["__board"]
@@ -59,7 +59,7 @@ class PieceRangeValidMicroBoardString:
 
         board = cast(BoardString, self.__board).value()
         for i in range(0, 5):
-            if board[i][0:4] != "....":
+            if board[i][:4] != "....":
                 return None
         for i in range(5, 8):
             if board[i] != "........":

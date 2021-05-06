@@ -5,7 +5,8 @@
 from abc import ABCMeta, abstractmethod
 from typing import List
 
-from domain.microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus
+from domain.implementation.boardstring import FEN
+from domain.microchess import MicroBoard, CreatedMicroBoard, MicroBoardStatus, MovedMicroBoard
 from domain.dto.traindto import Action, ActionResult, State
 
 from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_NEXT_MOVE_LIST
@@ -49,8 +50,11 @@ class ChessTrainTrace(ChessMultiTrace):
         return True
 
     def move(self, action: Action) -> ActionResult:
+        moved: List[FEN] = [MovedMicroBoard(fen, san).value().fen()
+                            for fen, san in zip(action.fens, action.sans)]
+        
         return ActionResult(
-            fens=[MICRO_FIRST_MOVE_FEN],
+            fens=moved,
             statuses=[MicroBoardStatus.NONE],
             next_move_lists=[MICRO_FIRST_NEXT_MOVE_LIST])
 

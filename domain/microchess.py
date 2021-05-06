@@ -4,20 +4,39 @@
 
 from __future__ import annotations
 from enum import Enum
-from typing import Optional, Final, NewType
+from typing import Optional, Final
 
-from .implementation.extendtype import Nullable
+from infra.rawmovedfen import RawMovedFen
 from .implementation.boardstring import FEN
-from .implementation.microfen import ValidMicroFen
+from .implementation.microfen import ValidMicroFen, MirroredMicroFen
+from .implementation.microsan import ValidMicroSAN, SAN, MICRO_CASTLING_SAN
 
-MICRO_STARTING_FEN: Final[FEN] = FEN("4kbnr/4p3/8/7P/4RNBK/8/8/8 w Kk - 0 1")
+MICRO_STARTING_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 0 1")
+class MicroMove:
+    __slots__ = ["__san"]
 
-SAN = NewType('SAN', str)
+    __san: SAN
 
-MICRO_CASTLING_SAN: Final[SAN] = SAN("O-O")
+    def __init__(self, san: SAN = MICRO_CASTLING_SAN):
+        self.__san = san
 
-class ValidMicroSAN:
-        pass
+    def san(self) -> SAN:
+        return self.__san
+
+class CreatedMicroMove:
+    __slots__ = ["__san"]
+
+    __san: SAN
+
+    def __init__(self, san: str):
+        self.__san = SAN(san)
+
+    def value(self) -> MicroMove:
+        san: Optional[SAN] = ValidMicroSAN(self.__san).value()
+        if san is None:
+            raise RuntimeError("Invalid SAN")
+
+        return MicroMove(san)
 
 class MicroBoardStatus(Enum):
     NONE = 0
@@ -25,19 +44,15 @@ class MicroBoardStatus(Enum):
     STALEMATE = 2
 
 class MicroBoard:
-    __slots__ = ["__fen", "__reversed_fen"]
+    __slots__ = ["__fen"]
 
     __fen: FEN
-    __reversed_fen: FEN
 
     def __init__(self, fen: FEN = MICRO_STARTING_FEN):
         self.__fen = fen
 
     def fen(self) -> FEN:
         return self.__fen
-
-    def move(self, move: MicroMove) -> MicroBoard:
-        return MicroBoard()
 
 class CreatedMicroBoard:
     __slots__ = ["__fen"]
@@ -53,3 +68,25 @@ class CreatedMicroBoard:
             raise RuntimeError("Invalid FEN")
         
         return MicroBoard(fen)
+
+class MovedMicroBoard:
+    __slots__ = ["__fen", "__san"]
+
+    __fen: FEN
+    __san: SAN
+
+    def __init__(self, fen: str, san: str):
+        self.__fen = FEN(fen)
+        self.__san = SAN(san)
+
+    def value(self) -> MicroBoard:
+        board: MicroBoard = CreatedMicroBoard(self.__fen).value()
+        move: MicroMove = CreatedMicroMove(self.__san).value()
+
+        if move.san() == MICRO_CASTLING_SAN:
+            mirrored: FEN = MirroredMicroFen(board.fen()).value()
+            moved: FEN = FEN(str(RawMovedFen(mirrored, move.san())))
+
+            return MicroBoard(MirroredMicroFen(moved).value())
+        else:
+            return MicroBoard(FEN(str(RawMovedFen(board.fen(), move.san()))))
