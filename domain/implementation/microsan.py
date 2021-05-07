@@ -7,6 +7,7 @@ from typing import Optional, Final, NewType, Set
 SAN = NewType('SAN', str)
 
 MICRO_CASTLING_SAN: Final[SAN] = SAN("O-O")
+MICRO_FIRST_MOVE_SAN: Final[SAN] = SAN("h5h6")
 
 PROMOTIONABLE_PIECES: Final[str] = "QqRrBbNn"
 MOVABLE_PIECES: Final[str] = "KkQqRrBbNn"

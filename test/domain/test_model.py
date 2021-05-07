@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from domain.dto.modeldto import ModelRequest, ModelResponse
-from domain.microchess import MICRO_STARTING_FEN
+from domain.implementation.microsan import MICRO_FIRST_MOVE_SAN
+from domain.implementation.microboard import MICRO_STARTING_FEN, MICRO_FIRST_MOVE_FEN
+from domain.implementation.legalsan import MICRO_FIRST_LEGAL_MOVES
 from domain.model import ChessModel
-
-from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_MOVE_SAN, MICRO_FIRST_LEGAL_MOVES
 
 def test_act() -> None:
     model: ChessModel = ChessModel()

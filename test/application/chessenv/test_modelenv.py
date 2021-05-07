@@ -5,11 +5,11 @@
 import pytest
 
 from domain.dto.modeldto import ModelRequest, ModelResponse
-from domain.microchess import MICRO_STARTING_FEN
+from domain.implementation.microsan import MICRO_FIRST_MOVE_SAN
+from domain.implementation.microboard import MICRO_STARTING_FEN, MICRO_FIRST_MOVE_FEN
+from domain.implementation.legalsan import MICRO_FIRST_LEGAL_MOVES
 from domain.model import Fake
 from application.chessenv.modelenv import ChessEnvironment
-
-from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_MOVE_SAN, MICRO_FIRST_LEGAL_MOVES
 
 @pytest.mark.asyncio
 async def test_act() -> None:

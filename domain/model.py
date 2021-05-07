@@ -5,9 +5,9 @@
 from abc import ABCMeta, abstractmethod
 
 from domain.dto.modeldto import ModelRequest, ModelResponse
+from domain.implementation.microboard import MICRO_FIRST_MOVE_FEN
+from domain.implementation.legalsan import MICRO_FIRST_LEGAL_MOVES
 from domain.implementation.modelactresult import ModelActResult
-
-from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_LEGAL_MOVES
 
 class ChessModelBase(metaclass=ABCMeta):
     @abstractmethod
