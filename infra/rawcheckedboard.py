@@ -6,6 +6,7 @@ from typing import Optional
 
 import chess
 
+
 class RawCheckedBoard:
     __slots__ = ["__fen"]
 

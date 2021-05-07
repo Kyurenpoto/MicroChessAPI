@@ -6,6 +6,7 @@ import chess
 
 EMPTY_BOARD = "\n".join(". . . . . . . .")
 
+
 class RawBoardString:
     __slots__ = ["__fen"]
 

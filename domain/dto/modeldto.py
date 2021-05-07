@@ -6,9 +6,11 @@ from typing import List
 
 from pydantic import BaseModel
 
+
 class ModelRequest(BaseModel):
     fens: List[str]
     sans: List[str]
+
 
 class ModelResponse(BaseModel):
     fens: List[str]

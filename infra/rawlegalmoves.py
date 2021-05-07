@@ -6,6 +6,7 @@ from typing import List
 
 import chess
 
+
 class RawLegalMoves:
     __slots__ = ["__fen"]
 

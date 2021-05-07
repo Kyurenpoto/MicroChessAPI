@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from domain.dto.modeldto import ModelRequest, ModelResponse
-from domain.model import ChessModelBase, ChessModel
+from domain.model import ChessModel, ChessModelBase
+
 
 class ChessEnvironment:
     __slots__ = ["__model"]

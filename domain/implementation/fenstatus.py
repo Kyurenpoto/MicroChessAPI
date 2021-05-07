@@ -3,8 +3,10 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from infra.rawcheckedboard import RawCheckedBoard
+
 from .boardstring import FEN
 from .microboardstatus import MicroBoardStatus
+
 
 class FENStatus:
     __slots__ = ["__fen", "__cnt_legal_moves"]
@@ -20,6 +22,4 @@ class FENStatus:
         if self.__cnt_legal_moves != 0:
             return MicroBoardStatus.NONE
 
-        return (MicroBoardStatus.CHECKMATE
-            if RawCheckedBoard(self.__fen).value()
-            else MicroBoardStatus.STALEMATE)
+        return MicroBoardStatus.CHECKMATE if RawCheckedBoard(self.__fen).value() else MicroBoardStatus.STALEMATE

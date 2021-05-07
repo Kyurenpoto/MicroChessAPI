@@ -4,7 +4,8 @@
 
 from typing import Optional
 
-from .microsan import ValidMicroSAN, SAN, MICRO_CASTLING_SAN
+from .microsan import MICRO_CASTLING_SAN, SAN, ValidMicroSAN
+
 
 class MicroMove:
     __slots__ = ["__san"]
@@ -16,6 +17,7 @@ class MicroMove:
 
     def san(self) -> SAN:
         return self.__san
+
 
 class CreatedMicroMove:
     __slots__ = ["__san"]

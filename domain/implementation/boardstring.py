@@ -2,12 +2,14 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, Optional, List, Dict, NewType, cast
+from typing import Dict, Final, List, NewType, Optional, cast
 
 from infra.rawboardstring import RawBoardString
+
 from .extendtype import Nullable
 
-FEN = NewType('FEN', str)
+FEN = NewType("FEN", str)
+
 
 class BoardString:
     __slots__ = ["__board"]
@@ -23,6 +25,7 @@ class BoardString:
     def empty(self) -> bool:
         return "".join(self.__board) == ("." * 64)
 
+
 class MicroPartBoardString:
     __slots__ = ["__board"]
 
@@ -33,6 +36,7 @@ class MicroPartBoardString:
 
     def value(self) -> str:
         return "".join([i[4:] for i in self.__board[0:5]])
+
 
 class MicroPartBoardPiece:
     __slots__ = ["__board"]
@@ -45,9 +49,10 @@ class MicroPartBoardPiece:
     def value(self) -> str:
         return self.__board.value().replace(".", "")
 
+
 class PieceRangeValidMicroBoardString:
     __slots__ = ["__board"]
-    
+
     __board: Optional[BoardString]
 
     def __init__(self, board: Optional[BoardString]):
@@ -67,7 +72,9 @@ class PieceRangeValidMicroBoardString:
 
         return self.__board
 
+
 CHESS_PIECES: Final[str] = "KkQqPpRrBbNn"
+
 
 class PieceRange:
     __slots__ = ["min_val", "max_val"]
@@ -82,13 +89,18 @@ class PieceRange:
     def contained(self, x: int) -> bool:
         return self.min_val <= x <= self.max_val
 
-MICROCHESS_PIECE_RANGES: Final[Dict[str, PieceRange]] = dict(zip(
-    CHESS_PIECES,
-    ([PieceRange(1, 1)] * 2) + ([PieceRange(0, 1)] * 4) + ([PieceRange(0, 2)] * 6)))
+
+MICROCHESS_PIECE_RANGES: Final[Dict[str, PieceRange]] = dict(
+    zip(
+        CHESS_PIECES,
+        ([PieceRange(1, 1)] * 2) + ([PieceRange(0, 1)] * 4) + ([PieceRange(0, 2)] * 6),
+    )
+)
+
 
 class PieceCountValidMicroBoardString:
     __slots__ = ["__board"]
-    
+
     __board: Optional[BoardString]
 
     def __init__(self, board: Optional[BoardString]):
@@ -98,25 +110,29 @@ class PieceCountValidMicroBoardString:
         if self.__board is None:
             return None
 
-        cnt: Dict[str, int] = {i:0 for i in CHESS_PIECES}
+        cnt: Dict[str, int] = {i: 0 for i in CHESS_PIECES}
         for i in MicroPartBoardPiece(cast(BoardString, self.__board)).value():
             cnt[i] += 1
 
         for i in CHESS_PIECES:
             if MICROCHESS_PIECE_RANGES[i].contained(cnt[i]) is False:
                 return None
-        
+
         return self.__board
+
 
 class ValidMicroBoardString:
     __slots__ = ["__board"]
-    
+
     __board: Optional[BoardString]
 
     def __init__(self, board: Optional[BoardString]):
         self.__board = board
 
     def value(self) -> Optional[BoardString]:
-        return Nullable(self.__board).op(
-            lambda x: PieceRangeValidMicroBoardString(x).value()).op(
-            lambda x: PieceCountValidMicroBoardString(x).value()).value()
+        return (
+            Nullable(self.__board)
+            .op(lambda x: PieceRangeValidMicroBoardString(x).value())
+            .op(lambda x: PieceCountValidMicroBoardString(x).value())
+            .value()
+        )

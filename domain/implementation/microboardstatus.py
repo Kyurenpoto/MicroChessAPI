@@ -4,6 +4,7 @@
 
 from enum import Enum
 
+
 class MicroBoardStatus(Enum):
     NONE = 0
     CHECKMATE = 1

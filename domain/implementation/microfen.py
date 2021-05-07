@@ -2,11 +2,13 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Optional, List, cast
+from typing import List, Optional, cast
 
 from infra.rawboardstring import RawBoardString
-from .extendtype import Nullable
+
 from .boardstring import FEN, BoardString, ValidMicroBoardString
+from .extendtype import Nullable
+
 
 class CreatedBoard:
     __slots__ = ["__board", "__fen"]
@@ -21,6 +23,7 @@ class CreatedBoard:
 
         return None if BoardString(board).empty() else board
 
+
 class ValidBoardPartMicroFen:
     __slots__ = ["__fen"]
 
@@ -30,10 +33,14 @@ class ValidBoardPartMicroFen:
         self.__fen = fen
 
     def value(self) -> Optional[FEN]:
-        return Nullable(CreatedBoard(self.__fen).value()).op(
-            lambda x: BoardString(cast(RawBoardString, x))).op(
-            lambda x: ValidMicroBoardString(x).value()).op(
-            lambda x: None if x is None else self.__fen).value()
+        return (
+            Nullable(CreatedBoard(self.__fen).value())
+            .op(lambda x: BoardString(cast(RawBoardString, x)))
+            .op(lambda x: ValidMicroBoardString(x).value())
+            .op(lambda x: None if x is None else self.__fen)
+            .value()
+        )
+
 
 class SplitedMicroFen:
     __slots__ = ["__fen"]
@@ -45,6 +52,7 @@ class SplitedMicroFen:
 
     def value(self) -> List[str]:
         return self.__fen.split(" ")
+
 
 class ValidCastlingPartMicroFen:
     __slots__ = ["__fen"]
@@ -58,6 +66,7 @@ class ValidCastlingPartMicroFen:
         castling: str = SplitedMicroFen(self.__fen).value()[2]
         return None if ("Q" in castling or "q" in castling) else self.__fen
 
+
 class ValidEnpassantPartMicroFen:
     __slots__ = ["__fen"]
 
@@ -70,6 +79,7 @@ class ValidEnpassantPartMicroFen:
         enpassant: str = SplitedMicroFen(self.__fen).value()[3]
         return self.__fen if enpassant == "-" else None
 
+
 class ValidMicroFen:
     __slots__ = ["__fen"]
 
@@ -79,9 +89,13 @@ class ValidMicroFen:
         self.__fen = fen
 
     def value(self) -> Optional[FEN]:
-        return Nullable(ValidBoardPartMicroFen(self.__fen).value()).op(
-            lambda x: ValidCastlingPartMicroFen(cast(FEN, x)).value()).op(
-            lambda x: ValidEnpassantPartMicroFen(cast(FEN, x)).value()).value()
+        return (
+            Nullable(ValidBoardPartMicroFen(self.__fen).value())
+            .op(lambda x: ValidCastlingPartMicroFen(cast(FEN, x)).value())
+            .op(lambda x: ValidEnpassantPartMicroFen(cast(FEN, x)).value())
+            .value()
+        )
+
 
 class MirroredMicroFen:
     __slots__ = ["__fen"]
