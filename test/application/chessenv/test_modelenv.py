@@ -9,7 +9,7 @@ from domain.microchess import MicroBoardStatus, MICRO_STARTING_FEN
 from domain.model import Fake
 from application.chessenv.modelenv import ChessEnvironment
 
-from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_MOVE_SAN, MICRO_FIRST_NEXT_MOVE_LIST
+from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_MOVE_SAN, MICRO_FIRST_LEGAL_MOVES
 
 @pytest.mark.asyncio
 async def test_act() -> None:
@@ -20,4 +20,4 @@ async def test_act() -> None:
     assert response == ModelResponse(
         fens=[MICRO_FIRST_MOVE_FEN],
         statuses=[MicroBoardStatus.NONE],
-        legal_moves=[MICRO_FIRST_NEXT_MOVE_LIST])
+        legal_moves=[MICRO_FIRST_LEGAL_MOVES])

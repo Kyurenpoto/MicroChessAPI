@@ -3,13 +3,11 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from abc import ABCMeta, abstractmethod
-from typing import List
 
-from domain.implementation.boardstring import FEN
-from domain.microchess import MicroBoardStatus, MovedMicroBoard
+from domain.microchess import MicroBoardStatus, ModelActResult
 from domain.dto.modeldto import ModelRequest, ModelResponse
 
-from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_NEXT_MOVE_LIST
+from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_LEGAL_MOVES
 
 class ChessModelBase(metaclass=ABCMeta):
     @abstractmethod
@@ -21,15 +19,13 @@ class Fake(ChessModelBase):
         return ModelResponse(
             fens=[MICRO_FIRST_MOVE_FEN],
             statuses=[MicroBoardStatus.NONE],
-            legal_moves=[MICRO_FIRST_NEXT_MOVE_LIST])
+            legal_moves=[MICRO_FIRST_LEGAL_MOVES])
 
 class ChessModel(ChessModelBase):
     def act(self, request: ModelRequest) -> ModelResponse:
-        moved: List[FEN] = [
-            MovedMicroBoard(fen, san).value().fen()
-            for fen, san in zip(request.fens, request.sans)]
+        moved, legal_moves, statuses = ModelActResult(request.fens, request.sans).value()
         
         return ModelResponse(
             fens=moved,
-            statuses=[MicroBoardStatus.NONE],
-            legal_moves=[MICRO_FIRST_NEXT_MOVE_LIST])
+            statuses=statuses,
+            legal_moves=legal_moves)

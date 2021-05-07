@@ -4,9 +4,11 @@
 
 from __future__ import annotations
 from enum import Enum
-from typing import Optional, Final
+from typing import Optional, Final, List, Tuple
 
 from infra.rawmovedfen import RawMovedFen
+from infra.rawlegalmoves import RawLegalMoves
+from infra.rawcheckedboard import RawCheckedBoard
 from .implementation.boardstring import FEN
 from .implementation.microfen import ValidMicroFen, MirroredMicroFen
 from .implementation.microsan import ValidMicroSAN, SAN, MICRO_CASTLING_SAN
@@ -37,11 +39,6 @@ class CreatedMicroMove:
             raise RuntimeError("Invalid SAN")
 
         return MicroMove(san)
-
-class MicroBoardStatus(Enum):
-    NONE = 0
-    CHECKMATE = 1
-    STALEMATE = 2
 
 class MicroBoard:
     __slots__ = ["__fen"]
@@ -75,9 +72,9 @@ class MovedMicroBoard:
     __fen: FEN
     __san: SAN
 
-    def __init__(self, fen: str, san: str):
-        self.__fen = FEN(fen)
-        self.__san = SAN(san)
+    def __init__(self, fen: FEN, san: SAN):
+        self.__fen = fen
+        self.__san = san
 
     def value(self) -> MicroBoard:
         board: MicroBoard = CreatedMicroBoard(self.__fen).value()
@@ -90,3 +87,65 @@ class MovedMicroBoard:
             return MicroBoard(MirroredMicroFen(moved).value())
         else:
             return MicroBoard(FEN(str(RawMovedFen(board.fen(), move.san()))))
+
+class LegalFENs:
+    __slots__ = ["__fen"]
+
+    __fen: FEN
+
+    def __init__(self, fen: FEN):
+        self.__fen = fen
+
+    def value(self) -> List[SAN]:
+        legal_moves: List[SAN] = []
+        for san in RawLegalMoves(self.__fen).value():
+            valid = ValidMicroSAN(SAN(san)).value()
+            if (valid is not None and
+                valid != "e7e5"):
+                legal_moves += [valid]
+
+        return sorted(legal_moves)
+
+class MicroBoardStatus(Enum):
+    NONE = 0
+    CHECKMATE = 1
+    STALEMATE = 2
+
+class FENStatus:
+    __slots__ = ["__fen", "__cnt_legal_moves"]
+
+    __fen: FEN
+    __cnt_legal_moves: int
+
+    def __init__(self, fen: FEN, cnt_legal_moves: int):
+        self.__fen = fen
+        self.__cnt_legal_moves = cnt_legal_moves
+
+    def value(self) -> MicroBoardStatus:
+        if self.__cnt_legal_moves != 0:
+            return MicroBoardStatus.NONE
+
+        return (MicroBoardStatus.CHECKMATE
+            if RawCheckedBoard(self.__fen).value()
+            else MicroBoardStatus.STALEMATE)
+
+class ModelActResult:
+    __slots__ = ["__fens", "__sans"]
+
+    __fens: List[FEN]
+    __sans: List[SAN]
+
+    def __init__(self, fens: List[str], sans: List[str]):
+        self.__fens = [FEN(fen) for fen in fens]
+        self.__sans = [SAN(san) for san in sans]
+
+    def value(self) -> Tuple[List[str], List[List[str]], List[MicroBoardStatus]]:
+        moved: List[str] = [
+            str(MovedMicroBoard(fen, san).value().fen())
+            for fen, san in zip(self.__fens, self.__sans)]
+        legal_moves: List[List[str]] = [[str(san) for san in LegalFENs(FEN(fen)).value()]
+            for fen in moved]
+        statuses: List[MicroBoardStatus] = [FENStatus(FEN(fen), len(moves)).value()
+            for fen, moves in zip(moved, legal_moves)]
+        
+        return moved, legal_moves, statuses

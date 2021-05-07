@@ -6,7 +6,7 @@ from domain.dto.modeldto import ModelRequest, ModelResponse
 from domain.microchess import MICRO_STARTING_FEN, MicroBoardStatus
 from domain.model import ChessModel
 
-from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_MOVE_SAN, MICRO_FIRST_NEXT_MOVE_LIST
+from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_MOVE_SAN, MICRO_FIRST_LEGAL_MOVES
 
 def test_act() -> None:
     model: ChessModel = ChessModel()
@@ -16,4 +16,4 @@ def test_act() -> None:
     assert response == ModelResponse(
         fens=[MICRO_FIRST_MOVE_FEN],
         statuses=[MicroBoardStatus.NONE],
-        legal_moves=[MICRO_FIRST_NEXT_MOVE_LIST])
+        legal_moves=[MICRO_FIRST_LEGAL_MOVES])

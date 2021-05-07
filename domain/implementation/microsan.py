@@ -10,7 +10,7 @@ MICRO_CASTLING_SAN: Final[SAN] = SAN("O-O")
 
 PROMOTIONABLE_PIECES: Final[str] = "QqRrBbNn"
 MOVABLE_PIECES: Final[str] = "KkQqRrBbNn"
-VALID_SQUARES: Final[Set[str]] = set([i + j for j in "5678" for i in "defgh"])
+VALID_SQUARES: Final[Set[str]] = set([i + j for j in "45678" for i in "efgh"])
 
 class ValidSquares:
     __slots__ = ["__squares"]
