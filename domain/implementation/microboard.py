@@ -12,6 +12,8 @@ from .micromove import MicroMove, CreatedMicroMove
 
 MICRO_STARTING_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 0 1")
 MICRO_FIRST_MOVE_FEN: Final[FEN] = FEN("4knbr/4p3/7P/8/4RBNK/8/8/8 b Kk - 0 1")
+MICRO_CHECKMATE_FEN: Final[FEN] = FEN("4k3/6B1/4R1K1/8/8/8/8/8 b Kk - 0 1")
+MICRO_STALEMATE_FEN: Final[FEN] = FEN("4k3/6B1/5PK1/8/8/8/8/8 b Kk - 0 1")
 
 class MicroBoard:
     __slots__ = ["__fen"]
