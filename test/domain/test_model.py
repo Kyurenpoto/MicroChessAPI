@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from domain.dto.modeldto import ModelRequest, ModelResponse
-from domain.microchess import MICRO_STARTING_FEN, MicroBoardStatus
+from domain.microchess import MICRO_STARTING_FEN
 from domain.model import ChessModel
 
 from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_MOVE_SAN, MICRO_FIRST_LEGAL_MOVES
@@ -15,5 +15,5 @@ def test_act() -> None:
     
     assert response == ModelResponse(
         fens=[MICRO_FIRST_MOVE_FEN],
-        statuses=[MicroBoardStatus.NONE],
+        statuses=[0],
         legal_moves=[MICRO_FIRST_LEGAL_MOVES])

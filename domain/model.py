@@ -4,8 +4,8 @@
 
 from abc import ABCMeta, abstractmethod
 
-from domain.microchess import MicroBoardStatus, ModelActResult
 from domain.dto.modeldto import ModelRequest, ModelResponse
+from domain.implementation.modelactresult import ModelActResult
 
 from test.constant import MICRO_FIRST_MOVE_FEN, MICRO_FIRST_LEGAL_MOVES
 
@@ -18,7 +18,7 @@ class Fake(ChessModelBase):
     def act(self, request: ModelRequest) -> ModelResponse:
         return ModelResponse(
             fens=[MICRO_FIRST_MOVE_FEN],
-            statuses=[MicroBoardStatus.NONE],
+            statuses=[0],
             legal_moves=[MICRO_FIRST_LEGAL_MOVES])
 
 class ChessModel(ChessModelBase):

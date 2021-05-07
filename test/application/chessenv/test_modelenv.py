@@ -5,7 +5,7 @@
 import pytest
 
 from domain.dto.modeldto import ModelRequest, ModelResponse
-from domain.microchess import MicroBoardStatus, MICRO_STARTING_FEN
+from domain.microchess import MICRO_STARTING_FEN
 from domain.model import Fake
 from application.chessenv.modelenv import ChessEnvironment
 
@@ -19,5 +19,5 @@ async def test_act() -> None:
 
     assert response == ModelResponse(
         fens=[MICRO_FIRST_MOVE_FEN],
-        statuses=[MicroBoardStatus.NONE],
+        statuses=[0],
         legal_moves=[MICRO_FIRST_LEGAL_MOVES])

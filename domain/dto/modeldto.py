@@ -6,13 +6,11 @@ from typing import List
 
 from pydantic import BaseModel
 
-from domain.microchess import MicroBoardStatus
-
 class ModelRequest(BaseModel):
     fens: List[str]
     sans: List[str]
 
 class ModelResponse(BaseModel):
     fens: List[str]
-    statuses: List[MicroBoardStatus]
+    statuses: List[int]
     legal_moves: List[List[str]]

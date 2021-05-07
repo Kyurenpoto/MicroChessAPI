@@ -128,24 +128,3 @@ class FENStatus:
         return (MicroBoardStatus.CHECKMATE
             if RawCheckedBoard(self.__fen).value()
             else MicroBoardStatus.STALEMATE)
-
-class ModelActResult:
-    __slots__ = ["__fens", "__sans"]
-
-    __fens: List[FEN]
-    __sans: List[SAN]
-
-    def __init__(self, fens: List[str], sans: List[str]):
-        self.__fens = [FEN(fen) for fen in fens]
-        self.__sans = [SAN(san) for san in sans]
-
-    def value(self) -> Tuple[List[str], List[List[str]], List[MicroBoardStatus]]:
-        moved: List[str] = [
-            str(MovedMicroBoard(fen, san).value().fen())
-            for fen, san in zip(self.__fens, self.__sans)]
-        legal_moves: List[List[str]] = [[str(san) for san in LegalFENs(FEN(fen)).value()]
-            for fen in moved]
-        statuses: List[MicroBoardStatus] = [FENStatus(FEN(fen), len(moves)).value()
-            for fen, moves in zip(moved, legal_moves)]
-        
-        return moved, legal_moves, statuses
