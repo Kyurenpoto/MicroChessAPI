@@ -48,6 +48,39 @@ class CreatedMicroBoard:
         return MicroBoard(fen)
 
 
+class NormalMovedMicroFEN:
+    __slots__ = ["__fen", "__san"]
+
+    __fen: FEN
+    __san: SAN
+
+    def __init__(self, fen: FEN, san: SAN):
+        self.__fen = fen
+        self.__san = san
+
+    def value(self) -> FEN:
+        return FEN(str(RawMovedFen(self.__fen, self.__san)))
+
+
+class CastleMovedMicroFEN:
+    __slots__ = ["__fen", "__san"]
+
+    __fen: FEN
+    __san: SAN
+
+    def __init__(self, fen: FEN, san: SAN):
+        self.__fen = fen
+        self.__san = san
+
+    def value(self) -> FEN:
+        return (
+            Mappable(MirroredMicroFEN(self.__fen).value())
+            .mapped(lambda x: NormalMovedMicroFEN(x, self.__san).value())
+            .mapped(lambda x: MirroredMicroFEN(x).value())
+            .value()
+        )
+
+
 class MovedMicroBoard:
     __slots__ = ["__fen", "__san"]
 
@@ -59,14 +92,11 @@ class MovedMicroBoard:
         self.__san = san
 
     def value(self) -> MicroBoard:
-        board: MicroBoard = CreatedMicroBoard(self.__fen).value()
-        move: MicroMove = CreatedMicroMove(self.__san).value()
+        fen: FEN = CreatedMicroBoard(self.__fen).value().fen()
+        san: SAN = CreatedMicroMove(self.__san).value().san()
 
-        return (
-            Mappable(MirroredMicroFEN(board.fen()).value())
-            .mapped(lambda x: FEN(str(RawMovedFen(x, move.san()))))
-            .mapped(lambda x: MicroBoard(MirroredMicroFEN(x).value()))
-            .value()
-            if move.san() == MICRO_CASTLING_SAN
-            else MicroBoard(FEN(str(RawMovedFen(board.fen(), move.san()))))
+        return MicroBoard(
+            CastleMovedMicroFEN(fen, san).value()
+            if san == MICRO_CASTLING_SAN
+            else NormalMovedMicroFEN(fen, san).value()
         )
