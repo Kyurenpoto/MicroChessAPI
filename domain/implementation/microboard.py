@@ -7,7 +7,8 @@ from typing import Final, Optional
 from infra.rawmovedfen import RawMovedFen
 
 from .boardstring import FEN
-from .microfen import MirroredMicroFen, ValidMicroFen
+from .mappable import Mappable
+from .microfen import MirroredMicroFEN, ValidMicroFEN
 from .micromove import CreatedMicroMove, MicroMove
 from .microsan import MICRO_CASTLING_SAN, SAN
 
@@ -40,7 +41,7 @@ class CreatedMicroBoard:
         self.__fen = FEN(fen)
 
     def value(self) -> MicroBoard:
-        fen: Optional[FEN] = ValidMicroFen(self.__fen).value()
+        fen: Optional[FEN] = ValidMicroFEN(self.__fen).value()
         if fen is None:
             raise RuntimeError("Invalid FEN")
 
@@ -61,10 +62,11 @@ class MovedMicroBoard:
         board: MicroBoard = CreatedMicroBoard(self.__fen).value()
         move: MicroMove = CreatedMicroMove(self.__san).value()
 
-        if move.san() == MICRO_CASTLING_SAN:
-            mirrored: FEN = MirroredMicroFen(board.fen()).value()
-            moved: FEN = FEN(str(RawMovedFen(mirrored, move.san())))
-
-            return MicroBoard(MirroredMicroFen(moved).value())
-        else:
-            return MicroBoard(FEN(str(RawMovedFen(board.fen(), move.san()))))
+        return (
+            Mappable(MirroredMicroFEN(board.fen()).value())
+            .mapped(lambda x: FEN(str(RawMovedFen(x, move.san()))))
+            .mapped(lambda x: MicroBoard(MirroredMicroFEN(x).value()))
+            .value()
+            if move.san() == MICRO_CASTLING_SAN
+            else MicroBoard(FEN(str(RawMovedFen(board.fen(), move.san()))))
+        )

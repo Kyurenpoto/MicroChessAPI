@@ -25,7 +25,7 @@ class CreatedBoard:
         return None if BoardString(board).empty() else board
 
 
-class ValidBoardPartMicroFen:
+class ValidBoardPartMicroFEN:
     __slots__ = ["__fen"]
 
     __fen: FEN
@@ -43,7 +43,7 @@ class ValidBoardPartMicroFen:
         )
 
 
-class SplitedMicroFen:
+class SplitedMicroFEN:
     __slots__ = ["__fen"]
 
     __fen: FEN
@@ -55,7 +55,7 @@ class SplitedMicroFen:
         return self.__fen.split(" ")
 
 
-class ValidCastlingPartMicroFen:
+class ValidCastlingPartMicroFEN:
     __slots__ = ["__fen"]
 
     __fen: FEN
@@ -64,11 +64,11 @@ class ValidCastlingPartMicroFen:
         self.__fen = fen
 
     def value(self) -> Optional[FEN]:
-        castling: str = SplitedMicroFen(self.__fen).value()[2]
+        castling: str = SplitedMicroFEN(self.__fen).value()[2]
         return None if ("Q" in castling or "q" in castling) else self.__fen
 
 
-class ValidEnpassantPartMicroFen:
+class ValidEnpassantPartMicroFEN:
     __slots__ = ["__fen"]
 
     __fen: FEN
@@ -77,11 +77,11 @@ class ValidEnpassantPartMicroFen:
         self.__fen = fen
 
     def value(self) -> Optional[FEN]:
-        enpassant: str = SplitedMicroFen(self.__fen).value()[3]
+        enpassant: str = SplitedMicroFEN(self.__fen).value()[3]
         return self.__fen if enpassant == "-" else None
 
 
-class ValidMicroFen:
+class ValidMicroFEN:
     __slots__ = ["__fen"]
 
     __fen: FEN
@@ -91,9 +91,9 @@ class ValidMicroFen:
 
     def value(self) -> Optional[FEN]:
         return (
-            Nullable(ValidBoardPartMicroFen(self.__fen).value())
-            .op(lambda x: ValidCastlingPartMicroFen(cast(FEN, x)).value())
-            .op(lambda x: ValidEnpassantPartMicroFen(cast(FEN, x)).value())
+            Nullable(ValidBoardPartMicroFEN(self.__fen).value())
+            .op(lambda x: ValidCastlingPartMicroFEN(cast(FEN, x)).value())
+            .op(lambda x: ValidEnpassantPartMicroFEN(cast(FEN, x)).value())
             .value()
         )
 
@@ -102,7 +102,7 @@ MIRRORED_CASTLING_PART: Dict[str, str] = {"Kk": "Kk", "K": "k", "k": "K", "-": "
 MIRRORED_TURN_PART: Dict[str, str] = {"w": "b", "b": "w"}
 
 
-class MirroredMicroFen:
+class MirroredMicroFEN:
     __slots__ = ["__fen"]
 
     __fen: FEN
@@ -111,7 +111,7 @@ class MirroredMicroFen:
         self.__fen = fen
 
     def value(self) -> FEN:
-        splited: List[str] = SplitedMicroFen(self.__fen).value()
+        splited: List[str] = SplitedMicroFEN(self.__fen).value()
 
         return FEN(
             " ".join(

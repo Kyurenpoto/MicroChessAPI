@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from domain.implementation.microboard import MICRO_BLACK_CASTLABLE_FEN, MICRO_WHITE_CASTLABLE_FEN
-from domain.implementation.microfen import MirroredMicroFen
+from domain.implementation.microfen import MirroredMicroFEN
 
 
 def test_castlable() -> None:
-    assert MirroredMicroFen(MICRO_WHITE_CASTLABLE_FEN).value() == MICRO_BLACK_CASTLABLE_FEN
+    assert MirroredMicroFEN(MICRO_WHITE_CASTLABLE_FEN).value() == MICRO_BLACK_CASTLABLE_FEN

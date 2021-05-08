@@ -7,7 +7,7 @@ from typing import Final, List
 from infra.rawlegalmoves import CASTLING_SAN, RawLegalMoves
 
 from .boardstring import FEN
-from .microfen import MirroredMicroFen
+from .microfen import MirroredMicroFEN
 from .microsan import MICRO_BLACK_DOUBLE_MOVE_SAN, SAN, ValidMicroSAN
 
 MICRO_FIRST_LEGAL_MOVES: Final[List[SAN]] = [
@@ -57,7 +57,7 @@ class CorrectedRawLegalMoves:
     def value(self) -> List[str]:
         if self.__fen.split(" ")[1] == "w":
             return RawLegalMoves(self.__fen).value() + (
-                [CASTLING_SAN] if CASTLING_SAN in RawLegalMoves(MirroredMicroFen(self.__fen).value()).value() else []
+                [CASTLING_SAN] if CASTLING_SAN in RawLegalMoves(MirroredMicroFEN(self.__fen).value()).value() else []
             )
         else:
             return RawLegalMoves(self.__fen).value()
