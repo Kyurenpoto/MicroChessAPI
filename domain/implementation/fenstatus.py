@@ -22,4 +22,4 @@ class FENStatus:
         if self.__cnt_legal_moves != 0:
             return MicroBoardStatus.NONE
 
-        return MicroBoardStatus.CHECKMATE if RawCheckedBoard(self.__fen).value() else MicroBoardStatus.STALEMATE
+        return MicroBoardStatus.STALEMATE if RawCheckedBoard(self.__fen).value() is None else MicroBoardStatus.CHECKMATE
