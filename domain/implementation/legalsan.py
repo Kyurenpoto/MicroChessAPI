@@ -4,10 +4,11 @@
 
 from typing import Final, List
 
-from infra.rawlegalmoves import RawLegalMoves
+from infra.rawlegalmoves import CASTLING_SAN, RawLegalMoves
 
 from .boardstring import FEN
-from .microsan import SAN, ValidMicroSAN
+from .microfen import MirroredMicroFen
+from .microsan import MICRO_BLACK_DOUBLE_MOVE_SAN, SAN, ValidMicroSAN
 
 MICRO_FIRST_LEGAL_MOVES: Final[List[SAN]] = [
     SAN("e7e6"),
@@ -21,9 +22,48 @@ MICRO_FIRST_LEGAL_MOVES: Final[List[SAN]] = [
     SAN("h8h6"),
     SAN("h8h7"),
 ]
+MICRO_BLACK_CASTLABLE_LEGAL_MOVES: Final[List[SAN]] = [
+    SAN("O-O"),
+    SAN("e7e6"),
+    SAN("e8f7"),
+    SAN("e8f8"),
+    SAN("h8f8"),
+    SAN("h8g8"),
+    SAN("h8h5"),
+    SAN("h8h6"),
+    SAN("h8h7"),
+]
+MICRO_WHITE_CASTLABLE_LEGAL_MOVES: Final[List[SAN]] = [
+    SAN("O-O"),
+    SAN("e4e5"),
+    SAN("e4e6"),
+    SAN("e4e7"),
+    SAN("e4f4"),
+    SAN("e4g4"),
+    SAN("h4g4"),
+    SAN("h4g5"),
+    SAN("h5h6"),
+]
 
 
-class LegalSAN:
+class CorrectedRawLegalMoves:
+    __slots__ = ["__fen"]
+
+    __fen: FEN
+
+    def __init__(self, fen: FEN):
+        self.__fen = fen
+
+    def value(self) -> List[str]:
+        if self.__fen.split(" ")[1] == "w":
+            return RawLegalMoves(self.__fen).value() + (
+                [CASTLING_SAN] if CASTLING_SAN in RawLegalMoves(MirroredMicroFen(self.__fen).value()).value() else []
+            )
+        else:
+            return RawLegalMoves(self.__fen).value()
+
+
+class LegalSANs:
     __slots__ = ["__fen"]
 
     __fen: FEN
@@ -32,10 +72,12 @@ class LegalSAN:
         self.__fen = fen
 
     def value(self) -> List[SAN]:
-        legal_moves: List[SAN] = []
-        for san in RawLegalMoves(self.__fen).value():
-            valid = ValidMicroSAN(SAN(san)).value()
-            if valid is not None and valid != "e7e5":
-                legal_moves += [valid]
-
-        return sorted(legal_moves)
+        return sorted(
+            filter(
+                lambda x: x != MICRO_BLACK_DOUBLE_MOVE_SAN,
+                filter(
+                    lambda x: ValidMicroSAN(x).value() is not None,
+                    map(lambda x: SAN(x), CorrectedRawLegalMoves(self.__fen).value()),
+                ),
+            )
+        )

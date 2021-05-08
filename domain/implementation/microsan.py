@@ -8,6 +8,7 @@ SAN = NewType("SAN", str)
 
 MICRO_CASTLING_SAN: Final[SAN] = SAN("O-O")
 MICRO_FIRST_MOVE_SAN: Final[SAN] = SAN("h5h6")
+MICRO_BLACK_DOUBLE_MOVE_SAN: Final[SAN] = SAN("e7e5")
 
 PROMOTIONABLE_PIECES: Final[str] = "QqRrBbNn"
 MOVABLE_PIECES: Final[str] = "KkQqRrBbNn"

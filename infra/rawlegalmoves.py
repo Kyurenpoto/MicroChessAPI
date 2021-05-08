@@ -2,9 +2,13 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import List
+from typing import Final, List
 
 import chess
+
+BLACK_CASTLING_UCI: Final[str] = "e8g8"
+WHITE_CASTLING_UCI: Final[str] = "h4f4"
+CASTLING_SAN: Final[str] = "O-O"
 
 
 class RawLegalMoves:
@@ -16,6 +20,7 @@ class RawLegalMoves:
         self.__fen = fen
 
     def value(self) -> List[str]:
-        board: chess.Board = chess.Board(self.__fen)
-
-        return [move.uci() for move in board.legal_moves]
+        return [
+            CASTLING_SAN if move.uci() == BLACK_CASTLING_UCI else move.uci()
+            for move in chess.Board(self.__fen).legal_moves
+        ]

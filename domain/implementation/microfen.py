@@ -2,12 +2,13 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import List, Optional, cast
+from typing import Dict, List, Optional, cast
 
 from infra.rawboardstring import RawBoardString
 
 from .boardstring import FEN, BoardString, ValidMicroBoardString
 from .extendtype import Nullable
+from .mirroredboardpart import MirroredBoardPart
 
 
 class CreatedBoard:
@@ -97,6 +98,10 @@ class ValidMicroFen:
         )
 
 
+MIRRORED_CASTLING_PART: Dict[str, str] = {"Kk": "Kk", "K": "k", "k": "K", "-": "-"}
+MIRRORED_TURN_PART: Dict[str, str] = {"w": "b", "b": "w"}
+
+
 class MirroredMicroFen:
     __slots__ = ["__fen"]
 
@@ -107,11 +112,14 @@ class MirroredMicroFen:
 
     def value(self) -> FEN:
         splited: List[str] = SplitedMicroFen(self.__fen).value()
-        mirrored: str = self.__mirror_board_part(splited[0].split("/"))
-        return FEN(" ".join([mirrored] + splited[1:]))
 
-    def __mirror_board_part(self, board_part: List[str]) -> str:
-        return "/".join(self.__mirror_rows(board_part[:5]) + board_part[5:])
-
-    def __mirror_rows(self, rows: List[str]) -> List[str]:
-        return [row[:4] + row[:3:-1] for row in rows]
+        return FEN(
+            " ".join(
+                [
+                    MirroredBoardPart(splited[0]).value(),
+                    MIRRORED_TURN_PART[splited[1]],
+                    MIRRORED_CASTLING_PART[splited[2]],
+                ]
+                + splited[3:]
+            )
+        )

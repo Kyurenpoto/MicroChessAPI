@@ -6,7 +6,7 @@ from typing import List, Tuple
 
 from .boardstring import FEN
 from .fenstatus import FENStatus
-from .legalsan import LegalSAN
+from .legalsan import LegalSANs
 from .microboard import MovedMicroBoard
 from .microsan import SAN
 
@@ -34,7 +34,7 @@ class LegalMoves:
         self.__moved_boards = moved_boards
 
     def value(self) -> List[List[str]]:
-        return [[str(san) for san in LegalSAN(FEN(fen)).value()] for fen in self.__moved_boards]
+        return [[str(san) for san in LegalSANs(FEN(fen)).value()] for fen in self.__moved_boards]
 
 
 class Statuses:
