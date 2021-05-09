@@ -6,7 +6,7 @@ from typing import Dict, Final, List, Union
 
 MSG_EMPTY_FENS: Final[str] = "At least one FEN must be entered"
 MSG_EMPTY_SANS: Final[str] = "At least one SAN must be entered"
-MSG_NOT_MATCHED_NUMBER_FENS_SANS: Final[str] = "The number of FENs and the number of SANs do not matched"
+MSG_NOT_MATCHED_NUMBER_FENS_SANS: Final[str] = "The number of FENs and the number of SANs must be the same"
 
 
 class EmptyFENs:
