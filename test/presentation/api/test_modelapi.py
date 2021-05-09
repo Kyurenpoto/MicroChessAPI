@@ -5,9 +5,7 @@
 from typing import Dict, List
 
 import pytest
-from domain.error.emptyfens import MSG_EMPTY_FENS
-from domain.error.emptysans import MSG_EMPTY_SANS
-from domain.error.notmatchednumberfenssans import MSG_NOT_MATCHED_NUMBER_FENS_SANS
+from domain.error.dtoerror import MSG_EMPTY_FENS, MSG_EMPTY_SANS, MSG_NOT_MATCHED_NUMBER_FENS_SANS
 from domain.implementation.legalsan import MICRO_FIRST_LEGAL_MOVES
 from domain.implementation.microboard import MICRO_FIRST_MOVE_FEN, MICRO_STARTING_FEN
 from domain.implementation.microsan import MICRO_FIRST_MOVE_SAN
