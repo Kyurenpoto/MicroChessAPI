@@ -4,6 +4,19 @@
 
 from typing import List, Tuple
 
+from domain.error.microboarderror import (
+    MSG_CANNOT_CASTLE,
+    MSG_EMPTY_FROM_SQUARE,
+    MSG_FULL_TO_SQUARE,
+    MSG_INVALID_PIECE_MOVE,
+    MSG_OPPOSITE_FROM_SQUARE,
+    CannotCastle,
+    EmptyFromSquare,
+    FullToSquare,
+    InvalidPieceMove,
+    OppositeFromSquare,
+)
+
 from .boardstring import FEN
 from .fenstatus import FENStatus
 from .legalsan import LegalSANs
@@ -22,7 +35,24 @@ class MovedBoards:
         self.__sans = sans
 
     def value(self) -> List[str]:
-        return [str(MovedMicroBoard(FEN(fen), SAN(san)).value().fen()) for fen, san in zip(self.__fens, self.__sans)]
+        moved: List[str] = []
+        for i, (fen, san) in enumerate(zip(self.__fens, self.__sans)):
+            try:
+                moved.append(str(MovedMicroBoard(FEN(fen), SAN(san)).value().fen()))
+            except RuntimeError as ex:
+                if ex.args[0] == MSG_CANNOT_CASTLE:
+                    raise RuntimeError(CannotCastle(i, self.__fens, self.__sans).value()) from ex
+                if ex.args[0] == MSG_EMPTY_FROM_SQUARE:
+                    raise RuntimeError(EmptyFromSquare(i, self.__fens, self.__sans).value()) from ex
+                if ex.args[0] == MSG_OPPOSITE_FROM_SQUARE:
+                    raise RuntimeError(OppositeFromSquare(i, self.__fens, self.__sans).value()) from ex
+                if ex.args[0] == MSG_FULL_TO_SQUARE:
+                    raise RuntimeError(FullToSquare(i, self.__fens, self.__sans).value()) from ex
+                if ex.args[0] == MSG_INVALID_PIECE_MOVE:
+                    raise RuntimeError(InvalidPieceMove(i, self.__fens, self.__sans).value()) from ex
+                raise ex
+
+        return moved
 
 
 class LegalMoves:

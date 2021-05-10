@@ -10,6 +10,7 @@ from .boardstring import FEN
 from .microfen import MirroredMicroFEN
 from .microsan import MICRO_BLACK_DOUBLE_MOVE_SAN, SAN, ValidMicroSAN
 
+MICRO_MAX_LEGAL_MOVES: Final[int] = 34
 MICRO_FIRST_LEGAL_MOVES: Final[List[SAN]] = [
     SAN("e7e6"),
     SAN("e8f7"),
