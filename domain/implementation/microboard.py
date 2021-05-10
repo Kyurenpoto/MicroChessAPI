@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, List, Optional
+from typing import Final, List
 
 from infra.rawmovedfen import RawMovedFen
 
@@ -45,11 +45,7 @@ class CreatedMicroBoard:
         self.__fen = FEN(fen)
 
     def value(self) -> MicroBoard:
-        fen: Optional[FEN] = ValidMicroFEN(self.__fen).value()
-        if fen is None:
-            raise RuntimeError("Invalid FEN")
-
-        return MicroBoard(fen)
+        return MicroBoard(ValidMicroFEN(self.__fen).value())
 
 
 class NormalMovedMicroFEN:

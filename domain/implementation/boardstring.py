@@ -2,73 +2,68 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, Final, List, NewType, Optional, cast
+from functools import reduce
+from typing import Dict, Final, List, NewType
 
-from infra.rawboardstring import RawBoardString
-
-from .extendtype import Nullable
+from .mappable import Mappable
 
 FEN = NewType("FEN", str)
 
 
+REPLACE_FOR_EXPAND: Dict[str, str] = {
+    "1": ".",
+    "2": "..",
+    "3": "...",
+    "4": "....",
+    "5": ".....",
+    "6": "......",
+    "7": ".......",
+    "8": "........",
+    "/": "",
+}
+
+
 class BoardString:
-    __slots__ = ["__board"]
+    __slots__ = ["__fen", "__board"]
 
-    __board: List[str]
+    __fen: FEN
+    __board: str
 
-    def __init__(self, board: RawBoardString):
-        self.__board = ["".join(line.split(" ")) for line in str(board).split("\n")]
+    def __init__(self, fen: FEN):
+        self.__fen = fen
+        self.__board = ""
 
-    def value(self) -> List[str]:
+    def value(self) -> str:
+        if self.__board == "":
+            try:
+                self.__board = reduce(
+                    lambda x, y: x.replace(y, REPLACE_FOR_EXPAND[y]),
+                    REPLACE_FOR_EXPAND.keys(),
+                    self.__fen.split(" ")[0],
+                )
+            except KeyError as ex:
+                raise RuntimeError("Invalid symbol in board part") from ex
+
         return self.__board
 
-    def empty(self) -> bool:
-        return "".join(self.__board) == ("." * 64)
+    def fen(self) -> FEN:
+        return self.__fen
 
 
-class MicroPartBoardString:
+class EmptyOutsideMicroBoardString:
     __slots__ = ["__board"]
 
-    __board: List[str]
+    __board: BoardString
 
     def __init__(self, board: BoardString):
-        self.__board = board.value()
-
-    def value(self) -> str:
-        return "".join([i[4:] for i in self.__board[0:5]])
-
-
-class MicroPartBoardPiece:
-    __slots__ = ["__board"]
-
-    __board: MicroPartBoardString
-
-    def __init__(self, board: BoardString):
-        self.__board = MicroPartBoardString(board)
-
-    def value(self) -> str:
-        return self.__board.value().replace(".", "")
-
-
-class PieceRangeValidMicroBoardString:
-    __slots__ = ["__board"]
-
-    __board: Optional[BoardString]
-
-    def __init__(self, board: Optional[BoardString]):
         self.__board = board
 
-    def value(self) -> Optional[BoardString]:
-        if self.__board is None:
-            return None
-
-        board = cast(BoardString, self.__board).value()
-        for i in range(0, 5):
-            if board[i][:4] != "....":
-                return None
-        for i in range(5, 8):
-            if board[i] != "........":
-                return None
+    def value(self) -> BoardString:
+        if (
+            "".join([self.__board.value()[(i * 8) : (i * 8 + 4)] for i in range(0, 5)]) + self.__board.value()[40:]
+            != "." * 44
+        ):
+            raise RuntimeError("Not empty outside of MicroChess board part")
 
         return self.__board
 
@@ -101,22 +96,16 @@ MICROCHESS_PIECE_RANGES: Final[Dict[str, PieceRange]] = dict(
 class PieceCountValidMicroBoardString:
     __slots__ = ["__board"]
 
-    __board: Optional[BoardString]
+    __board: BoardString
 
-    def __init__(self, board: Optional[BoardString]):
+    def __init__(self, board: BoardString):
         self.__board = board
 
-    def value(self) -> Optional[BoardString]:
-        if self.__board is None:
-            return None
-
-        cnt: Dict[str, int] = {i: 0 for i in CHESS_PIECES}
-        for i in MicroPartBoardPiece(cast(BoardString, self.__board)).value():
-            cnt[i] += 1
-
+    def value(self) -> BoardString:
+        board: str = self.__board.value().replace(".", "")
         for i in CHESS_PIECES:
-            if MICROCHESS_PIECE_RANGES[i].contained(cnt[i]) is False:
-                return None
+            if not MICROCHESS_PIECE_RANGES[i].contained(board.count(i)):
+                raise RuntimeError("The number of some pieces is invalid")
 
         return self.__board
 
@@ -124,15 +113,14 @@ class PieceCountValidMicroBoardString:
 class ValidMicroBoardString:
     __slots__ = ["__board"]
 
-    __board: Optional[BoardString]
+    __board: BoardString
 
-    def __init__(self, board: Optional[BoardString]):
+    def __init__(self, board: BoardString):
         self.__board = board
 
-    def value(self) -> Optional[BoardString]:
+    def value(self) -> BoardString:
         return (
-            Nullable(self.__board)
-            .op(lambda x: PieceRangeValidMicroBoardString(x).value())
-            .op(lambda x: PieceCountValidMicroBoardString(x).value())
+            Mappable(EmptyOutsideMicroBoardString(self.__board).value())
+            .mapped(lambda x: PieceCountValidMicroBoardString(x).value())
             .value()
         )

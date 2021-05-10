@@ -2,27 +2,11 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, List, Optional, cast
-
-from infra.rawboardstring import RawBoardString
+from typing import Dict, List
 
 from .boardstring import FEN, BoardString, ValidMicroBoardString
-from .extendtype import Nullable
+from .mappable import Mappable
 from .mirroredboardpart import MirroredBoardPart
-
-
-class CreatedBoard:
-    __slots__ = ["__board", "__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
-
-    def value(self) -> Optional[RawBoardString]:
-        board: RawBoardString = RawBoardString(str(self.__fen))
-
-        return None if BoardString(board).empty() else board
 
 
 class ValidBoardPartMicroFEN:
@@ -33,14 +17,8 @@ class ValidBoardPartMicroFEN:
     def __init__(self, fen: FEN):
         self.__fen = fen
 
-    def value(self) -> Optional[FEN]:
-        return (
-            Nullable(CreatedBoard(self.__fen).value())
-            .op(lambda x: BoardString(cast(RawBoardString, x)))
-            .op(lambda x: ValidMicroBoardString(x).value())
-            .op(lambda x: None if x is None else self.__fen)
-            .value()
-        )
+    def value(self) -> FEN:
+        return ValidMicroBoardString(BoardString(self.__fen)).value().fen()
 
 
 class SplitedMicroFEN:
@@ -63,9 +41,12 @@ class ValidCastlingPartMicroFEN:
     def __init__(self, fen: FEN):
         self.__fen = fen
 
-    def value(self) -> Optional[FEN]:
+    def value(self) -> FEN:
         castling: str = SplitedMicroFEN(self.__fen).value()[2]
-        return None if ("Q" in castling or "q" in castling) else self.__fen
+        if "Q" in castling or "q" in castling:
+            raise RuntimeError("Invalid castling part")
+
+        return self.__fen
 
 
 class ValidEnpassantPartMicroFEN:
@@ -76,9 +57,11 @@ class ValidEnpassantPartMicroFEN:
     def __init__(self, fen: FEN):
         self.__fen = fen
 
-    def value(self) -> Optional[FEN]:
-        enpassant: str = SplitedMicroFEN(self.__fen).value()[3]
-        return self.__fen if enpassant == "-" else None
+    def value(self) -> FEN:
+        if SplitedMicroFEN(self.__fen).value()[3] != "-":
+            raise RuntimeError("Invalid enpassant part")
+
+        return self.__fen
 
 
 class ValidMicroFEN:
@@ -89,11 +72,11 @@ class ValidMicroFEN:
     def __init__(self, fen: FEN):
         self.__fen = fen
 
-    def value(self) -> Optional[FEN]:
+    def value(self) -> FEN:
         return (
-            Nullable(ValidBoardPartMicroFEN(self.__fen).value())
-            .op(lambda x: ValidCastlingPartMicroFEN(cast(FEN, x)).value())
-            .op(lambda x: ValidEnpassantPartMicroFEN(cast(FEN, x)).value())
+            Mappable(ValidBoardPartMicroFEN(self.__fen).value())
+            .mapped(lambda x: ValidCastlingPartMicroFEN(x).value())
+            .mapped(lambda x: ValidEnpassantPartMicroFEN(x).value())
             .value()
         )
 

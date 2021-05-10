@@ -24,6 +24,35 @@ from .microboard import MovedMicroBoard
 from .microsan import SAN
 
 
+class MovedFEN:
+    __slots__ = ["__index", "__fens", "__sans"]
+
+    __index: int
+    __fens: List[str]
+    __sans: List[str]
+
+    def __init__(self, index: int, fens: List[str], sans: List[str]):
+        self.__index = index
+        self.__fens = fens
+        self.__sans = sans
+
+    def value(self) -> str:
+        try:
+            return str(MovedMicroBoard(FEN(self.__fens[self.__index]), SAN(self.__sans[self.__index])).value().fen())
+        except RuntimeError as ex:
+            if ex.args[0] == MSG_CANNOT_CASTLE:
+                raise RuntimeError(CannotCastle(self.__index, self.__fens, self.__sans).value()) from ex
+            if ex.args[0] == MSG_EMPTY_FROM_SQUARE:
+                raise RuntimeError(EmptyFromSquare(self.__index, self.__fens, self.__sans).value()) from ex
+            if ex.args[0] == MSG_OPPOSITE_FROM_SQUARE:
+                raise RuntimeError(OppositeFromSquare(self.__index, self.__fens, self.__sans).value()) from ex
+            if ex.args[0] == MSG_FULL_TO_SQUARE:
+                raise RuntimeError(FullToSquare(self.__index, self.__fens, self.__sans).value()) from ex
+            if ex.args[0] == MSG_INVALID_PIECE_MOVE:
+                raise RuntimeError(InvalidPieceMove(self.__index, self.__fens, self.__sans).value()) from ex
+            raise ex
+
+
 class MovedBoards:
     __slots__ = ["__fens", "__sans"]
 
@@ -35,24 +64,7 @@ class MovedBoards:
         self.__sans = sans
 
     def value(self) -> List[str]:
-        moved: List[str] = []
-        for i, (fen, san) in enumerate(zip(self.__fens, self.__sans)):
-            try:
-                moved.append(str(MovedMicroBoard(FEN(fen), SAN(san)).value().fen()))
-            except RuntimeError as ex:
-                if ex.args[0] == MSG_CANNOT_CASTLE:
-                    raise RuntimeError(CannotCastle(i, self.__fens, self.__sans).value()) from ex
-                if ex.args[0] == MSG_EMPTY_FROM_SQUARE:
-                    raise RuntimeError(EmptyFromSquare(i, self.__fens, self.__sans).value()) from ex
-                if ex.args[0] == MSG_OPPOSITE_FROM_SQUARE:
-                    raise RuntimeError(OppositeFromSquare(i, self.__fens, self.__sans).value()) from ex
-                if ex.args[0] == MSG_FULL_TO_SQUARE:
-                    raise RuntimeError(FullToSquare(i, self.__fens, self.__sans).value()) from ex
-                if ex.args[0] == MSG_INVALID_PIECE_MOVE:
-                    raise RuntimeError(InvalidPieceMove(i, self.__fens, self.__sans).value()) from ex
-                raise ex
-
-        return moved
+        return [MovedFEN(index, self.__fens, self.__sans).value() for index in range(len(self.__fens))]
 
 
 class LegalMoves:
