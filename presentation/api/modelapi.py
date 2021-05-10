@@ -4,7 +4,7 @@
 
 from application.chessenv.modelenv import ChessEnvironment
 from domain.dto.modeldto import ModelRequest
-from domain.dto.validmodeldto import ValidModelRequest
+from domain.implementation.validmodeldto import ValidModelRequest
 from fastapi import APIRouter, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse

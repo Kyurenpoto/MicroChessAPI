@@ -2,10 +2,9 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
+from domain.dto.modeldto import ModelRequest
 from domain.error.dtoerror import EmptyFENs, EmptySANs, NotMatchedNumberFENsSANs
 from domain.implementation.mappable import Mappable
-
-from .modeldto import ModelRequest
 
 
 class NotEmptyFENsModelRequest:
