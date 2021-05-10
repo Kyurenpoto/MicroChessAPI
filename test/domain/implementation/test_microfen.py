@@ -8,3 +8,4 @@ from domain.implementation.microfen import MirroredMicroFEN
 
 def test_castlable() -> None:
     assert MirroredMicroFEN(MICRO_WHITE_CASTLABLE_FEN).value() == MICRO_BLACK_CASTLABLE_FEN
+    assert MirroredMicroFEN(MICRO_BLACK_CASTLABLE_FEN).value() == MICRO_WHITE_CASTLABLE_FEN
