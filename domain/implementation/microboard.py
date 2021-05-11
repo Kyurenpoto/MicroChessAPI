@@ -9,7 +9,6 @@ from infra.rawmovedfen import RawMovedFen
 from .basictype import FEN, SAN
 from .mappable import Mappable
 from .microfen import MirroredMicroFEN, ValidMicroFEN
-from .micromove import CreatedMicroMove
 from .microsan import MICRO_CASTLING_SAN
 
 MICRO_STARTING_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 0 1")

@@ -2,13 +2,27 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final
+from typing import Dict, Final
 
 from .boardstring import BoardString
 from .square import Square
 
 BLACK_PIECES: Final[str] = "pkqrnb"
 WHITE_PIECES: Final[str] = "PKQRNB"
+PIECE_COLOR: Final[Dict[str, str]] = {
+    "P": "w",
+    "K": "w",
+    "Q": "w",
+    "R": "w",
+    "N": "w",
+    "B": "w",
+    "p": "b",
+    "k": "b",
+    "q": "b",
+    "r": "b",
+    "n": "b",
+    "b": "b",
+}
 
 
 class Piece:
@@ -23,14 +37,7 @@ class Piece:
         return self.__symbol
 
     def color(self) -> str:
-        if self.__symbol in BLACK_PIECES:
-            return "b"
-        if self.__symbol in WHITE_PIECES:
-            return "w"
-        if self.__symbol == ".":
-            raise RuntimeError("Empty symbol")
-
-        raise RuntimeError("Invalid symbol")
+        return PIECE_COLOR[self.__symbol]
 
 
 class PieceAt:
