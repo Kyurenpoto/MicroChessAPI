@@ -41,11 +41,11 @@
         },
         "fastapi": {
             "hashes": [
-                "sha256:62a438d0ff466640939414436339ce4e303964f3f823b7288e300baa869162e3",
-                "sha256:9bbd7b7b9291bbc3bbd72cbc82f5d456369802dab0d142a85350b06c5c7e6379"
+                "sha256:2e61fdda3149a4aea497137e720a008db15a935262596956825666eb60516c4a",
+                "sha256:ede7d6b010c77ec27a0e5f7faad315d2abc80c4eebbce2b28f2e2c06866ad199"
             ],
             "index": "pypi",
-            "version": "==0.64.0"
+            "version": "==0.65.0"
         },
         "h11": {
             "hashes": [
@@ -126,11 +126,11 @@
         },
         "starlette": {
             "hashes": [
-                "sha256:bd2ffe5e37fb75d014728511f8e68ebf2c80b0fa3d04ca1479f4dc752ae31ac9",
-                "sha256:ebe8ee08d9be96a3c9f31b2cb2a24dbdf845247b745664bd8a3f9bd0c977fdbc"
+                "sha256:3c8e48e52736b3161e34c9f0e8153b4f32ec5d8995a3ee1d59410d92f75162ed",
+                "sha256:7d49f4a27f8742262ef1470608c59ddbc66baf37c148e938c7038e6bc7a998aa"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==0.13.6"
+            "version": "==0.14.2"
         },
         "typing-extensions": {
             "hashes": [
@@ -227,11 +227,11 @@
         },
         "black": {
             "hashes": [
-                "sha256:0e80435b8a88f383c9149ae89d671eb2095b72344b0fe8a1d61d2ff5110ed173",
-                "sha256:9dc2042018ca10735366d944c2c12d9cad6dec74a3d5f679d09384ea185d9943"
+                "sha256:23695358dbcb3deafe7f0a3ad89feee5999a46be5fec21f4f1d108be0bcdb3b1",
+                "sha256:8a60071a0043876a4ae96e6c69bd3a127dad2c1ca7c8083573eb82f92705d008"
             ],
             "index": "pypi",
-            "version": "==21.5b0"
+            "version": "==21.5b1"
         },
         "certifi": {
             "hashes": [
@@ -489,10 +489,10 @@
                 "idna2008"
             ],
             "hashes": [
-                "sha256:112398da31a3344dc25dbf477d8df6cb34f9278a94fee2625d89e4514be8bb9d",
-                "sha256:af9147e9aceda37c91a05f4deb128d4b4b49d6b199775fd2d2927768abdc8f50"
+                "sha256:270aaf10d87d0d4e095063c65bf3ddbc6ee3d0b226328ce21e036f946e421835",
+                "sha256:a86d6e1f5b1dc238b218b012df0aa79409667bb209e58da56d0b94704e712a97"
             ],
-            "version": "==1.4.0"
+            "version": "==1.5.0"
         },
         "sniffio": {
             "hashes": [

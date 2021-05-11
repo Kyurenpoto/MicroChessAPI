@@ -4,7 +4,8 @@
 
 from typing import Optional
 
-from .microsan import MICRO_CASTLING_SAN, SAN, ValidMicroSAN
+from .basictype import SAN
+from .microsan import MICRO_CASTLING_SAN, ValidMicroSAN
 
 
 class MicroMove:

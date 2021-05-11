@@ -6,9 +6,9 @@ from typing import Final, List
 
 from infra.rawlegalmoves import CASTLING_SAN, RawLegalMoves
 
-from .boardstring import FEN
+from .basictype import FEN, SAN
 from .microfen import MirroredMicroFEN
-from .microsan import MICRO_BLACK_DOUBLE_MOVE_SAN, SAN, ValidMicroSAN
+from .microsan import MICRO_BLACK_DOUBLE_MOVE_SAN, ValidMicroSAN
 
 MICRO_MAX_LEGAL_MOVES: Final[int] = 34
 MICRO_FIRST_LEGAL_MOVES: Final[List[SAN]] = [

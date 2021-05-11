@@ -6,11 +6,11 @@ from typing import Final, List
 
 from infra.rawmovedfen import RawMovedFen
 
-from .boardstring import FEN
+from .basictype import FEN, SAN
 from .mappable import Mappable
 from .microfen import MirroredMicroFEN, ValidMicroFEN
 from .micromove import CreatedMicroMove
-from .microsan import MICRO_CASTLING_SAN, SAN
+from .microsan import MICRO_CASTLING_SAN
 
 MICRO_STARTING_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 0 1")
 MICRO_FIRST_MOVE_FEN: Final[FEN] = FEN("4knbr/4p3/7P/8/4RBNK/8/8/8 b Kk - 0 1")

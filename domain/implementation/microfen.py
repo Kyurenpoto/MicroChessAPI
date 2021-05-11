@@ -4,7 +4,8 @@
 
 from typing import Dict, List
 
-from .boardstring import FEN, BoardString, ValidMicroBoardString
+from .basictype import FEN
+from .boardstring import BoardString, ValidMicroBoardString
 from .mappable import Mappable
 from .mirroredboardpart import MirroredBoardPart
 
@@ -94,7 +95,7 @@ class MirroredMicroFEN:
         self.__fen = fen
 
     def value(self) -> FEN:
-        splited: List[str] = SplitedMicroFEN(self.__fen).value()
+        splited: List[str] = self.__fen.split(" ")
 
         return FEN(
             " ".join(

@@ -4,53 +4,23 @@
 
 from typing import List, Tuple
 
-from domain.error.microboarderror import (
-    MSG_CANNOT_CASTLE,
-    MSG_EMPTY_FROM_SQUARE,
-    MSG_FULL_TO_SQUARE,
-    MSG_INVALID_PIECE_MOVE,
-    MSG_OPPOSITE_FROM_SQUARE,
-    CannotCastle,
-    EmptyFromSquare,
-    FullToSquare,
-    InvalidPieceMove,
-    OppositeFromSquare,
-)
-
-from .boardstring import FEN
+from .basictype import FEN
 from .fenstatus import FENStatus
 from .legalsan import LegalSANs
 from .microboard import MovedMicroBoard
-from .microsan import SAN
+from .worktarget import ValidWorkTarget, WorkTarget
 
 
-class MovedFEN:
-    __slots__ = ["__index", "__fens", "__sans"]
+class WorkResult:
+    __slots__ = ["__target"]
 
-    __index: int
-    __fens: List[str]
-    __sans: List[str]
+    __target: WorkTarget
 
-    def __init__(self, index: int, fens: List[str], sans: List[str]):
-        self.__index = index
-        self.__fens = fens
-        self.__sans = sans
+    def __init__(self, target: WorkTarget):
+        self.__target = target
 
     def value(self) -> str:
-        try:
-            return str(MovedMicroBoard(FEN(self.__fens[self.__index]), SAN(self.__sans[self.__index])).value().fen())
-        except RuntimeError as ex:
-            if ex.args[0] == MSG_CANNOT_CASTLE:
-                raise RuntimeError(CannotCastle(self.__index, self.__fens, self.__sans).value()) from ex
-            if ex.args[0] == MSG_EMPTY_FROM_SQUARE:
-                raise RuntimeError(EmptyFromSquare(self.__index, self.__fens, self.__sans).value()) from ex
-            if ex.args[0] == MSG_OPPOSITE_FROM_SQUARE:
-                raise RuntimeError(OppositeFromSquare(self.__index, self.__fens, self.__sans).value()) from ex
-            if ex.args[0] == MSG_FULL_TO_SQUARE:
-                raise RuntimeError(FullToSquare(self.__index, self.__fens, self.__sans).value()) from ex
-            if ex.args[0] == MSG_INVALID_PIECE_MOVE:
-                raise RuntimeError(InvalidPieceMove(self.__index, self.__fens, self.__sans).value()) from ex
-            raise ex
+        return str(MovedMicroBoard(self.__target.fen(), self.__target.san()).value().fen())
 
 
 class MovedBoards:
@@ -64,7 +34,10 @@ class MovedBoards:
         self.__sans = sans
 
     def value(self) -> List[str]:
-        return [MovedFEN(index, self.__fens, self.__sans).value() for index in range(len(self.__fens))]
+        return [
+            WorkResult(ValidWorkTarget(WorkTarget(index, self.__fens, self.__sans)).value()).value()
+            for index in range(len(self.__fens))
+        ]
 
 
 class LegalMoves:

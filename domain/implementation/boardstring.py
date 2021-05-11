@@ -2,13 +2,10 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from functools import reduce
-from typing import Dict, Final, List, NewType
+from typing import Dict, Final
 
+from .basictype import FEN
 from .mappable import Mappable
-
-FEN = NewType("FEN", str)
-
 
 REPLACE_FOR_EXPAND: Dict[str, str] = {
     "1": ".",
@@ -20,6 +17,18 @@ REPLACE_FOR_EXPAND: Dict[str, str] = {
     "7": ".......",
     "8": "........",
     "/": "",
+    "P": "P",
+    "p": "p",
+    "K": "K",
+    "k": "k",
+    "Q": "Q",
+    "q": "q",
+    "R": "R",
+    "r": "r",
+    "N": "N",
+    "n": "n",
+    "B": "B",
+    "b": "b",
 }
 
 
@@ -36,11 +45,7 @@ class BoardString:
     def value(self) -> str:
         if self.__board == "":
             try:
-                self.__board = reduce(
-                    lambda x, y: x.replace(y, REPLACE_FOR_EXPAND[y]),
-                    REPLACE_FOR_EXPAND.keys(),
-                    self.__fen.split(" ")[0],
-                )
+                self.__board = "".join(map(lambda x: REPLACE_FOR_EXPAND[x], self.__fen.split(" ")[0]))
             except KeyError as ex:
                 raise RuntimeError("Invalid symbol in board part") from ex
 

@@ -2,116 +2,9 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, Final, List, Optional, Tuple
+from typing import Dict, Final, List, Tuple
 
 import chess
-from domain.error.microboarderror import (
-    MSG_CANNOT_CASTLE,
-    MSG_EMPTY_FROM_SQUARE,
-    MSG_FULL_TO_SQUARE,
-    MSG_INVALID_PIECE_MOVE,
-    MSG_OPPOSITE_FROM_SQUARE,
-)
-from domain.implementation.mappable import Mappable
-
-CASTLING_SAN: Final[str] = "O-O"
-
-
-class RawCastlableSAN:
-    __slots__ = ["__board", "__san"]
-
-    __board: chess.Board
-    __san: str
-
-    def __init__(self, board: chess.Board, san: str):
-        self.__board = board
-        self.__san = san
-
-    def value(self) -> str:
-        if len(list(filter(lambda x: self.__board.is_castling(x), self.__board.legal_moves))) == 0:
-            raise RuntimeError(MSG_CANNOT_CASTLE)
-
-        return self.__san
-
-
-class RawValidFromSquarePieceSAN:
-    __slots__ = ["__board", "__san"]
-
-    __board: chess.Board
-    __san: str
-
-    def __init__(self, board: chess.Board, san: str):
-        self.__board = board
-        self.__san = san
-
-    def value(self) -> str:
-        move: chess.Move = chess.Move.from_uci(self.__san)
-        from_piece: Optional[chess.Piece] = self.__board.piece_at(move.from_square)
-        if from_piece is None:
-            raise RuntimeError(MSG_EMPTY_FROM_SQUARE)
-        if from_piece.color != self.__board.turn:
-            raise RuntimeError(MSG_OPPOSITE_FROM_SQUARE)
-
-        return self.__san
-
-
-class RawValidToSquarePieceSAN:
-    __slots__ = ["__board", "__san"]
-
-    __board: chess.Board
-    __san: str
-
-    def __init__(self, board: chess.Board, san: str):
-        self.__board = board
-        self.__san = san
-
-    def value(self) -> str:
-        move: chess.Move = chess.Move.from_uci(self.__san)
-        to_piece: Optional[chess.Piece] = self.__board.piece_at(move.to_square)
-        if to_piece is not None and to_piece.color == self.__board.turn:
-            raise RuntimeError(MSG_FULL_TO_SQUARE)
-
-        return self.__san
-
-
-class RawValidPieceMoveSAN:
-    __slots__ = ["__board", "__san"]
-
-    __board: chess.Board
-    __san: str
-
-    def __init__(self, board: chess.Board, san: str):
-        self.__board = board
-        self.__san = san
-
-    def value(self) -> str:
-        move: chess.Move = chess.Move.from_uci(self.__san)
-        if move not in self.__board.legal_moves:
-            raise RuntimeError(MSG_INVALID_PIECE_MOVE)
-
-        return self.__san
-
-
-class RawValidMove:
-    __slots__ = ["__board", "__san"]
-
-    __board: chess.Board
-    __san: str
-
-    def __init__(self, board: chess.Board, san: str):
-        self.__board = board
-        self.__san = san
-
-    def value(self) -> chess.Move:
-        return self.__board.parse_san(
-            RawCastlableSAN(self.__board, self.__san).value()
-            if self.__san == CASTLING_SAN
-            else Mappable(RawValidFromSquarePieceSAN(self.__board, self.__san).value())
-            .mapped(lambda x: RawValidToSquarePieceSAN(self.__board, x).value())
-            .mapped(lambda x: RawValidPieceMoveSAN(self.__board, x).value())
-            .value()
-        )
-
 
 CASTLING_PART_TRANSFORM: Final[Dict[Tuple[str, str], str]] = {
     ("w", "Kk"): "k",
@@ -123,6 +16,22 @@ CASTLING_PART_TRANSFORM: Final[Dict[Tuple[str, str], str]] = {
     ("b", "k"): "-",
     ("b", "-"): "-",
 }
+
+
+class TransformedCastlingPart:
+    __slots__ = ["__turn", "__castling", "__piece"]
+
+    __turn: str
+    __castling: str
+    __piece: str
+
+    def __init__(self, turn: str, castling: str, piece: str):
+        self.__turn = turn
+        self.__castling = castling
+        self.__piece = piece
+
+    def value(self) -> str:
+        return CASTLING_PART_TRANSFORM[(self.__turn, self.__castling)] if self.__piece in "KkRr" else self.__castling
 
 
 class RawMovedFen:
@@ -139,14 +48,10 @@ class RawMovedFen:
         origin: List[str] = self.__fen.split(" ")
 
         board: chess.Board = chess.Board(self.__fen)
-        move: chess.Move = RawValidMove(board, self.__san).value()
-        piece: Optional[chess.Piece] = board.piece_at(move.from_square)
+        move: chess.Move = board.parse_san(self.__san)
+        piece: str = board.piece_at(move.from_square).symbol()
         board.push(move)
 
         moved: List[str] = board.fen().split(" ")
 
-        return " ".join(
-            moved[:2]
-            + [CASTLING_PART_TRANSFORM[(origin[1], origin[2])] if piece.symbol() in "KkRr" else origin[2]]
-            + moved[3:]
-        )
+        return " ".join(moved[:2] + [TransformedCastlingPart(origin[1], origin[2], piece).value()] + moved[3:])

@@ -4,7 +4,7 @@
 
 from infra.rawcheckedboard import RawCheckedBoard
 
-from .boardstring import FEN
+from .basictype import FEN
 from .microboardstatus import MicroBoardStatus
 
 

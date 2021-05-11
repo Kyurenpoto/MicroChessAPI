@@ -2,9 +2,9 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, NewType, Optional, Set
+from typing import Final, Optional, Set
 
-SAN = NewType("SAN", str)
+from .basictype import SAN
 
 MICRO_CASTLING_SAN: Final[SAN] = SAN("O-O")
 MICRO_FIRST_MOVE_SAN: Final[SAN] = SAN("h5h6")
