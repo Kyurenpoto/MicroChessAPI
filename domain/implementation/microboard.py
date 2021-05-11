@@ -108,11 +108,8 @@ class MovedMicroBoard:
         self.__san = san
 
     def value(self) -> MicroBoard:
-        fen: FEN = CreatedMicroBoard(self.__fen).value().fen()
-        san: SAN = CreatedMicroMove(self.__san).value().san()
-
         return MicroBoard(
-            WhiteCastledMicroFEN(fen).value()
-            if san == MICRO_CASTLING_SAN and fen.split(" ")[1] == "w"
-            else NormalMovedMicroFEN(fen, san).value()
+            WhiteCastledMicroFEN(self.__fen).value()
+            if self.__san == MICRO_CASTLING_SAN and self.__fen.split(" ")[1] == "w"
+            else NormalMovedMicroFEN(self.__fen, self.__san).value()
         )

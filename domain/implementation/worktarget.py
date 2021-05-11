@@ -12,6 +12,8 @@ from domain.error.microboarderror import (
     InvalidPieceMove,
     OppositeFromSquare,
 )
+from domain.implementation.microboard import CreatedMicroBoard
+from domain.implementation.micromove import CreatedMicroMove
 
 from .basictype import FEN, SAN
 from .boardstring import BoardString
@@ -24,25 +26,35 @@ from .square import FromSquare, ToSquare
 
 
 class WorkTarget:
-    __slots__ = ["__index", "__fens", "__sans"]
+    __slots__ = ["__index", "__fens", "__sans", "__fen", "__san"]
 
     __index: int
     __fens: List[str]
     __sans: List[str]
+    __fen: FEN
+    __san: SAN
 
     def __init__(self, index: int, fens: List[str], sans: List[str]):
         self.__index = index
         self.__fens = fens
         self.__sans = sans
+        self.__fen = FEN("")
+        self.__san = SAN("")
 
     def value(self) -> Tuple[int, List[str], List[str]]:
         return self.__index, self.__fens, self.__sans
 
     def fen(self) -> FEN:
-        return FEN(self.__fens[self.__index])
+        if self.__fen == FEN(""):
+            self.__fen = CreatedMicroBoard(FEN(self.__fens[self.__index])).value().fen()
+
+        return self.__fen
 
     def san(self) -> SAN:
-        return SAN(self.__sans[self.__index])
+        if self.__san == SAN(""):
+            self.__san = CreatedMicroMove(SAN(self.__sans[self.__index])).value().san()
+
+        return self.__san
 
 
 class CastlableWorkTarget:
