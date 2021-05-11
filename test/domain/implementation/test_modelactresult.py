@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
-from domain.error.microboarderror import (
+from domain.error.worktargeterror import (
     MSG_CANNOT_CASTLE,
     MSG_EMPTY_FROM_SQUARE,
     MSG_FULL_TO_SQUARE,

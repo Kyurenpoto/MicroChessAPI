@@ -5,7 +5,7 @@
 
 from typing import List, Tuple
 
-from domain.error.microboarderror import (
+from domain.error.worktargeterror import (
     CannotCastle,
     EmptyFromSquare,
     FullToSquare,
