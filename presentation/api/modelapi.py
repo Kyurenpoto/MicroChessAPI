@@ -18,4 +18,4 @@ async def act(request: ModelRequest) -> JSONResponse:
     try:
         return JSONResponse(content=jsonable_encoder(await env.act(ValidModelRequest(request).value())))
     except RuntimeError as ex:
-        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content={"detail": ex.args[0]})
+        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=jsonable_encoder(ex.args[0]))

@@ -4,9 +4,14 @@
 
 from typing import Dict, Final, List, Union
 
+from domain.dto.modeldto import ModelErrorResponse
+
 MSG_EMPTY_FENS: Final[str] = "At least one FEN must be entered"
 MSG_EMPTY_SANS: Final[str] = "At least one SAN must be entered"
 MSG_NOT_MATCHED_NUMBER_FENS_SANS: Final[str] = "The number of FENs and the number of SANs must be the same"
+ERROR_TYPE_EMPTY_FENS: Final[str] = "EmptyFENsError"
+ERROR_TYPE_EMPTY_SANS: Final[str] = "EmptySANsError"
+ERROR_TYPE_NOT_MATCHED_NUMBER_FENS_SANS: Final[str] = "NotMatchedNumberFENsSANsError"
 
 
 class EmptyFENs:
@@ -17,14 +22,10 @@ class EmptyFENs:
     def __init__(self, fens: List[str]):
         self.__fens = fens
 
-    def value(self) -> Dict[str, Union[str, List[str]]]:
-        return {
-            "message": MSG_EMPTY_FENS,
-            "location": "body",
-            "param": "fens",
-            "value": self.__fens,
-            "error": "EmptyLengthError",
-        }
+    def value(self) -> ModelErrorResponse:
+        return ModelErrorResponse(
+            message=MSG_EMPTY_FENS, location="body", param="fens", value=self.__fens, error=ERROR_TYPE_EMPTY_FENS
+        )
 
 
 class EmptySANs:
@@ -35,14 +36,10 @@ class EmptySANs:
     def __init__(self, sans: List[str]):
         self.__sans = sans
 
-    def value(self) -> Dict[str, Union[str, List[str]]]:
-        return {
-            "message": MSG_EMPTY_SANS,
-            "location": "body",
-            "param": "sans",
-            "value": self.__sans,
-            "error": "EmptyLengthError",
-        }
+    def value(self) -> ModelErrorResponse:
+        return ModelErrorResponse(
+            message=MSG_EMPTY_SANS, location="body", param="sans", value=self.__sans, error=ERROR_TYPE_EMPTY_SANS
+        )
 
 
 class NotMatchedNumberFENsSANs:
@@ -55,11 +52,11 @@ class NotMatchedNumberFENsSANs:
         self.__fens = fens
         self.__sans = sans
 
-    def value(self) -> Dict[str, Union[str, List[List[str]]]]:
-        return {
-            "message": MSG_NOT_MATCHED_NUMBER_FENS_SANS,
-            "location": "body",
-            "param": "fens, sans",
-            "value": [self.__fens, self.__sans],
-            "error": "EmptyLengthError",
-        }
+    def value(self) -> ModelErrorResponse:
+        return ModelErrorResponse(
+            message=MSG_NOT_MATCHED_NUMBER_FENS_SANS,
+            location="body",
+            param="fens, sans",
+            value=[self.__fens, self.__sans],
+            error=ERROR_TYPE_NOT_MATCHED_NUMBER_FENS_SANS,
+        )

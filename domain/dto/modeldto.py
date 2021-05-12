@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import List
+from typing import List, Union
 
 from pydantic import BaseModel
 
@@ -16,3 +16,11 @@ class ModelResponse(BaseModel):
     fens: List[str]
     statuses: List[int]
     legal_moves: List[List[str]]
+
+
+class ModelErrorResponse(BaseModel):
+    message: str
+    location: str
+    param: str
+    value: Union[List[str], List[List[str]]]
+    error: str
