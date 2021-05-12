@@ -11,10 +11,10 @@ MSG_INVALID_LENGTH: Final[str] = "The length of the normal SAN string must be 4 
 MSG_INVALID_FROM_SQUARE: Final[str] = "Only files e to h and ranks 4 to 8 are used in MicroChess"
 MSG_INVALID_TO_SQUARE: Final[str] = "Only files e to h and ranks 4 to 8 are used in MicroChess"
 MSG_INVALID_PROMOTION: Final[str] = "Pawn can only promote to Queen, Rook, Knight, and Bishop"
-ERROR_TYPE_INVALID_LENGTH: Final[str] = "InvalidLengthError"
-ERROR_TYPE_INVALID_FROM_SQUARE: Final[str] = "InvalidFromSquareError"
-ERROR_TYPE_INVALID_TO_SQUARE: Final[str] = "InvalidToSquareError"
-ERROR_TYPE_INVALID_PROMOTION: Final[str] = "InvalidPromotionError"
+ERROR_TYPE_INVALID_LENGTH: Final[str] = "microsan.InvalidLengthError"
+ERROR_TYPE_INVALID_FROM_SQUARE: Final[str] = "microsan.InvalidFromSquareError"
+ERROR_TYPE_INVALID_TO_SQUARE: Final[str] = "microsan.InvalidToSquareError"
+ERROR_TYPE_INVALID_PROMOTION: Final[str] = "microsan.InvalidPromotionError"
 
 
 class InvalidLength:

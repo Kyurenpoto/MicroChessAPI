@@ -16,11 +16,11 @@ MSG_FULL_TO_SQUARE: Final[str] = "The to-square of SAN must be empty or place an
 MSG_INVALID_PIECE_MOVE: Final[
     str
 ] = "An piece located on the from-square of SAN cannot be moved to the to-square of SAN"
-ERROR_TYPE_CANNOT_CASTLE: Final[str] = "CannotCastleError"
-ERROR_TYPE_EMPTY_FROM_SQUARE: Final[str] = "EmptyFromSquareError"
-ERROR_TYPE_OPPOSITE_FROM_SQUARE: Final[str] = "OppositeFromSquareError"
-ERROR_TYPE_FULL_TO_SQUARE: Final[str] = "FullToSquareError"
-ERROR_TYPE_INVALID_PIECE_MOVE: Final[str] = "InvalidPieceMoveError"
+ERROR_TYPE_CANNOT_CASTLE: Final[str] = "worktarget.CannotCastleError"
+ERROR_TYPE_EMPTY_FROM_SQUARE: Final[str] = "worktarget.EmptyFromSquareError"
+ERROR_TYPE_OPPOSITE_FROM_SQUARE: Final[str] = "worktarget.OppositeFromSquareError"
+ERROR_TYPE_FULL_TO_SQUARE: Final[str] = "worktarget.FullToSquareError"
+ERROR_TYPE_INVALID_PIECE_MOVE: Final[str] = "worktarget.InvalidPieceMoveError"
 
 
 class CannotCastle:

@@ -9,9 +9,9 @@ from domain.dto.modeldto import ModelErrorResponse
 MSG_EMPTY_FENS: Final[str] = "At least one FEN must be entered"
 MSG_EMPTY_SANS: Final[str] = "At least one SAN must be entered"
 MSG_NOT_MATCHED_NUMBER_FENS_SANS: Final[str] = "The number of FENs and the number of SANs must be the same"
-ERROR_TYPE_EMPTY_FENS: Final[str] = "EmptyFENsError"
-ERROR_TYPE_EMPTY_SANS: Final[str] = "EmptySANsError"
-ERROR_TYPE_NOT_MATCHED_NUMBER_FENS_SANS: Final[str] = "NotMatchedNumberFENsSANsError"
+ERROR_TYPE_EMPTY_FENS: Final[str] = "modeldto.EmptyFENsError"
+ERROR_TYPE_EMPTY_SANS: Final[str] = "modeldto.EmptySANsError"
+ERROR_TYPE_NOT_MATCHED_NUMBER_FENS_SANS: Final[str] = "modeldto.NotMatchedNumberFENsSANsError"
 
 
 class EmptyFENs:
