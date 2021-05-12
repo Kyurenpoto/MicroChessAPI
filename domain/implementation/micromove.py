@@ -29,8 +29,4 @@ class CreatedMicroMove:
         self.__san = SAN(san)
 
     def value(self) -> MicroMove:
-        san: Optional[SAN] = ValidMicroSAN(self.__san).value()
-        if san is None:
-            raise RuntimeError("Invalid SAN")
-
-        return MicroMove(san)
+        return MicroMove(ValidMicroSAN(self.__san).value())

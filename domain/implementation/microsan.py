@@ -2,9 +2,10 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, Optional, Set
+from typing import Final, Set
 
 from .basictype import SAN
+from .mappable import Mappable
 
 MICRO_CASTLING_SAN: Final[SAN] = SAN("O-O")
 MICRO_FIRST_MOVE_SAN: Final[SAN] = SAN("h5h6")
@@ -13,39 +14,10 @@ MICRO_KING_SIDE_MOVE_SAN: Final[SAN] = SAN("h4g4")
 MICRO_BLACK_DOUBLE_MOVE_SAN: Final[SAN] = SAN("e7e5")
 
 PROMOTIONABLE_PIECES: Final[str] = "QqRrBbNn"
-MOVABLE_PIECES: Final[str] = "KkQqRrBbNn"
 VALID_SQUARES: Final[Set[str]] = set([i + j for j in "45678" for i in "efgh"])
 
 
-class ValidSquares:
-    __slots__ = ["__squares"]
-
-    squares: str
-
-    def __init__(self, squares: str):
-        self.__squares = squares
-
-    def value(self) -> Optional[str]:
-        return self.__squares if (self.__squares[:2] in VALID_SQUARES and self.__squares[2:] in VALID_SQUARES) else None
-
-
-class CreatedMicroSAN:
-    __slots__ = ["__squares", "__piece", "__promotion"]
-
-    __squares: Optional[str]
-    __piece: str
-    __promotion: str
-
-    def __init__(self, squares: Optional[str], piece: str, promotion: str):
-        self.__squares = squares
-        self.__piece = piece
-        self.__promotion = promotion
-
-    def value(self) -> Optional[SAN]:
-        return None if self.__squares is None else SAN(self.__piece + self.__squares + self.__promotion)
-
-
-class ValidCastlingSAN:
+class LengthValidSAN:
     __slots__ = ["__san"]
 
     __san: SAN
@@ -53,11 +25,14 @@ class ValidCastlingSAN:
     def __init__(self, san: SAN):
         self.__san = san
 
-    def value(self) -> Optional[SAN]:
-        return self.__san if self.__san == MICRO_CASTLING_SAN else None
+    def value(self) -> SAN:
+        if not (4 <= len(self.__san) <= 5):
+            raise RuntimeError("The length of the normal SAN string must be 4 or 5")
+
+        return self.__san
 
 
-class ValidPromotionSAN:
+class FromSquareValidSAN:
     __slots__ = ["__san"]
 
     __san: SAN
@@ -65,15 +40,14 @@ class ValidPromotionSAN:
     def __init__(self, san: SAN):
         self.__san = san
 
-    def value(self) -> Optional[SAN]:
-        return (
-            CreatedMicroSAN(ValidSquares(self.__san[:-1]).value(), "", self.__san[-1]).value()
-            if (self.__san[-1] in PROMOTIONABLE_PIECES and len(str(self.__san)) == 5)
-            else None
-        )
+    def value(self) -> SAN:
+        if self.__san[:2] not in VALID_SQUARES:
+            raise RuntimeError("Only files e to h and ranks 4 to 8 are used in MicroChess")
+
+        return self.__san
 
 
-class ValidAdvancedSAN:
+class ToSquareValidSAN:
     __slots__ = ["__san"]
 
     __san: SAN
@@ -81,15 +55,14 @@ class ValidAdvancedSAN:
     def __init__(self, san: SAN):
         self.__san = san
 
-    def value(self) -> Optional[SAN]:
-        return (
-            CreatedMicroSAN(ValidSquares(self.__san[1:]).value(), self.__san[0], "").value()
-            if (self.__san[0] in MOVABLE_PIECES and len(str(self.__san)) == 5)
-            else None
-        )
+    def value(self) -> SAN:
+        if self.__san[2:4] not in VALID_SQUARES:
+            raise RuntimeError("Only files e to h and ranks 4 to 8 are used in MicroChess")
+
+        return self.__san
 
 
-class ValidPawnSAN:
+class PromotionValidSAN:
     __slots__ = ["__san"]
 
     __san: SAN
@@ -97,10 +70,11 @@ class ValidPawnSAN:
     def __init__(self, san: SAN):
         self.__san = san
 
-    def value(self) -> Optional[SAN]:
-        return (
-            CreatedMicroSAN(ValidSquares(self.__san[:]).value(), "", "").value() if len(str(self.__san)) == 4 else None
-        )
+    def value(self) -> SAN:
+        if len(self.__san) == 5 and self.__san[4] not in PROMOTIONABLE_PIECES:
+            raise RuntimeError("Pawn can only promote to Queen, Rook, Knight, and Bishop")
+
+        return self.__san
 
 
 class ValidMicroSAN:
@@ -111,21 +85,14 @@ class ValidMicroSAN:
     def __init__(self, san: SAN):
         self.__san = san
 
-    def value(self) -> Optional[SAN]:
-        castling_san = ValidCastlingSAN(self.__san).value()
-        if castling_san is not None:
-            return castling_san
+    def value(self) -> SAN:
+        if self.__san == MICRO_CASTLING_SAN:
+            return self.__san
 
-        promotion_san = ValidPromotionSAN(self.__san).value()
-        if promotion_san is not None:
-            return promotion_san
-
-        advanced_san = ValidAdvancedSAN(self.__san).value()
-        if advanced_san is not None:
-            return advanced_san
-
-        pawn_san = ValidPawnSAN(self.__san).value()
-        if pawn_san is not None:
-            return pawn_san
-
-        return None
+        return (
+            Mappable(LengthValidSAN(self.__san).value())
+            .mapped(lambda x: FromSquareValidSAN(x).value())
+            .mapped(lambda x: ToSquareValidSAN(x).value())
+            .mapped(lambda x: PromotionValidSAN(x).value())
+            .value()
+        )

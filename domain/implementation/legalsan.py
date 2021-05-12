@@ -2,13 +2,29 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, List
+from typing import Final, List, Optional
 
 from infra.rawlegalmoves import CASTLING_SAN, RawLegalMoves
 
 from .basictype import FEN, SAN
 from .microfen import MirroredMicroFEN
 from .microsan import MICRO_BLACK_DOUBLE_MOVE_SAN, ValidMicroSAN
+
+
+class LegalSAN:
+    __slots__ = ["__san"]
+
+    __san: SAN
+
+    def __init__(self, san: SAN):
+        self.__san = san
+
+    def value(self) -> Optional[SAN]:
+        try:
+            return ValidMicroSAN(self.__san).value()
+        except RuntimeError:
+            return None
+
 
 MICRO_MAX_LEGAL_MOVES: Final[int] = 34
 MICRO_FIRST_LEGAL_MOVES: Final[List[SAN]] = [
@@ -77,7 +93,7 @@ class LegalSANs:
             filter(
                 lambda x: x != MICRO_BLACK_DOUBLE_MOVE_SAN,
                 filter(
-                    lambda x: ValidMicroSAN(x).value() is not None,
+                    lambda x: LegalSAN(x).value() is not None,
                     map(lambda x: SAN(x), CorrectedRawLegalMoves(self.__fen).value()),
                 ),
             )
