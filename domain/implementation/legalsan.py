@@ -8,7 +8,7 @@ from infra.rawlegalmoves import CASTLING_SAN, RawLegalMoves
 
 from .basictype import FEN, SAN
 from .microfen import MirroredMicroFEN
-from .microsan import MICRO_BLACK_DOUBLE_MOVE_SAN, ValidMicroSAN
+from .microsan import MICRO_BLACK_DOUBLE_MOVE_SAN, MicroSAN, ValidMicroSAN
 
 
 class LegalSAN:
@@ -21,7 +21,7 @@ class LegalSAN:
 
     def value(self) -> Optional[SAN]:
         try:
-            return ValidMicroSAN(self.__san).value()
+            return ValidMicroSAN(MicroSAN(0, [self.__san])).value().value()
         except RuntimeError:
             return None
 

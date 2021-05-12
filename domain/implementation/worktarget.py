@@ -20,7 +20,7 @@ from .boardstring import BoardString
 from .legalsan import LegalSANs
 from .mappable import Mappable
 from .microfen import MirroredMicroFEN
-from .microsan import MICRO_CASTLING_SAN
+from .microsan import MICRO_CASTLING_SAN, MicroSAN
 from .piece import Piece, PieceAt
 from .square import FromSquare, ToSquare
 
@@ -52,7 +52,7 @@ class WorkTarget:
 
     def san(self) -> SAN:
         if self.__san == SAN(""):
-            self.__san = CreatedMicroMove(SAN(self.__sans[self.__index])).value().san()
+            self.__san = CreatedMicroMove(MicroSAN(self.__index, self.__sans)).value().san()
 
         return self.__san
 

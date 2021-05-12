@@ -2,7 +2,9 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, Set
+from typing import Final, List, Set
+
+from domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
 
 from .basictype import SAN
 from .mappable import Mappable
@@ -17,17 +19,42 @@ PROMOTIONABLE_PIECES: Final[str] = "QqRrBbNn"
 VALID_SQUARES: Final[Set[str]] = set([i + j for j in "45678" for i in "efgh"])
 
 
+class MicroSAN:
+    __slots__ = ["__index", "__sans", "__san"]
+
+    __index: int
+    __sans: List[str]
+    __san: SAN
+
+    def __init__(self, index: int, sans: List[str]):
+        self.__index = index
+        self.__sans = sans
+        self.__san = SAN("")
+
+    def value(self) -> SAN:
+        if self.__san == SAN(""):
+            self.__san = SAN(self.__sans[self.__index])
+
+        return self.__san
+
+    def index(self) -> int:
+        return self.__index
+
+    def sans(self) -> List[str]:
+        return self.__sans
+
+
 class LengthValidSAN:
     __slots__ = ["__san"]
 
-    __san: SAN
+    __san: MicroSAN
 
-    def __init__(self, san: SAN):
+    def __init__(self, san: MicroSAN):
         self.__san = san
 
-    def value(self) -> SAN:
-        if not (4 <= len(self.__san) <= 5):
-            raise RuntimeError("The length of the normal SAN string must be 4 or 5")
+    def value(self) -> MicroSAN:
+        if not (4 <= len(self.__san.value()) <= 5):
+            raise RuntimeError(InvalidLength(self.__san.index(), self.__san.sans()).value())
 
         return self.__san
 
@@ -35,14 +62,14 @@ class LengthValidSAN:
 class FromSquareValidSAN:
     __slots__ = ["__san"]
 
-    __san: SAN
+    __san: MicroSAN
 
-    def __init__(self, san: SAN):
+    def __init__(self, san: MicroSAN):
         self.__san = san
 
-    def value(self) -> SAN:
-        if self.__san[:2] not in VALID_SQUARES:
-            raise RuntimeError("Only files e to h and ranks 4 to 8 are used in MicroChess")
+    def value(self) -> MicroSAN:
+        if self.__san.value()[:2] not in VALID_SQUARES:
+            raise RuntimeError(InvalidFromSquare(self.__san.index(), self.__san.sans()).value())
 
         return self.__san
 
@@ -50,14 +77,14 @@ class FromSquareValidSAN:
 class ToSquareValidSAN:
     __slots__ = ["__san"]
 
-    __san: SAN
+    __san: MicroSAN
 
-    def __init__(self, san: SAN):
+    def __init__(self, san: MicroSAN):
         self.__san = san
 
-    def value(self) -> SAN:
-        if self.__san[2:4] not in VALID_SQUARES:
-            raise RuntimeError("Only files e to h and ranks 4 to 8 are used in MicroChess")
+    def value(self) -> MicroSAN:
+        if self.__san.value()[2:4] not in VALID_SQUARES:
+            raise RuntimeError(InvalidToSquare(self.__san.index(), self.__san.sans()).value())
 
         return self.__san
 
@@ -65,14 +92,14 @@ class ToSquareValidSAN:
 class PromotionValidSAN:
     __slots__ = ["__san"]
 
-    __san: SAN
+    __san: MicroSAN
 
-    def __init__(self, san: SAN):
+    def __init__(self, san: MicroSAN):
         self.__san = san
 
-    def value(self) -> SAN:
-        if len(self.__san) == 5 and self.__san[4] not in PROMOTIONABLE_PIECES:
-            raise RuntimeError("Pawn can only promote to Queen, Rook, Knight, and Bishop")
+    def value(self) -> MicroSAN:
+        if len(self.__san.value()) == 5 and self.__san.value()[4] not in PROMOTIONABLE_PIECES:
+            raise RuntimeError(InvalidPromotion(self.__san.index(), self.__san.sans()).value())
 
         return self.__san
 
@@ -80,19 +107,20 @@ class PromotionValidSAN:
 class ValidMicroSAN:
     __slots__ = ["__san"]
 
-    __san: SAN
+    __san: MicroSAN
 
-    def __init__(self, san: SAN):
+    def __init__(self, san: MicroSAN):
         self.__san = san
 
-    def value(self) -> SAN:
-        if self.__san == MICRO_CASTLING_SAN:
-            return self.__san
-
+    def value(self) -> MicroSAN:
         return (
-            Mappable(LengthValidSAN(self.__san).value())
-            .mapped(lambda x: FromSquareValidSAN(x).value())
-            .mapped(lambda x: ToSquareValidSAN(x).value())
-            .mapped(lambda x: PromotionValidSAN(x).value())
-            .value()
+            self.__san
+            if self.__san.value() == MICRO_CASTLING_SAN
+            else (
+                Mappable(LengthValidSAN(self.__san).value())
+                .mapped(lambda x: FromSquareValidSAN(x).value())
+                .mapped(lambda x: ToSquareValidSAN(x).value())
+                .mapped(lambda x: PromotionValidSAN(x).value())
+                .value()
+            )
         )

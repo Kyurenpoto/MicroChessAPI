@@ -2,10 +2,10 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Optional
+from typing import List
 
 from .basictype import SAN
-from .microsan import MICRO_CASTLING_SAN, ValidMicroSAN
+from .microsan import MICRO_CASTLING_SAN, MicroSAN, ValidMicroSAN
 
 
 class MicroMove:
@@ -23,10 +23,10 @@ class MicroMove:
 class CreatedMicroMove:
     __slots__ = ["__san"]
 
-    __san: SAN
+    __san: MicroSAN
 
-    def __init__(self, san: str):
-        self.__san = SAN(san)
+    def __init__(self, san: MicroSAN):
+        self.__san = san
 
     def value(self) -> MicroMove:
-        return MicroMove(ValidMicroSAN(self.__san).value())
+        return MicroMove(ValidMicroSAN(self.__san).value().value())
