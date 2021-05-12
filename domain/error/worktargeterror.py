@@ -4,13 +4,8 @@
 
 from typing import Dict, Final, List, Union
 
-NUMERAL: Dict[int, str] = {1: "st", 2: "nd", 3: "rd"}
-
-
-def index_message(index: int) -> str:
-    numeral: str = NUMERAL[index] if index in NUMERAL.keys() else "th"
-    return f"At the {index}{numeral} element: "
-
+from domain.dto.modeldto import ModelErrorResponse
+from domain.implementation.indexmessage import IndexMessage
 
 MSG_CANNOT_CASTLE: Final[
     str
@@ -21,6 +16,11 @@ MSG_FULL_TO_SQUARE: Final[str] = "The to-square of SAN must be empty or place an
 MSG_INVALID_PIECE_MOVE: Final[
     str
 ] = "An piece located on the from-square of SAN cannot be moved to the to-square of SAN"
+ERROR_TYPE_CANNOT_CASTLE: Final[str] = "CannotCastleError"
+ERROR_TYPE_EMPTY_FROM_SQUARE: Final[str] = "EmptyFromSquareError"
+ERROR_TYPE_OPPOSITE_FROM_SQUARE: Final[str] = "OppositeFromSquareError"
+ERROR_TYPE_FULL_TO_SQUARE: Final[str] = "FullToSquareError"
+ERROR_TYPE_INVALID_PIECE_MOVE: Final[str] = "InvalidPieceMoveError"
 
 
 class CannotCastle:
@@ -35,14 +35,14 @@ class CannotCastle:
         self.__fens = fens
         self.__sans = sans
 
-    def value(self) -> Dict[str, Union[str, List[List[str]]]]:
-        return {
-            "message": index_message(self.__index) + MSG_CANNOT_CASTLE,
-            "location": "body",
-            "param": "fens, sans",
-            "value": [self.__fens, self.__sans],
-            "error": "InvalidMoveContextError",
-        }
+    def value(self) -> ModelErrorResponse:
+        return ModelErrorResponse(
+            message=IndexMessage(self.__index).value() + MSG_CANNOT_CASTLE,
+            location="body",
+            param="fens, sans",
+            value=[self.__fens, self.__sans],
+            error=ERROR_TYPE_CANNOT_CASTLE,
+        )
 
 
 class EmptyFromSquare:
@@ -57,14 +57,14 @@ class EmptyFromSquare:
         self.__fens = fens
         self.__sans = sans
 
-    def value(self) -> Dict[str, Union[str, List[List[str]]]]:
-        return {
-            "message": index_message(self.__index) + MSG_EMPTY_FROM_SQUARE,
-            "location": "body",
-            "param": "fens, sans",
-            "value": [self.__fens, self.__sans],
-            "error": "InvalidMoveContextError",
-        }
+    def value(self) -> ModelErrorResponse:
+        return ModelErrorResponse(
+            message=IndexMessage(self.__index).value() + MSG_EMPTY_FROM_SQUARE,
+            location="body",
+            param="fens, sans",
+            value=[self.__fens, self.__sans],
+            error=ERROR_TYPE_EMPTY_FROM_SQUARE,
+        )
 
 
 class OppositeFromSquare:
@@ -79,14 +79,14 @@ class OppositeFromSquare:
         self.__fens = fens
         self.__sans = sans
 
-    def value(self) -> Dict[str, Union[str, List[List[str]]]]:
-        return {
-            "message": index_message(self.__index) + MSG_OPPOSITE_FROM_SQUARE,
-            "location": "body",
-            "param": "fens, sans",
-            "value": [self.__fens, self.__sans],
-            "error": "InvalidMoveContextError",
-        }
+    def value(self) -> ModelErrorResponse:
+        return ModelErrorResponse(
+            message=IndexMessage(self.__index).value() + MSG_OPPOSITE_FROM_SQUARE,
+            location="body",
+            param="fens, sans",
+            value=[self.__fens, self.__sans],
+            error=ERROR_TYPE_OPPOSITE_FROM_SQUARE,
+        )
 
 
 class FullToSquare:
@@ -101,14 +101,14 @@ class FullToSquare:
         self.__fens = fens
         self.__sans = sans
 
-    def value(self) -> Dict[str, Union[str, List[List[str]]]]:
-        return {
-            "message": index_message(self.__index) + MSG_FULL_TO_SQUARE,
-            "location": "body",
-            "param": "fens, sans",
-            "value": [self.__fens, self.__sans],
-            "error": "InvalidMoveContextError",
-        }
+    def value(self) -> ModelErrorResponse:
+        return ModelErrorResponse(
+            message=IndexMessage(self.__index).value() + MSG_FULL_TO_SQUARE,
+            location="body",
+            param="fens, sans",
+            value=[self.__fens, self.__sans],
+            error=ERROR_TYPE_FULL_TO_SQUARE,
+        )
 
 
 class InvalidPieceMove:
@@ -123,11 +123,11 @@ class InvalidPieceMove:
         self.__fens = fens
         self.__sans = sans
 
-    def value(self) -> Dict[str, Union[str, List[List[str]]]]:
-        return {
-            "message": index_message(self.__index) + MSG_INVALID_PIECE_MOVE,
-            "location": "body",
-            "param": "fens, sans",
-            "value": [self.__fens, self.__sans],
-            "error": "InvalidMoveContextError",
-        }
+    def value(self) -> ModelErrorResponse:
+        return ModelErrorResponse(
+            message=IndexMessage(self.__index).value() + MSG_INVALID_PIECE_MOVE,
+            location="body",
+            param="fens, sans",
+            value=[self.__fens, self.__sans],
+            error=ERROR_TYPE_INVALID_PIECE_MOVE,
+        )

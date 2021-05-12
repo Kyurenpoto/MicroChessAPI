@@ -22,18 +22,6 @@ class ValidBoardPartMicroFEN:
         return ValidMicroBoardString(BoardString(self.__fen)).value().fen()
 
 
-class SplitedMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
-
-    def value(self) -> List[str]:
-        return self.__fen.split(" ")
-
-
 class ValidCastlingPartMicroFEN:
     __slots__ = ["__fen"]
 
@@ -43,7 +31,7 @@ class ValidCastlingPartMicroFEN:
         self.__fen = fen
 
     def value(self) -> FEN:
-        castling: str = SplitedMicroFEN(self.__fen).value()[2]
+        castling: str = self.__fen.split(" ")[2]
         if "Q" in castling or "q" in castling:
             raise RuntimeError("Invalid castling part")
 
@@ -59,7 +47,7 @@ class ValidEnpassantPartMicroFEN:
         self.__fen = fen
 
     def value(self) -> FEN:
-        if SplitedMicroFEN(self.__fen).value()[3] != "-":
+        if self.__fen.split(" ")[3] != "-":
             raise RuntimeError("Invalid enpassant part")
 
         return self.__fen
