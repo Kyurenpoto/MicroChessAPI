@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, Final, List, Union
+from typing import Final, List
 
 from domain.dto.modeldto import ModelErrorResponse
 from domain.implementation.indexmessage import IndexMessage
@@ -31,7 +31,7 @@ class InvalidLength:
         return ModelErrorResponse(
             message=IndexMessage(self.__index).value() + MSG_INVALID_LENGTH,
             location="body",
-            param="fens, sans",
+            param="sans",
             value=self.__sans,
             error=ERROR_TYPE_INVALID_LENGTH,
         )
@@ -51,7 +51,7 @@ class InvalidFromSquare:
         return ModelErrorResponse(
             message=IndexMessage(self.__index).value() + MSG_INVALID_FROM_SQUARE,
             location="body",
-            param="fens, sans",
+            param="sans",
             value=self.__sans,
             error=ERROR_TYPE_INVALID_FROM_SQUARE,
         )
@@ -71,7 +71,7 @@ class InvalidToSquare:
         return ModelErrorResponse(
             message=IndexMessage(self.__index).value() + MSG_INVALID_TO_SQUARE,
             location="body",
-            param="fens, sans",
+            param="sans",
             value=self.__sans,
             error=ERROR_TYPE_INVALID_TO_SQUARE,
         )
@@ -91,7 +91,7 @@ class InvalidPromotion:
         return ModelErrorResponse(
             message=IndexMessage(self.__index).value() + MSG_INVALID_PROMOTION,
             location="body",
-            param="fens, sans",
+            param="sans",
             value=self.__sans,
             error=ERROR_TYPE_INVALID_PROMOTION,
         )
