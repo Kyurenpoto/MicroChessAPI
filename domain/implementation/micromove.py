@@ -2,10 +2,9 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import List
-
 from .basictype import SAN
-from .microsan import MICRO_CASTLING_SAN, MicroSAN, ValidMicroSAN
+from .microsan import MicroSAN
+from .validmicrosan import MICRO_CASTLING_SAN, ValidMicroSAN
 
 
 class MicroMove:

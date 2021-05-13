@@ -8,7 +8,8 @@ from infra.rawlegalmoves import CASTLING_SAN, RawLegalMoves
 
 from .basictype import FEN, SAN
 from .microfen import MirroredMicroFEN
-from .microsan import MICRO_BLACK_DOUBLE_MOVE_SAN, MicroSAN, ValidMicroSAN
+from .microsan import MicroSAN
+from .validmicrosan import MICRO_BLACK_DOUBLE_MOVE_SAN, ValidMicroSAN
 
 
 class LegalSAN:

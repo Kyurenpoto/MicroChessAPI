@@ -20,9 +20,10 @@ from .boardstring import BoardString
 from .legalsan import LegalSANs
 from .mappable import Mappable
 from .microfen import MirroredMicroFEN
-from .microsan import MICRO_CASTLING_SAN, MicroSAN
+from .microsan import MicroSAN
 from .piece import Piece, PieceAt
 from .square import FromSquare, ToSquare
+from .validmicrosan import MICRO_CASTLING_SAN
 
 
 class WorkTarget:

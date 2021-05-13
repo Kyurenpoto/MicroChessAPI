@@ -7,7 +7,7 @@ from application.chessenv.modelenv import ChessEnvironment
 from domain.dto.modeldto import ModelRequest, ModelResponse
 from domain.implementation.legalsan import MICRO_FIRST_LEGAL_MOVES
 from domain.implementation.microboard import MICRO_FIRST_MOVE_FEN, MICRO_STARTING_FEN
-from domain.implementation.microsan import MICRO_FIRST_MOVE_SAN
+from domain.implementation.validmicrosan import MICRO_FIRST_MOVE_SAN
 from domain.model import Fake
 
 

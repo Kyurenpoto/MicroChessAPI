@@ -11,7 +11,7 @@ from domain.implementation.microboard import (
     MICRO_WHITE_CASTLED_FEN,
     MovedMicroBoard,
 )
-from domain.implementation.microsan import MICRO_CASTLING_SAN, MICRO_FIRST_MOVE_SAN
+from domain.implementation.validmicrosan import MICRO_CASTLING_SAN, MICRO_FIRST_MOVE_SAN
 
 
 def test_normal() -> None:

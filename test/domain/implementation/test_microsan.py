@@ -10,7 +10,8 @@ from domain.error.microsanerror import (
     ERROR_TYPE_INVALID_TO_SQUARE,
 )
 from domain.implementation.basictype import SAN
-from domain.implementation.microsan import MICRO_CASTLING_SAN, MICRO_FIRST_MOVE_SAN, MicroSAN, ValidMicroSAN
+from domain.implementation.microsan import MicroSAN
+from domain.implementation.validmicrosan import MICRO_CASTLING_SAN, MICRO_FIRST_MOVE_SAN, ValidMicroSAN
 
 
 def test_normal() -> None:

@@ -11,7 +11,7 @@ from domain.error.worktargeterror import (
     ERROR_TYPE_OPPOSITE_FROM_SQUARE,
 )
 from domain.implementation.microboard import MICRO_ONLY_KING_FEN, MICRO_STARTING_FEN, MICRO_SWAP_KING_BISHOP_FEN
-from domain.implementation.microsan import (
+from domain.implementation.validmicrosan import (
     MICRO_CASTLING_SAN,
     MICRO_FIRST_MOVE_SAN,
     MICRO_KING_SIDE_MOVE_SAN,
