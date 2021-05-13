@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from domain.implementation.microboard import (
+from domain.implementation.movedfen import (
     MICRO_BLACK_CASTLABLE_FEN,
     MICRO_BLACK_CASTLED_FEN,
     MICRO_FIRST_MOVE_FEN,

@@ -2,25 +2,25 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from domain.implementation.microboard import (
+from domain.implementation.movedfen import (
     MICRO_BLACK_CASTLABLE_FEN,
     MICRO_BLACK_CASTLED_FEN,
     MICRO_FIRST_MOVE_FEN,
     MICRO_STARTING_FEN,
     MICRO_WHITE_CASTLABLE_FEN,
     MICRO_WHITE_CASTLED_FEN,
-    MovedMicroBoard,
+    MovedFEN,
 )
 from domain.implementation.validmicrosan import MICRO_CASTLING_SAN, MICRO_FIRST_MOVE_SAN
 
 
 def test_normal() -> None:
-    assert MovedMicroBoard(MICRO_STARTING_FEN, MICRO_FIRST_MOVE_SAN).value().fen() == MICRO_FIRST_MOVE_FEN
+    assert MovedFEN(MICRO_STARTING_FEN, MICRO_FIRST_MOVE_SAN).value() == MICRO_FIRST_MOVE_FEN
 
 
 def test_black_castling() -> None:
-    assert MovedMicroBoard(MICRO_BLACK_CASTLABLE_FEN, MICRO_CASTLING_SAN).value().fen() == MICRO_BLACK_CASTLED_FEN
+    assert MovedFEN(MICRO_BLACK_CASTLABLE_FEN, MICRO_CASTLING_SAN).value() == MICRO_BLACK_CASTLED_FEN
 
 
 def test_white_castling() -> None:
-    assert MovedMicroBoard(MICRO_WHITE_CASTLABLE_FEN, MICRO_CASTLING_SAN).value().fen() == MICRO_WHITE_CASTLED_FEN
+    assert MovedFEN(MICRO_WHITE_CASTLABLE_FEN, MICRO_CASTLING_SAN).value() == MICRO_WHITE_CASTLED_FEN

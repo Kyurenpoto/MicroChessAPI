@@ -8,7 +8,7 @@ from infra.rawmovedfen import RawMovedFen
 
 from .basictype import FEN, SAN
 from .mappable import Mappable
-from .microfen import MirroredMicroFEN, ValidMicroFEN
+from .microfen import MirroredMicroFEN
 from .validmicrosan import MICRO_CASTLING_SAN
 
 MICRO_STARTING_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 0 1")
@@ -23,31 +23,7 @@ MICRO_ONLY_KING_FEN: Final[FEN] = FEN("4k3/8/8/8/7K/8/8/8 w - - 0 1")
 MICRO_SWAP_KING_BISHOP_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/4RK1B/8/8/8 w Kk - 0 1")
 
 
-class MicroBoard:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN = MICRO_STARTING_FEN):
-        self.__fen = fen
-
-    def fen(self) -> FEN:
-        return self.__fen
-
-
-class CreatedMicroBoard:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: str):
-        self.__fen = FEN(fen)
-
-    def value(self) -> MicroBoard:
-        return MicroBoard(ValidMicroFEN(self.__fen).value())
-
-
-class NormalMovedMicroFEN:
+class NormalMovedFEN:
     __slots__ = ["__fen", "__san"]
 
     __fen: FEN
@@ -61,7 +37,7 @@ class NormalMovedMicroFEN:
         return FEN(str(RawMovedFen(self.__fen, self.__san)))
 
 
-class WhiteFullMoveCorrectedMicroFEN:
+class WhiteFullMoveCorrectedFEN:
     __slots__ = ["__origin", "__moved"]
 
     __origin: FEN
@@ -78,7 +54,7 @@ class WhiteFullMoveCorrectedMicroFEN:
         return FEN(" ".join(moved[:-1] + [origin[-1]]))
 
 
-class WhiteCastledMicroFEN:
+class WhiteCastledFEN:
     __slots__ = ["__fen"]
 
     __fen: FEN
@@ -89,14 +65,14 @@ class WhiteCastledMicroFEN:
     def value(self) -> FEN:
         return (
             Mappable(MirroredMicroFEN(self.__fen).value())
-            .mapped(lambda x: NormalMovedMicroFEN(x, MICRO_CASTLING_SAN).value())
+            .mapped(lambda x: NormalMovedFEN(x, MICRO_CASTLING_SAN).value())
             .mapped(lambda x: MirroredMicroFEN(x).value())
-            .mapped(lambda x: WhiteFullMoveCorrectedMicroFEN(self.__fen, x).value())
+            .mapped(lambda x: WhiteFullMoveCorrectedFEN(self.__fen, x).value())
             .value()
         )
 
 
-class MovedMicroBoard:
+class MovedFEN:
     __slots__ = ["__fen", "__san"]
 
     __fen: FEN
@@ -106,9 +82,9 @@ class MovedMicroBoard:
         self.__fen = fen
         self.__san = san
 
-    def value(self) -> MicroBoard:
-        return MicroBoard(
-            WhiteCastledMicroFEN(self.__fen).value()
+    def value(self) -> FEN:
+        return (
+            WhiteCastledFEN(self.__fen).value()
             if self.__san == MICRO_CASTLING_SAN and self.__fen.split(" ")[1] == "w"
-            else NormalMovedMicroFEN(self.__fen, self.__san).value()
+            else NormalMovedFEN(self.__fen, self.__san).value()
         )

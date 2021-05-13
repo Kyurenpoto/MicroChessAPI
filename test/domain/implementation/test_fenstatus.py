@@ -4,8 +4,8 @@
 
 from domain.implementation.fenstatus import FENStatus
 from domain.implementation.legalsan import MICRO_FIRST_LEGAL_MOVES
-from domain.implementation.microboard import MICRO_CHECKMATE_FEN, MICRO_STALEMATE_FEN, MICRO_STARTING_FEN
 from domain.implementation.microboardstatus import MicroBoardStatus
+from domain.implementation.movedfen import MICRO_CHECKMATE_FEN, MICRO_STALEMATE_FEN, MICRO_STARTING_FEN
 
 
 def test_none() -> None:

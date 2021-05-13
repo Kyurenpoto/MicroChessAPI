@@ -8,7 +8,7 @@ from domain.implementation.legalsan import (
     MICRO_WHITE_CASTLABLE_LEGAL_MOVES,
     LegalSANs,
 )
-from domain.implementation.microboard import (
+from domain.implementation.movedfen import (
     MICRO_BLACK_CASTLABLE_FEN,
     MICRO_CHECKMATE_FEN,
     MICRO_FIRST_MOVE_FEN,

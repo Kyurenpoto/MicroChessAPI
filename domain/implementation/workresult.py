@@ -4,7 +4,7 @@
 
 from typing import List
 
-from .microboard import MovedMicroBoard
+from .movedfen import MovedFEN
 from .worktarget import ValidWorkTarget, WorkTarget
 
 
@@ -17,7 +17,7 @@ class WorkResult:
         self.__target = target
 
     def value(self) -> str:
-        return str(MovedMicroBoard(self.__target.fen(), self.__target.san()).value().fen())
+        return str(MovedFEN(self.__target.fen(), self.__target.san()).value())
 
 
 class CreatedWorkResult:
