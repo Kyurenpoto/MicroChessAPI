@@ -29,7 +29,7 @@ class LengthValidSAN:
         self.__san = san
 
     def value(self) -> MicroSAN:
-        if not (4 <= len(self.__san.value()) <= 5):
+        if not (4 <= len(self.__san.san()) <= 5):
             raise RuntimeError(InvalidLength(self.__san.index(), self.__san.sans()).value())
 
         return self.__san
@@ -44,7 +44,7 @@ class FromSquareValidSAN:
         self.__san = san
 
     def value(self) -> MicroSAN:
-        if self.__san.value()[:2] not in VALID_SQUARES:
+        if self.__san.san()[:2] not in VALID_SQUARES:
             raise RuntimeError(InvalidFromSquare(self.__san.index(), self.__san.sans()).value())
 
         return self.__san
@@ -59,7 +59,7 @@ class ToSquareValidSAN:
         self.__san = san
 
     def value(self) -> MicroSAN:
-        if self.__san.value()[2:4] not in VALID_SQUARES:
+        if self.__san.san()[2:4] not in VALID_SQUARES:
             raise RuntimeError(InvalidToSquare(self.__san.index(), self.__san.sans()).value())
 
         return self.__san
@@ -74,7 +74,7 @@ class PromotionValidSAN:
         self.__san = san
 
     def value(self) -> MicroSAN:
-        if len(self.__san.value()) == 5 and self.__san.value()[4] not in PROMOTIONABLE_PIECES:
+        if len(self.__san.san()) == 5 and self.__san.san()[4] not in PROMOTIONABLE_PIECES:
             raise RuntimeError(InvalidPromotion(self.__san.index(), self.__san.sans()).value())
 
         return self.__san
@@ -91,7 +91,7 @@ class ValidMicroSAN:
     def value(self) -> MicroSAN:
         return (
             self.__san
-            if self.__san.value() == MICRO_CASTLING_SAN
+            if self.__san.san() == MICRO_CASTLING_SAN
             else (
                 Mappable(LengthValidSAN(self.__san).value())
                 .mapped(lambda x: FromSquareValidSAN(x).value())

@@ -22,7 +22,7 @@ class LegalSAN:
 
     def value(self) -> Optional[SAN]:
         try:
-            return ValidMicroSAN(MicroSAN(0, [self.__san])).value().value()
+            return ValidMicroSAN(MicroSAN(0, [self.__san])).value().san()
         except RuntimeError:
             return None
 

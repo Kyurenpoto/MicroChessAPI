@@ -19,7 +19,7 @@ class MicroSAN:
         self.__sans = sans
         self.__san = SAN("")
 
-    def value(self) -> SAN:
+    def san(self) -> SAN:
         if self.__san == SAN(""):
             self.__san = SAN(self.__sans[self.__index])
 

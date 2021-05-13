@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from domain.error.worktargeterror import (
     CannotCastle,
@@ -13,7 +13,6 @@ from domain.error.worktargeterror import (
     OppositeFromSquare,
 )
 from domain.implementation.microboard import CreatedMicroBoard
-from domain.implementation.micromove import CreatedMicroMove
 
 from .basictype import FEN, SAN
 from .boardstring import BoardString
@@ -23,7 +22,7 @@ from .microfen import MirroredMicroFEN
 from .microsan import MicroSAN
 from .piece import Piece, PieceAt
 from .square import FromSquare, ToSquare
-from .validmicrosan import MICRO_CASTLING_SAN
+from .validmicrosan import MICRO_CASTLING_SAN, ValidMicroSAN
 
 
 class WorkTarget:
@@ -33,14 +32,14 @@ class WorkTarget:
     __fens: List[str]
     __sans: List[str]
     __fen: FEN
-    __san: SAN
+    __san: Optional[MicroSAN]
 
     def __init__(self, index: int, fens: List[str], sans: List[str]):
         self.__index = index
         self.__fens = fens
         self.__sans = sans
         self.__fen = FEN("")
-        self.__san = SAN("")
+        self.__san = None
 
     def value(self) -> Tuple[int, List[str], List[str]]:
         return self.__index, self.__fens, self.__sans
@@ -51,11 +50,14 @@ class WorkTarget:
 
         return self.__fen
 
-    def san(self) -> SAN:
-        if self.__san == SAN(""):
-            self.__san = CreatedMicroMove(MicroSAN(self.__index, self.__sans)).value().san()
+    def microsan(self) -> MicroSAN:
+        if self.__san is None:
+            self.__san = ValidMicroSAN(MicroSAN(self.__index, self.__sans)).value()
 
         return self.__san
+
+    def san(self) -> SAN:
+        return self.microsan().san()
 
 
 class CastlableWorkTarget:

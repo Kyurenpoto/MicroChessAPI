@@ -15,11 +15,11 @@ from domain.implementation.validmicrosan import MICRO_CASTLING_SAN, MICRO_FIRST_
 
 
 def test_normal() -> None:
-    ValidMicroSAN(MicroSAN(0, [MICRO_FIRST_MOVE_SAN])).value().value() == MICRO_FIRST_MOVE_SAN
+    ValidMicroSAN(MicroSAN(0, [MICRO_FIRST_MOVE_SAN])).value().san() == MICRO_FIRST_MOVE_SAN
 
 
 def test_castling() -> None:
-    ValidMicroSAN(MicroSAN(0, [MICRO_CASTLING_SAN])).value().value() == MICRO_CASTLING_SAN
+    ValidMicroSAN(MicroSAN(0, [MICRO_CASTLING_SAN])).value().san() == MICRO_CASTLING_SAN
 
 
 @pytest.mark.parametrize(
