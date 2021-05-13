@@ -12,13 +12,13 @@ from domain.error.worktargeterror import (
     InvalidPieceMove,
     OppositeFromSquare,
 )
-from domain.implementation.microboard import CreatedMicroBoard
+from domain.implementation.validmicrofen import ValidMicroFEN
 
 from .basictype import FEN, SAN
 from .boardstring import BoardString
 from .legalsan import LegalSANs
 from .mappable import Mappable
-from .microfen import MirroredMicroFEN
+from .microfen import MicroFEN, MirroredMicroFEN
 from .microsan import MicroSAN
 from .piece import Piece, PieceAt
 from .square import FromSquare, ToSquare
@@ -31,22 +31,22 @@ class WorkTarget:
     __index: int
     __fens: List[str]
     __sans: List[str]
-    __fen: FEN
+    __fen: Optional[MicroFEN]
     __san: Optional[MicroSAN]
 
     def __init__(self, index: int, fens: List[str], sans: List[str]):
         self.__index = index
         self.__fens = fens
         self.__sans = sans
-        self.__fen = FEN("")
+        self.__fen = None
         self.__san = None
 
     def value(self) -> Tuple[int, List[str], List[str]]:
         return self.__index, self.__fens, self.__sans
 
-    def fen(self) -> FEN:
-        if self.__fen == FEN(""):
-            self.__fen = CreatedMicroBoard(FEN(self.__fens[self.__index])).value().fen()
+    def microfen(self) -> MicroFEN:
+        if self.__fen is None:
+            self.__fen = ValidMicroFEN(MicroFEN(self.__index, self.__fens)).value()
 
         return self.__fen
 
@@ -55,6 +55,9 @@ class WorkTarget:
             self.__san = ValidMicroSAN(MicroSAN(self.__index, self.__sans)).value()
 
         return self.__san
+
+    def fen(self) -> FEN:
+        return self.microfen().fen()
 
     def san(self) -> SAN:
         return self.microsan().san()
@@ -91,7 +94,7 @@ class FromSquarePieceValidWorkTarget:
         self.__target = target
 
     def value(self) -> WorkTarget:
-        piece: Piece = PieceAt(BoardString(self.__target.fen()), FromSquare(self.__target.san())).value()
+        piece: Piece = PieceAt(BoardString(self.__target.microfen()), FromSquare(self.__target.san())).value()
         if piece.symbol() == ".":
             raise RuntimeError(EmptyFromSquare(*(self.__target.value())).value())
         if piece.color() != self.__target.fen().split(" ")[1]:
@@ -109,7 +112,7 @@ class ToSquarePieceValidWorkTarget:
         self.__target = target
 
     def value(self) -> WorkTarget:
-        piece: Piece = PieceAt(BoardString(self.__target.fen()), ToSquare(self.__target.san())).value()
+        piece: Piece = PieceAt(BoardString(self.__target.microfen()), ToSquare(self.__target.san())).value()
         if piece.symbol() != "." and piece.color() == self.__target.fen().split(" ")[1]:
             raise RuntimeError(FullToSquare(*(self.__target.value())).value())
 

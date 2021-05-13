@@ -6,6 +6,7 @@ from typing import Dict, Final
 
 from .basictype import FEN
 from .mappable import Mappable
+from .microfen import MicroFEN
 
 REPLACE_FOR_EXPAND: Dict[str, str] = {
     "1": ".",
@@ -35,23 +36,23 @@ REPLACE_FOR_EXPAND: Dict[str, str] = {
 class BoardString:
     __slots__ = ["__fen", "__board"]
 
-    __fen: FEN
+    __fen: MicroFEN
     __board: str
 
-    def __init__(self, fen: FEN):
+    def __init__(self, fen: MicroFEN):
         self.__fen = fen
         self.__board = ""
 
     def value(self) -> str:
         if self.__board == "":
             try:
-                self.__board = "".join(map(lambda x: REPLACE_FOR_EXPAND[x], self.__fen.split(" ")[0]))
+                self.__board = "".join(map(lambda x: REPLACE_FOR_EXPAND[x], self.__fen.fen().split(" ")[0]))
             except KeyError as ex:
                 raise RuntimeError("Invalid symbol in board part") from ex
 
         return self.__board
 
-    def fen(self) -> FEN:
+    def fen(self) -> MicroFEN:
         return self.__fen
 
 

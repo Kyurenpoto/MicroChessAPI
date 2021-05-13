@@ -5,69 +5,32 @@
 from typing import Dict, List
 
 from .basictype import FEN
-from .boardstring import BoardString, ValidMicroBoardString
-from .mappable import Mappable
 from .mirroredboardpart import MirroredBoardPart
 
 
-class ValidBoardPartMicroFEN:
-    __slots__ = ["__fen"]
+class MicroFEN:
+    __slots__ = ["__index", "__fens", "__fen"]
 
+    __index: int
+    __fens: List[str]
     __fen: FEN
 
-    def __init__(self, fen: FEN):
-        self.__fen = fen
+    def __init__(self, index: int, fens: List[str]):
+        self.__index = index
+        self.__fens = fens
+        self.__fen = FEN("")
 
-    def value(self) -> FEN:
-        return ValidMicroBoardString(BoardString(self.__fen)).value().fen()
-
-
-class ValidCastlingPartMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
-
-    def value(self) -> FEN:
-        castling: str = self.__fen.split(" ")[2]
-        if "Q" in castling or "q" in castling:
-            raise RuntimeError("Invalid castling part")
+    def fen(self) -> FEN:
+        if self.__fen == FEN(""):
+            self.__fen = FEN(self.__fens[self.__index])
 
         return self.__fen
 
+    def index(self) -> int:
+        return self.__index
 
-class ValidEnpassantPartMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
-
-    def value(self) -> FEN:
-        if self.__fen.split(" ")[3] != "-":
-            raise RuntimeError("Invalid enpassant part")
-
-        return self.__fen
-
-
-class ValidMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
-
-    def value(self) -> FEN:
-        return (
-            Mappable(ValidBoardPartMicroFEN(self.__fen).value())
-            .mapped(lambda x: ValidCastlingPartMicroFEN(x).value())
-            .mapped(lambda x: ValidEnpassantPartMicroFEN(x).value())
-            .value()
-        )
+    def fens(self) -> List[str]:
+        return self.__fens
 
 
 MIRRORED_CASTLING_PART: Dict[str, str] = {"Kk": "Kk", "K": "k", "k": "K", "-": "-"}
