@@ -5,7 +5,7 @@
 
 from typing import List, Optional, Tuple
 
-from domain.error.worktargeterror import (
+from domain.error.movetargeterror import (
     CannotCastle,
     EmptyFromSquare,
     FullToSquare,
@@ -25,7 +25,7 @@ from .square import FromSquare, ToSquare
 from .validmicrosan import MICRO_CASTLING_SAN, ValidMicroSAN
 
 
-class WorkTarget:
+class MoveTarget:
     __slots__ = ["__index", "__fens", "__sans", "__fen", "__san"]
 
     __index: int
@@ -63,15 +63,15 @@ class WorkTarget:
         return self.microsan().san()
 
 
-class CastlableWorkTarget:
+class CastlableMoveTarget:
     __slots__ = ["__target"]
 
-    __target: WorkTarget
+    __target: MoveTarget
 
-    def __init__(self, target: WorkTarget):
+    def __init__(self, target: MoveTarget):
         self.__target = target
 
-    def value(self) -> WorkTarget:
+    def value(self) -> MoveTarget:
         if (
             MICRO_CASTLING_SAN
             not in LegalSANs(
@@ -85,15 +85,15 @@ class CastlableWorkTarget:
         return self.__target
 
 
-class FromSquarePieceValidWorkTarget:
+class FromSquarePieceValidMoveTarget:
     __slots__ = ["__target"]
 
-    __target: WorkTarget
+    __target: MoveTarget
 
-    def __init__(self, target: WorkTarget):
+    def __init__(self, target: MoveTarget):
         self.__target = target
 
-    def value(self) -> WorkTarget:
+    def value(self) -> MoveTarget:
         piece: Piece = PieceAt(BoardString(self.__target.microfen()), FromSquare(self.__target.san())).value()
         if piece.symbol() == ".":
             raise RuntimeError(EmptyFromSquare(*(self.__target.value())).value())
@@ -103,15 +103,15 @@ class FromSquarePieceValidWorkTarget:
         return self.__target
 
 
-class ToSquarePieceValidWorkTarget:
+class ToSquarePieceValidMoveTarget:
     __slots__ = ["__target"]
 
-    __target: WorkTarget
+    __target: MoveTarget
 
-    def __init__(self, target: WorkTarget):
+    def __init__(self, target: MoveTarget):
         self.__target = target
 
-    def value(self) -> WorkTarget:
+    def value(self) -> MoveTarget:
         piece: Piece = PieceAt(BoardString(self.__target.microfen()), ToSquare(self.__target.san())).value()
         if piece.symbol() != "." and piece.color() == self.__target.fen().split(" ")[1]:
             raise RuntimeError(FullToSquare(*(self.__target.value())).value())
@@ -119,37 +119,37 @@ class ToSquarePieceValidWorkTarget:
         return self.__target
 
 
-class LegalMoveWorkTarget:
+class LegalMoveMoveTarget:
     __slots__ = ["__target"]
 
-    __target: WorkTarget
+    __target: MoveTarget
 
-    def __init__(self, target: WorkTarget):
+    def __init__(self, target: MoveTarget):
         self.__target = target
 
-    def value(self) -> WorkTarget:
+    def value(self) -> MoveTarget:
         if self.__target.san() not in LegalSANs(self.__target.fen()).value():
             raise RuntimeError(InvalidPieceMove(*(self.__target.value())).value())
 
         return self.__target
 
 
-class ValidWorkTarget:
+class ValidMoveTarget:
     __slots__ = ["__target"]
 
-    __target: WorkTarget
+    __target: MoveTarget
 
-    def __init__(self, target: WorkTarget):
+    def __init__(self, target: MoveTarget):
         self.__target = target
 
-    def value(self) -> WorkTarget:
+    def value(self) -> MoveTarget:
         return (
-            CastlableWorkTarget(self.__target).value()
+            CastlableMoveTarget(self.__target).value()
             if self.__target.san() == MICRO_CASTLING_SAN
             else (
-                Mappable(FromSquarePieceValidWorkTarget(self.__target).value())
-                .mapped(lambda x: ToSquarePieceValidWorkTarget(x).value())
-                .mapped(lambda x: LegalMoveWorkTarget(x).value())
+                Mappable(FromSquarePieceValidMoveTarget(self.__target).value())
+                .mapped(lambda x: ToSquarePieceValidMoveTarget(x).value())
+                .mapped(lambda x: LegalMoveMoveTarget(x).value())
                 .value()
             )
         )

@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, Final, List, Union
+from typing import Final, List
 
 from domain.dto.modeldto import ModelErrorResponse
 from domain.implementation.indexmessage import IndexMessage
@@ -16,11 +16,11 @@ MSG_FULL_TO_SQUARE: Final[str] = "The to-square of SAN must be empty or place an
 MSG_INVALID_PIECE_MOVE: Final[
     str
 ] = "An piece located on the from-square of SAN cannot be moved to the to-square of SAN"
-ERROR_TYPE_CANNOT_CASTLE: Final[str] = "worktarget.CannotCastleError"
-ERROR_TYPE_EMPTY_FROM_SQUARE: Final[str] = "worktarget.EmptyFromSquareError"
-ERROR_TYPE_OPPOSITE_FROM_SQUARE: Final[str] = "worktarget.OppositeFromSquareError"
-ERROR_TYPE_FULL_TO_SQUARE: Final[str] = "worktarget.FullToSquareError"
-ERROR_TYPE_INVALID_PIECE_MOVE: Final[str] = "worktarget.InvalidPieceMoveError"
+ERROR_TYPE_CANNOT_CASTLE: Final[str] = "movetarget.CannotCastleError"
+ERROR_TYPE_EMPTY_FROM_SQUARE: Final[str] = "movetarget.EmptyFromSquareError"
+ERROR_TYPE_OPPOSITE_FROM_SQUARE: Final[str] = "movetarget.OppositeFromSquareError"
+ERROR_TYPE_FULL_TO_SQUARE: Final[str] = "movetarget.FullToSquareError"
+ERROR_TYPE_INVALID_PIECE_MOVE: Final[str] = "movetarget.InvalidPieceMoveError"
 
 
 class CannotCastle:
