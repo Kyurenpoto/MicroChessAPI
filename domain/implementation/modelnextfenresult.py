@@ -2,11 +2,8 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import List, Tuple
+from typing import List
 
-from .basictype import FEN
-from .fenstatus import FENStatus
-from .legalsan import LegalSANs
 from .workresult import CreatedWorkResult
 
 
@@ -24,35 +21,6 @@ class MovedBoards:
         return [CreatedWorkResult(index, self.__fens, self.__sans).value() for index in range(len(self.__fens))]
 
 
-class LegalMoves:
-    __slots__ = ["__moved_boards"]
-
-    __moved_boards: List[str]
-
-    def __init__(self, moved_boards: List[str]):
-        self.__moved_boards = moved_boards
-
-    def value(self) -> List[List[str]]:
-        return [[str(san) for san in LegalSANs(FEN(fen)).value()] for fen in self.__moved_boards]
-
-
-class Statuses:
-    __slots__ = ["__moved_boards", "__legal_moves"]
-
-    __moved_boards: List[str]
-    __legal_moves: List[List[str]]
-
-    def __init__(self, moved_boards: List[str], legal_moves: List[List[str]]):
-        self.__moved_boards = moved_boards
-        self.__legal_moves = legal_moves
-
-    def value(self) -> List[int]:
-        return [
-            int(FENStatus(FEN(fen), len(moves)).value().value)
-            for fen, moves in zip(self.__moved_boards, self.__legal_moves)
-        ]
-
-
 class ModelNextFENResult:
     __slots__ = ["__fens", "__sans"]
 
@@ -63,9 +31,5 @@ class ModelNextFENResult:
         self.__fens = fens
         self.__sans = sans
 
-    def value(self) -> Tuple[List[str], List[List[str]], List[int]]:
-        moved_boards: List[str] = MovedBoards(self.__fens, self.__sans).value()
-        legal_moves: List[List[str]] = LegalMoves(moved_boards).value()
-        statuses: List[int] = Statuses(moved_boards, legal_moves).value()
-
-        return moved_boards, legal_moves, statuses
+    def value(self) -> List[str]:
+        return MovedBoards(self.__fens, self.__sans).value()

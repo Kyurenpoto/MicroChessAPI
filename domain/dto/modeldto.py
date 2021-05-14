@@ -13,7 +13,14 @@ class ModelNextFENRequest(BaseModel):
 
 
 class ModelNextFENResponse(BaseModel):
+    next_fens: List[str]
+
+
+class ModelFENStatusRequest(BaseModel):
     fens: List[str]
+
+
+class ModelFENStatusResponse(BaseModel):
     statuses: List[int]
     legal_moves: List[List[str]]
 

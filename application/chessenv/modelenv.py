@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from domain.dto.modeldto import ModelNextFENRequest, ModelNextFENResponse
+from domain.dto.modeldto import ModelFENStatusRequest, ModelFENStatusResponse, ModelNextFENRequest, ModelNextFENResponse
 from domain.model import ChessModel, ChessModelBase
 
 
@@ -16,3 +16,6 @@ class ChessEnvironment:
 
     async def next_fen(self, request: ModelNextFENRequest) -> ModelNextFENResponse:
         return self.__model.next_fen(request)
+
+    async def fen_status(self, request: ModelFENStatusRequest) -> ModelFENStatusResponse:
+        return self.__model.fen_status(request)

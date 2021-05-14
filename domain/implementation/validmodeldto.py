@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from domain.dto.modeldto import ModelNextFENRequest
+from domain.dto.modeldto import ModelFENStatusRequest, ModelNextFENRequest
 from domain.error.dtoerror import EmptyFENs, EmptySANs, NotMatchedNumberFENsSANs
 from domain.implementation.mappable import Mappable
 
@@ -67,3 +67,30 @@ class ValidModelNextFENRequest:
             .mapped(lambda x: FENsSANsNumberMatchtedModelNextFENRequest(x).value())
             .value()
         )
+
+
+class NotEmptyFENsModelFENStatusRequest:
+    __slots__ = ["__request"]
+
+    __request: ModelFENStatusRequest
+
+    def __init__(self, request: ModelFENStatusRequest):
+        self.__request = request
+
+    def value(self) -> ModelFENStatusRequest:
+        if len(self.__request.fens) == 0:
+            raise RuntimeError(EmptyFENs(self.__request.fens).value())
+
+        return self.__request
+
+
+class ValidModelFENStatusRequest:
+    __slots__ = ["__request"]
+
+    __request: ModelFENStatusRequest
+
+    def __init__(self, request: ModelFENStatusRequest):
+        self.__request = request
+
+    def value(self) -> ModelFENStatusRequest:
+        return NotEmptyFENsModelFENStatusRequest(self.__request).value()

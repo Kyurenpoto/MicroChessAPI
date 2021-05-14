@@ -4,21 +4,21 @@
 
 from domain.implementation.legalsan import (
     MICRO_BLACK_CASTLABLE_LEGAL_MOVES,
-    MICRO_FIRST_LEGAL_MOVES,
+    MICRO_INITIAL_LEGAL_MOVES,
     MICRO_WHITE_CASTLABLE_LEGAL_MOVES,
     LegalSANs,
 )
 from domain.implementation.movedfen import (
     MICRO_BLACK_CASTLABLE_FEN,
     MICRO_CHECKMATE_FEN,
-    MICRO_FIRST_MOVE_FEN,
     MICRO_STALEMATE_FEN,
+    MICRO_STARTING_FEN,
     MICRO_WHITE_CASTLABLE_FEN,
 )
 
 
 def test_normal() -> None:
-    assert LegalSANs(MICRO_FIRST_MOVE_FEN).value() == MICRO_FIRST_LEGAL_MOVES
+    assert LegalSANs(MICRO_STARTING_FEN).value() == MICRO_INITIAL_LEGAL_MOVES
 
 
 def test_checkmate() -> None:

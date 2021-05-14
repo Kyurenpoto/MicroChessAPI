@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from application.chessenv.modelenv import ChessEnvironment
-from domain.dto.modeldto import ModelNextFENRequest
-from domain.implementation.validmodeldto import ValidModelNextFENRequest
+from domain.dto.modeldto import ModelFENStatusRequest, ModelNextFENRequest
+from domain.implementation.validmodeldto import ValidModelFENStatusRequest, ValidModelNextFENRequest
 from fastapi import APIRouter, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
@@ -14,8 +14,11 @@ env: ChessEnvironment = ChessEnvironment()
 
 
 @router.post("/fen-status", status_code=status.HTTP_200_OK)
-async def fen_status(request: ModelNextFENRequest) -> JSONResponse:
-    return None
+async def fen_status(request: ModelFENStatusRequest) -> JSONResponse:
+    try:
+        return JSONResponse(content=jsonable_encoder(await env.fen_status(ValidModelFENStatusRequest(request).value())))
+    except RuntimeError as ex:
+        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=jsonable_encoder(ex.args[0]))
 
 
 @router.post("/next-fen", status_code=status.HTTP_200_OK)

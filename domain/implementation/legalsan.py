@@ -28,17 +28,18 @@ class LegalSAN:
 
 
 MICRO_MAX_LEGAL_MOVES: Final[int] = 34
-MICRO_FIRST_LEGAL_MOVES: Final[List[SAN]] = [
-    SAN("e7e6"),
-    SAN("e8f7"),
-    SAN("f8e6"),
-    SAN("f8g6"),
-    SAN("f8h7"),
-    SAN("g8e6"),
-    SAN("g8f7"),
-    SAN("g8h7"),
-    SAN("h8h6"),
-    SAN("h8h7"),
+MICRO_INITIAL_LEGAL_MOVES: Final[List[SAN]] = [
+    SAN("e4e5"),
+    SAN("e4e6"),
+    SAN("e4e7"),
+    SAN("f4e5"),
+    SAN("f4g5"),
+    SAN("f4h6"),
+    SAN("g4e5"),
+    SAN("g4f6"),
+    SAN("g4h6"),
+    SAN("h4g5"),
+    SAN("h5h6"),
 ]
 MICRO_BLACK_CASTLABLE_LEGAL_MOVES: Final[List[SAN]] = [
     SAN("O-O"),
