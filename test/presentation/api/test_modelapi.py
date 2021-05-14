@@ -14,9 +14,9 @@ from httpx import AsyncClient
 
 
 @pytest.mark.asyncio
-async def test_normal(async_client: AsyncClient) -> None:
+async def test_next_fen_normal(async_client: AsyncClient) -> None:
     response = await async_client.post(
-        url="/model/act",
+        url="/model/next-fen",
         json={"fens": [MICRO_STARTING_FEN], "sans": [MICRO_FIRST_MOVE_SAN]},
     )
 
@@ -29,16 +29,16 @@ async def test_normal(async_client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_empty_FENs(async_client: AsyncClient) -> None:
-    response = await async_client.post(url="/model/act", json={"fens": [], "sans": [MICRO_FIRST_MOVE_SAN]})
+async def test_next_fen_empty_FENs(async_client: AsyncClient) -> None:
+    response = await async_client.post(url="/model/next-fen", json={"fens": [], "sans": [MICRO_FIRST_MOVE_SAN]})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert response.json()["error"] == ERROR_TYPE_EMPTY_FENS
 
 
 @pytest.mark.asyncio
-async def test_empty_SANs(async_client: AsyncClient) -> None:
-    response = await async_client.post(url="/model/act", json={"fens": [MICRO_STARTING_FEN], "sans": []})
+async def test_next_fen_empty_SANs(async_client: AsyncClient) -> None:
+    response = await async_client.post(url="/model/next-fen", json={"fens": [MICRO_STARTING_FEN], "sans": []})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert response.json()["error"] == ERROR_TYPE_EMPTY_SANS
@@ -52,8 +52,8 @@ async def test_empty_SANs(async_client: AsyncClient) -> None:
         ({"fens": [MICRO_STARTING_FEN], "sans": [MICRO_FIRST_MOVE_SAN, MICRO_FIRST_MOVE_SAN]}),
     ],
 )
-async def test_not_matched_number_FENs_SANs(async_client: AsyncClient, json: Dict[str, List[str]]) -> None:
-    response = await async_client.post(url="/model/act", json=json)
+async def test_next_fen_not_matched_number_FENs_SANs(async_client: AsyncClient, json: Dict[str, List[str]]) -> None:
+    response = await async_client.post(url="/model/next-fen", json=json)
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     print(response.json())

@@ -53,7 +53,7 @@ class Statuses:
         ]
 
 
-class ModelActResult:
+class ModelNextFENResult:
     __slots__ = ["__fens", "__sans"]
 
     __fens: List[str]

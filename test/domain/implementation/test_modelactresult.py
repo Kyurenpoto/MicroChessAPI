@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
+from domain.implementation.modelnextfenresult import MovedBoards
 from domain.implementation.movedfen import (
     MICRO_BLACK_CASTLABLE_FEN,
     MICRO_BLACK_CASTLED_FEN,
@@ -10,7 +11,6 @@ from domain.implementation.movedfen import (
     MICRO_WHITE_CASTLABLE_FEN,
     MICRO_WHITE_CASTLED_FEN,
 )
-from domain.implementation.modelactresult import MovedBoards
 from domain.implementation.validmicrosan import MICRO_CASTLING_SAN, MICRO_FIRST_MOVE_SAN
 
 

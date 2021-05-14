@@ -7,12 +7,12 @@ from typing import List, Union
 from pydantic import BaseModel
 
 
-class ModelRequest(BaseModel):
+class ModelNextFENRequest(BaseModel):
     fens: List[str]
     sans: List[str]
 
 
-class ModelResponse(BaseModel):
+class ModelNextFENResponse(BaseModel):
     fens: List[str]
     statuses: List[int]
     legal_moves: List[List[str]]
