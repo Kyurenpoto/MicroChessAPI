@@ -20,7 +20,7 @@ This project uses pipenv. Note the following: [Version](Pipfile), [Modules](Pipf
     pipenv install
     ```
 
-### Run api server
+### Run API Server
 
 3. Activate virtual environment
 
@@ -34,7 +34,7 @@ This project uses pipenv. Note the following: [Version](Pipfile), [Modules](Pipf
     python main.py --port [PORT(default: 8000)]
     ```
 
-### Run tests
+### Run Tests
 
 3. Install dependencies for dev mode
 
@@ -53,3 +53,7 @@ This project uses pipenv. Note the following: [Version](Pipfile), [Modules](Pipf
     ```
     pytest test
     ```
+
+## API Docs
+
+After run API server, navigate to the following url in your browser: http://localhost:8000/docs
