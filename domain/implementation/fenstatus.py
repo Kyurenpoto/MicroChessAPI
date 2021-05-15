@@ -6,7 +6,6 @@ from typing import Dict, Final, Optional
 
 from domain.implementation.microfen import MicroFEN
 from infra.rawcheckedfen import RawCheckedFEN
-from infra.rawfenoutcome import RawFENOutcome
 
 from .basictype import FEN
 from .boardstring import BoardString
@@ -98,11 +97,6 @@ class FENStatus:
     def value(self) -> MicroBoardStatus:
         if SufficientMeterialFEN(self.__fen).value() is None:
             return MicroBoardStatus.INSUFFICIENT_MATERIAL
-
-        outcome: MicroBoardStatus = RawFENOutcome(self.__fen).value()
-        if self.__cnt_legal_moves != 0 and outcome is not MicroBoardStatus.NONE:
-            return outcome
-
         if InnerFiftyMovesFEN(self.__fen).value() is None:
             return MicroBoardStatus.FIFTY_MOVES
         if self.__cnt_legal_moves == 0:
