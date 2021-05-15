@@ -8,7 +8,7 @@ from domain.dto.modeldto import ModelFENStatusRequest, ModelFENStatusResponse, M
 from domain.implementation.legalsan import MICRO_INITIAL_LEGAL_MOVES
 from domain.implementation.modelfenstatusresult import ModelFENStatusResult
 from domain.implementation.modelnextfenresult import ModelNextFENResult
-from domain.implementation.movedfen import MICRO_FIRST_MOVE_FEN
+from domain.implementation.validmicrofen import MICRO_FIRST_MOVE_FEN
 
 
 class ChessModelBase(metaclass=ABCMeta):

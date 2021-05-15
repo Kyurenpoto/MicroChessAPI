@@ -10,8 +10,8 @@ from domain.error.movetargeterror import (
     ERROR_TYPE_INVALID_PIECE_MOVE,
     ERROR_TYPE_OPPOSITE_FROM_SQUARE,
 )
-from domain.implementation.movedfen import MICRO_ONLY_KING_FEN, MICRO_STARTING_FEN, MICRO_SWAP_KING_BISHOP_FEN
 from domain.implementation.movetarget import MoveTarget, ValidMoveTarget
+from domain.implementation.validmicrofen import MICRO_ONLY_KING_FEN, MICRO_STARTING_FEN, MICRO_SWAP_KING_BISHOP_FEN
 from domain.implementation.validmicrosan import (
     MICRO_CASTLING_SAN,
     MICRO_FIRST_MOVE_SAN,

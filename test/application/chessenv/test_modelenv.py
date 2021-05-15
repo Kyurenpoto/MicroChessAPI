@@ -6,7 +6,7 @@ import pytest
 from application.chessenv.modelenv import ChessEnvironment
 from domain.dto.modeldto import ModelFENStatusRequest, ModelFENStatusResponse, ModelNextFENRequest, ModelNextFENResponse
 from domain.implementation.legalsan import MICRO_INITIAL_LEGAL_MOVES
-from domain.implementation.movedfen import MICRO_FIRST_MOVE_FEN, MICRO_STARTING_FEN
+from domain.implementation.validmicrofen import MICRO_FIRST_MOVE_FEN, MICRO_STARTING_FEN
 from domain.implementation.validmicrosan import MICRO_FIRST_MOVE_SAN
 from domain.model import Fake
 

@@ -13,8 +13,12 @@ from domain.error.microfenerror import (
 )
 from domain.implementation.basictype import FEN
 from domain.implementation.microfen import MicroFEN, MirroredMicroFEN
-from domain.implementation.movedfen import MICRO_BLACK_CASTLABLE_FEN, MICRO_STARTING_FEN, MICRO_WHITE_CASTLABLE_FEN
-from domain.implementation.validmicrofen import ValidMicroFEN
+from domain.implementation.validmicrofen import (
+    MICRO_BLACK_CASTLABLE_FEN,
+    MICRO_STARTING_FEN,
+    MICRO_WHITE_CASTLABLE_FEN,
+    ValidMicroFEN,
+)
 
 
 def test_castlable() -> None:

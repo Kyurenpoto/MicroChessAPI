@@ -7,7 +7,7 @@ from domain.implementation.basictype import FEN
 from domain.implementation.fenstatus import FENStatus
 from domain.implementation.legalsan import MICRO_INITIAL_LEGAL_MOVES
 from domain.implementation.microboardstatus import MicroBoardStatus
-from domain.implementation.movedfen import MICRO_CHECKMATE_FEN, MICRO_STALEMATE_FEN, MICRO_STARTING_FEN
+from domain.implementation.validmicrofen import MICRO_CHECKMATE_FEN, MICRO_STALEMATE_FEN, MICRO_STARTING_FEN
 
 
 def test_none() -> None:

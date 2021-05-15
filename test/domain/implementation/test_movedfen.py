@@ -2,14 +2,14 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from domain.implementation.movedfen import (
+from domain.implementation.movedfen import MovedFEN
+from domain.implementation.validmicrofen import (
     MICRO_BLACK_CASTLABLE_FEN,
     MICRO_BLACK_CASTLED_FEN,
     MICRO_FIRST_MOVE_FEN,
     MICRO_STARTING_FEN,
     MICRO_WHITE_CASTLABLE_FEN,
     MICRO_WHITE_CASTLED_FEN,
-    MovedFEN,
 )
 from domain.implementation.validmicrosan import MICRO_CASTLING_SAN, MICRO_FIRST_MOVE_SAN
 

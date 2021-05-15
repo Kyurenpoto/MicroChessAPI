@@ -13,8 +13,12 @@ from domain.error.boardstringerror import (
 from domain.implementation.basictype import FEN
 from domain.implementation.boardstring import BoardString, ValidMicroBoardString
 from domain.implementation.microfen import MicroFEN
-from domain.implementation.movedfen import MICRO_BLACK_CASTLABLE_FEN, MICRO_STARTING_FEN, MICRO_WHITE_CASTLABLE_FEN
-from domain.implementation.validmicrofen import ValidMicroFEN
+from domain.implementation.validmicrofen import (
+    MICRO_BLACK_CASTLABLE_FEN,
+    MICRO_STARTING_FEN,
+    MICRO_WHITE_CASTLABLE_FEN,
+    ValidMicroFEN,
+)
 
 
 def test_normal() -> None:
