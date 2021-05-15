@@ -7,7 +7,7 @@ from typing import Optional
 import chess
 
 
-class RawCheckedBoard:
+class RawCheckedFEN:
     __slots__ = ["__fen"]
 
     __fen: str

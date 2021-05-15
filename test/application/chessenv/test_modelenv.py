@@ -17,7 +17,7 @@ async def test_fen_status() -> None:
     request: ModelFENStatusRequest = ModelFENStatusRequest(fens=[MICRO_STARTING_FEN])
     response: ModelFENStatusResponse = await env.fen_status(request)
 
-    assert response == ModelFENStatusResponse(statuses=[0], legal_moves=[MICRO_INITIAL_LEGAL_MOVES])
+    assert response == ModelFENStatusResponse(statuses=[1], legal_moves=[MICRO_INITIAL_LEGAL_MOVES])
 
 
 @pytest.mark.asyncio

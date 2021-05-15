@@ -2,10 +2,12 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from enum import Enum
+from enum import Enum, auto
 
 
 class MicroBoardStatus(Enum):
-    NONE = 0
-    CHECKMATE = 1
-    STALEMATE = 2
+    NONE = auto()
+    CHECKMATE = auto()
+    STALEMATE = auto()
+    INSUFFICIENT_MATERIAL = auto()
+    FIFTY_MOVES = auto()

@@ -27,7 +27,7 @@ class Fake(ChessModelBase):
 
     def fen_status(self, request: ModelFENStatusRequest) -> ModelFENStatusResponse:
         return ModelFENStatusResponse(
-            statuses=[0],
+            statuses=[1],
             legal_moves=[MICRO_INITIAL_LEGAL_MOVES],
         )
 

@@ -95,7 +95,6 @@ def test_invalid_enpassant_part(fen: FEN) -> None:
         (FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk -  1")),
         (FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - x 1")),
         (FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - -1 1")),
-        (FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 50 1")),
         (FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 51 1")),
     ],
 )

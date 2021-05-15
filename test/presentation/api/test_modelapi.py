@@ -22,7 +22,7 @@ async def test_fen_status_normal(async_client: AsyncClient) -> None:
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
-        "statuses": [0],
+        "statuses": [1],
         "legal_moves": [MICRO_INITIAL_LEGAL_MOVES],
     }
 

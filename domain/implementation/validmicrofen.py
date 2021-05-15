@@ -106,7 +106,7 @@ class ValidHalfmovePartMicroFEN:
 
     def value(self) -> MicroFEN:
         halfmove: str = self.__fen.fen().split(" ")[4]
-        if not (halfmove.isdigit() and 0 <= int(halfmove) < 50):
+        if not (halfmove.isdigit() and 0 <= int(halfmove) <= 50):
             raise RuntimeError(InvalidHalfmovePart(self.__fen.index(), self.__fen.fens()).value())
 
         return self.__fen
