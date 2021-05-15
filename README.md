@@ -14,10 +14,31 @@ This project uses pipenv. Note the following: [Version](Pipfile), [Modules](Pipf
     pip install pipenv
     ```
 
-2. Install all other dependencies
+1. Install all other dependencies
 
     ```
     pipenv install
+    ```
+
+### Run api server
+
+3. Activate virtual environment
+
+    ```
+    pipenv shell
+    ```
+
+3. Run API Server
+
+    ```
+    python main.py --port [PORT(default: 8000)]
+    ```
+
+### Run tests
+
+3. Install dependencies for dev mode
+
+    ```
     pipenv install -dev
     ```
 
@@ -27,8 +48,8 @@ This project uses pipenv. Note the following: [Version](Pipfile), [Modules](Pipf
     pipenv shell
     ```
 
-4. Execute API Server
+3. Run tests
 
     ```
-    uvicorn main:app
+    pytest test
     ```
