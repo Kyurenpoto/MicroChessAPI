@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
-from application.chessenv.modelenv import ChessEnvironment
+from application.chessenv.modelenv import MicroChessEnvironment
 from domain.dto.modeldto import ModelFENStatusRequest, ModelFENStatusResponse, ModelNextFENRequest, ModelNextFENResponse
 from domain.implementation.legalsan import MICRO_INITIAL_LEGAL_MOVES
 from domain.implementation.validmicrofen import MICRO_FIRST_MOVE_FEN, MICRO_STARTING_FEN
@@ -13,7 +13,7 @@ from domain.model import Fake
 
 @pytest.mark.asyncio
 async def test_fen_status() -> None:
-    env: ChessEnvironment = ChessEnvironment(Fake())
+    env: MicroChessEnvironment = MicroChessEnvironment(Fake())
     request: ModelFENStatusRequest = ModelFENStatusRequest(fens=[MICRO_STARTING_FEN])
     response: ModelFENStatusResponse = await env.fen_status(request)
 
@@ -22,7 +22,7 @@ async def test_fen_status() -> None:
 
 @pytest.mark.asyncio
 async def test_next_fen() -> None:
-    env: ChessEnvironment = ChessEnvironment(Fake())
+    env: MicroChessEnvironment = MicroChessEnvironment(Fake())
     request: ModelNextFENRequest = ModelNextFENRequest(fens=[MICRO_STARTING_FEN], sans=[MICRO_FIRST_MOVE_SAN])
     response: ModelNextFENResponse = await env.next_fen(request)
 

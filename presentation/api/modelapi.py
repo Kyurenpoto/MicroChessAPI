@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from application.chessenv.modelenv import ChessEnvironment
+from application.chessenv.modelenv import MicroChessEnvironment
 from domain.dto.modeldto import ModelFENStatusRequest, ModelNextFENRequest
 from domain.implementation.validmodeldto import ValidModelFENStatusRequest, ValidModelNextFENRequest
 from fastapi import APIRouter, status
@@ -10,7 +10,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 router: APIRouter = APIRouter(prefix="/model")
-env: ChessEnvironment = ChessEnvironment()
+env: MicroChessEnvironment = MicroChessEnvironment()
 
 
 @router.post(

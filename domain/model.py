@@ -32,7 +32,7 @@ class Fake(ChessModelBase):
         )
 
 
-class ChessModel(ChessModelBase):
+class MicroChessModel(ChessModelBase):
     def next_fen(self, request: ModelNextFENRequest) -> ModelNextFENResponse:
         moved_fens = ModelNextFENResult(request.fens, request.sans).value()
 

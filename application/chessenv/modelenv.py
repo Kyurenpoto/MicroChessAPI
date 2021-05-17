@@ -3,15 +3,15 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from domain.dto.modeldto import ModelFENStatusRequest, ModelFENStatusResponse, ModelNextFENRequest, ModelNextFENResponse
-from domain.model import ChessModel, ChessModelBase
+from domain.model import ChessModelBase, MicroChessModel
 
 
-class ChessEnvironment:
+class MicroChessEnvironment:
     __slots__ = ["__model"]
 
     __model: ChessModelBase
 
-    def __init__(self, model: ChessModelBase = ChessModel()):
+    def __init__(self, model: ChessModelBase = MicroChessModel()):
         self.__model = model
 
     async def next_fen(self, request: ModelNextFENRequest) -> ModelNextFENResponse:
