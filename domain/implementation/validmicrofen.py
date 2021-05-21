@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, Set
+from typing import Final
 
 from domain.error.microfenerror import (
     InvalidCastlingPart,
@@ -57,7 +57,7 @@ class ValidBoardPartMicroFEN:
         return ValidMicroBoardString(BoardString(self.__fen)).value().fen()
 
 
-VALID_TURN_PART: Final[Set[str]] = set(["w", "b"])
+VALID_TURN_PART: Final[set[str]] = set(["w", "b"])
 
 
 class ValidTurnPartMicroFEN:
@@ -75,7 +75,7 @@ class ValidTurnPartMicroFEN:
         return self.__fen
 
 
-VALID_CASTLING_PART: Final[Set[str]] = set(["Kk", "K", "k", "-"])
+VALID_CASTLING_PART: Final[set[str]] = set(["Kk", "K", "k", "-"])
 
 
 class ValidCastlingPartMicroFEN:

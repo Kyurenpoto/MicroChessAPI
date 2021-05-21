@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, List
-
 from .basictype import FEN
 from .mirroredboardpart import MirroredBoardPart
 
@@ -12,10 +10,10 @@ class MicroFEN:
     __slots__ = ["__index", "__fens", "__fen"]
 
     __index: int
-    __fens: List[str]
+    __fens: list[str]
     __fen: FEN
 
-    def __init__(self, index: int, fens: List[str]):
+    def __init__(self, index: int, fens: list[str]):
         self.__index = index
         self.__fens = fens
         self.__fen = FEN("")
@@ -29,12 +27,12 @@ class MicroFEN:
     def index(self) -> int:
         return self.__index
 
-    def fens(self) -> List[str]:
+    def fens(self) -> list[str]:
         return self.__fens
 
 
-MIRRORED_CASTLING_PART: Dict[str, str] = {"Kk": "Kk", "K": "k", "k": "K", "-": "-"}
-MIRRORED_TURN_PART: Dict[str, str] = {"w": "b", "b": "w"}
+MIRRORED_CASTLING_PART: dict[str, str] = {"Kk": "Kk", "K": "k", "k": "K", "-": "-"}
+MIRRORED_TURN_PART: dict[str, str] = {"w": "b", "b": "w"}
 
 
 class MirroredMicroFEN:
@@ -46,7 +44,7 @@ class MirroredMicroFEN:
         self.__fen = fen
 
     def value(self) -> FEN:
-        splited: List[str] = self.__fen.split(" ")
+        splited: list[str] = self.__fen.split(" ")
 
         return FEN(
             " ".join(

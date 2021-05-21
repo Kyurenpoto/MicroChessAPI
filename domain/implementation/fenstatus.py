@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, Final, Optional
+from typing import Final, Optional
 
 from domain.implementation.microfen import MicroFEN
 from infra.rawcheckedfen import RawCheckedFEN
@@ -11,12 +11,12 @@ from .basictype import FEN
 from .boardstring import BoardString
 from .microboardstatus import MicroBoardStatus
 
-PAWN: Final[Dict[str, str]] = {"w": "P", "b": "p"}
-QUEEN: Final[Dict[str, str]] = {"w": "Q", "b": "q"}
-ROOK: Final[Dict[str, str]] = {"w": "R", "b": "r"}
-KNIGHT: Final[Dict[str, str]] = {"w": "N", "b": "n"}
-BISHOP: Final[Dict[str, str]] = {"w": "B", "b": "b"}
-OPPONENT: Final[Dict[str, str]] = {"w": "b", "b": "w"}
+PAWN: Final[dict[str, str]] = {"w": "P", "b": "p"}
+QUEEN: Final[dict[str, str]] = {"w": "Q", "b": "q"}
+ROOK: Final[dict[str, str]] = {"w": "R", "b": "r"}
+KNIGHT: Final[dict[str, str]] = {"w": "N", "b": "n"}
+BISHOP: Final[dict[str, str]] = {"w": "B", "b": "b"}
+OPPONENT: Final[dict[str, str]] = {"w": "b", "b": "w"}
 
 
 def with_pawn_queen_rook(board: str, color: str) -> bool:

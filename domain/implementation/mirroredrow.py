@@ -2,11 +2,9 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict
-
 from .mappable import Mappable
 
-EXPAND_LEFT_SPACE: Dict[str, str] = {
+EXPAND_LEFT_SPACE: dict[str, str] = {
     "5": "41",
     "6": "42",
     "7": "43",
@@ -38,7 +36,7 @@ class PartialMirroredRow:
         return self.__row[0] + self.__row[:0:-1]
 
 
-SQUEEZE_LEFT_SPACE: Dict[str, str] = {
+SQUEEZE_LEFT_SPACE: dict[str, str] = {
     "4P": "4P",
     "4p": "4p",
     "4K": "4K",

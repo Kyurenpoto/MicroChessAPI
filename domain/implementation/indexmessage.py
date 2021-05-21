@@ -2,12 +2,12 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, Final
+from typing import Final
 
 MSG_INVALID_LENGTH: Final[str] = "The length of the normal SAN string must be 4 or 5"
 
 
-NUMERAL: Dict[int, str] = {1: "st", 2: "nd", 3: "rd"}
+NUMERAL: dict[int, str] = {1: "st", 2: "nd", 3: "rd"}
 
 
 class IndexMessage:

@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, Final, List, Set
+from typing import Final
 
 from domain.error.boardstringerror import (
     InvalidPieceNumber,
@@ -15,7 +15,7 @@ from domain.error.boardstringerror import (
 from .mappable import Mappable
 from .microfen import MicroFEN
 
-REPLACE_FOR_EXPAND: Dict[str, str] = {
+REPLACE_FOR_EXPAND: dict[str, str] = {
     "1": ".",
     "2": "..",
     "3": "...",
@@ -70,8 +70,8 @@ class SymbolValidMicroBoardString:
 
     def value(self) -> BoardString:
         fen: MicroFEN = self.__board.fen()
-        board: Set[str] = set(fen.fen().split(" ")[0])
-        max_valid: Set[str] = set(REPLACE_FOR_EXPAND.keys())
+        board: set[str] = set(fen.fen().split(" ")[0])
+        max_valid: set[str] = set(REPLACE_FOR_EXPAND.keys())
         if board & max_valid != board:
             raise RuntimeError(InvalidSymbol(fen.index(), fen.fens()).value())
 
@@ -88,7 +88,7 @@ class SizeValidMicroBoardString:
 
     def value(self) -> BoardString:
         fen: MicroFEN = self.__board.fen()
-        splited: List[str] = fen.fen().split(" ")[0].split("/")
+        splited: list[str] = fen.fen().split(" ")[0].split("/")
         if len(splited) != 8:
             raise RuntimeError(InvalidRowNumber(fen.index(), fen.fens()).value())
         for row in splited:
@@ -118,7 +118,7 @@ class EmptyOutsideMicroBoardString:
 
 CHESS_PIECES: Final[str] = "KkQqPpRrBbNn"
 PROMOTION_TO: Final[str] = "QqRrBbNn"
-PROMOTION_FROM: Final[Dict[str, str]] = {
+PROMOTION_FROM: Final[dict[str, str]] = {
     "Q": "P",
     "q": "p",
     "R": "P",
@@ -147,7 +147,7 @@ class PieceRange:
         return self.__max_val
 
 
-MICROCHESS_PIECE_RANGES: Final[Dict[str, PieceRange]] = dict(
+MICROCHESS_PIECE_RANGES: Final[dict[str, PieceRange]] = dict(
     zip(
         CHESS_PIECES,
         ([PieceRange(1, 1)] * 2) + ([PieceRange(0, 1)] * 4) + ([PieceRange(0, 2)] * 6),

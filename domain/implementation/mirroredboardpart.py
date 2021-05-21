@@ -2,11 +2,9 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, List
-
 from .mirroredrow import MirroredRow
 
-MIRRORED_PIECE: Dict[str, str] = {
+MIRRORED_PIECE: dict[str, str] = {
     "/": "/",
     "1": "1",
     "2": "2",
@@ -40,6 +38,6 @@ class MirroredBoardPart:
         self.__boardpart = boardpart
 
     def value(self) -> str:
-        splited: List[str] = "".join(map(lambda x: MIRRORED_PIECE[x], self.__boardpart)).split("/")
+        splited: list[str] = "".join(map(lambda x: MIRRORED_PIECE[x], self.__boardpart)).split("/")
 
         return "/".join([MirroredRow(row).value() for row in splited[4::-1]] + splited[5:])

@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, List
-
 import pytest
 from domain.error.dtoerror import ERROR_TYPE_EMPTY_FENS, ERROR_TYPE_EMPTY_SANS, ERROR_TYPE_NOT_MATCHED_NUMBER_FENS_SANS
 from domain.implementation.legalsan import MICRO_INITIAL_LEGAL_MOVES
@@ -70,7 +68,7 @@ async def test_next_fen_empty_SANs(async_client: AsyncClient) -> None:
         ({"fens": [MICRO_STARTING_FEN], "sans": [MICRO_FIRST_MOVE_SAN, MICRO_FIRST_MOVE_SAN]}),
     ],
 )
-async def test_next_fen_not_matched_number_FENs_SANs(async_client: AsyncClient, json: Dict[str, List[str]]) -> None:
+async def test_next_fen_not_matched_number_FENs_SANs(async_client: AsyncClient, json: dict[str, list[str]]) -> None:
     response = await async_client.post(url="/model/next-fen", json=json)
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

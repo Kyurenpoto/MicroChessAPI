@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import List, Tuple
-
 from domain.implementation.microfen import MicroFEN
 from domain.implementation.validmicrofen import ValidMicroFEN
 
@@ -15,26 +13,26 @@ from .legalsan import LegalSANs
 class LegalMoves:
     __slots__ = ["__moved_boards"]
 
-    __moved_boards: List[str]
+    __moved_boards: list[str]
 
-    def __init__(self, moved_boards: List[str]):
+    def __init__(self, moved_boards: list[str]):
         self.__moved_boards = moved_boards
 
-    def value(self) -> List[List[str]]:
+    def value(self) -> list[list[str]]:
         return [[str(san) for san in LegalSANs(FEN(fen)).value()] for fen in self.__moved_boards]
 
 
 class Statuses:
     __slots__ = ["__moved_boards", "__legal_moves"]
 
-    __moved_boards: List[str]
-    __legal_moves: List[List[str]]
+    __moved_boards: list[str]
+    __legal_moves: list[list[str]]
 
-    def __init__(self, moved_boards: List[str], legal_moves: List[List[str]]):
+    def __init__(self, moved_boards: list[str], legal_moves: list[list[str]]):
         self.__moved_boards = moved_boards
         self.__legal_moves = legal_moves
 
-    def value(self) -> List[int]:
+    def value(self) -> list[int]:
         return [
             int(FENStatus(FEN(fen), len(moves)).value().value)
             for fen, moves in zip(self.__moved_boards, self.__legal_moves)
@@ -44,16 +42,16 @@ class Statuses:
 class ModelFENStatusResult:
     __slots__ = ["__fens"]
 
-    __fens: List[str]
+    __fens: list[str]
 
-    def __init__(self, fens: List[str]):
+    def __init__(self, fens: list[str]):
         self.__fens = fens
 
-    def value(self) -> Tuple[List[List[str]], List[int]]:
-        boards: List[str] = [
+    def value(self) -> tuple[list[list[str]], list[int]]:
+        boards: list[str] = [
             str(ValidMicroFEN(MicroFEN(index, self.__fens)).value().fen()) for index in range(len(self.__fens))
         ]
-        legal_moves: List[List[str]] = LegalMoves(boards).value()
-        statuses: List[int] = Statuses(boards, legal_moves).value()
+        legal_moves: list[list[str]] = LegalMoves(boards).value()
+        statuses: list[int] = Statuses(boards, legal_moves).value()
 
         return legal_moves, statuses

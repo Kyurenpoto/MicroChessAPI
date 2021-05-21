@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import List
-
 from infra.rawmovedfen import RawMovedFen
 
 from .basictype import FEN, SAN
@@ -37,8 +35,8 @@ class WhiteFullMoveCorrectedFEN:
         self.__moved = moved
 
     def value(self) -> FEN:
-        origin: List[str] = self.__origin.split(" ")
-        moved: List[str] = self.__moved.split(" ")
+        origin: list[str] = self.__origin.split(" ")
+        moved: list[str] = self.__moved.split(" ")
 
         return FEN(" ".join(moved[:-1] + [origin[-1]]))
 

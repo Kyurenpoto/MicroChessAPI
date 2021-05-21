@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from domain.error.movetargeterror import (
     CannotCastle,
@@ -29,19 +29,19 @@ class MoveTarget:
     __slots__ = ["__index", "__fens", "__sans", "__fen", "__san"]
 
     __index: int
-    __fens: List[str]
-    __sans: List[str]
+    __fens: list[str]
+    __sans: list[str]
     __fen: Optional[MicroFEN]
     __san: Optional[MicroSAN]
 
-    def __init__(self, index: int, fens: List[str], sans: List[str]):
+    def __init__(self, index: int, fens: list[str], sans: list[str]):
         self.__index = index
         self.__fens = fens
         self.__sans = sans
         self.__fen = None
         self.__san = None
 
-    def value(self) -> Tuple[int, List[str], List[str]]:
+    def value(self) -> tuple[int, list[str], list[str]]:
         return self.__index, self.__fens, self.__sans
 
     def microfen(self) -> MicroFEN:

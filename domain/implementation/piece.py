@@ -2,14 +2,14 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, Final
+from typing import Final
 
 from .boardstring import BoardString
 from .square import Square
 
 BLACK_PIECES: Final[str] = "pkqrnb"
 WHITE_PIECES: Final[str] = "PKQRNB"
-PIECE_COLOR: Final[Dict[str, str]] = {
+PIECE_COLOR: Final[dict[str, str]] = {
     "P": "w",
     "K": "w",
     "Q": "w",

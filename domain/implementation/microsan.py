@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import List
-
 from .basictype import SAN
 
 
@@ -11,10 +9,10 @@ class MicroSAN:
     __slots__ = ["__index", "__sans", "__san"]
 
     __index: int
-    __sans: List[str]
+    __sans: list[str]
     __san: SAN
 
-    def __init__(self, index: int, sans: List[str]):
+    def __init__(self, index: int, sans: list[str]):
         self.__index = index
         self.__sans = sans
         self.__san = SAN("")
@@ -28,5 +26,5 @@ class MicroSAN:
     def index(self) -> int:
         return self.__index
 
-    def sans(self) -> List[str]:
+    def sans(self) -> list[str]:
         return self.__sans

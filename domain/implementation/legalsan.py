@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, List, Optional
+from typing import Final, Optional
 
 from infra.rawlegalmoves import CASTLING_SAN, RawLegalMoves
 
@@ -28,7 +28,7 @@ class LegalSAN:
 
 
 MICRO_MAX_LEGAL_MOVES: Final[int] = 34
-MICRO_INITIAL_LEGAL_MOVES: Final[List[SAN]] = [
+MICRO_INITIAL_LEGAL_MOVES: Final[list[SAN]] = [
     SAN("e4e5"),
     SAN("e4e6"),
     SAN("e4e7"),
@@ -41,7 +41,7 @@ MICRO_INITIAL_LEGAL_MOVES: Final[List[SAN]] = [
     SAN("h4g5"),
     SAN("h5h6"),
 ]
-MICRO_BLACK_CASTLABLE_LEGAL_MOVES: Final[List[SAN]] = [
+MICRO_BLACK_CASTLABLE_LEGAL_MOVES: Final[list[SAN]] = [
     SAN("O-O"),
     SAN("e7e6"),
     SAN("e8f7"),
@@ -52,7 +52,7 @@ MICRO_BLACK_CASTLABLE_LEGAL_MOVES: Final[List[SAN]] = [
     SAN("h8h6"),
     SAN("h8h7"),
 ]
-MICRO_WHITE_CASTLABLE_LEGAL_MOVES: Final[List[SAN]] = [
+MICRO_WHITE_CASTLABLE_LEGAL_MOVES: Final[list[SAN]] = [
     SAN("O-O"),
     SAN("e4e5"),
     SAN("e4e6"),
@@ -73,7 +73,7 @@ class CorrectedRawLegalMoves:
     def __init__(self, fen: FEN):
         self.__fen = fen
 
-    def value(self) -> List[str]:
+    def value(self) -> list[str]:
         if self.__fen.split(" ")[1] == "w":
             return RawLegalMoves(self.__fen).value() + (
                 [CASTLING_SAN] if CASTLING_SAN in RawLegalMoves(MirroredMicroFEN(self.__fen).value()).value() else []
@@ -90,7 +90,7 @@ class LegalSANs:
     def __init__(self, fen: FEN):
         self.__fen = fen
 
-    def value(self) -> List[SAN]:
+    def value(self) -> list[SAN]:
         return sorted(
             filter(
                 lambda x: x != MICRO_BLACK_DOUBLE_MOVE_SAN,

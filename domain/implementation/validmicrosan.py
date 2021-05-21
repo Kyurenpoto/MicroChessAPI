@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, Set
+from typing import Final
 
 from domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
 
@@ -17,7 +17,7 @@ MICRO_KING_SIDE_MOVE_SAN: Final[SAN] = SAN("h4g4")
 MICRO_BLACK_DOUBLE_MOVE_SAN: Final[SAN] = SAN("e7e5")
 
 PROMOTIONABLE_PIECES: Final[str] = "QqRrBbNn"
-VALID_SQUARES: Final[Set[str]] = set([i + j for j in "45678" for i in "efgh"])
+VALID_SQUARES: Final[set[str]] = set([i + j for j in "45678" for i in "efgh"])
 
 
 class LengthValidSAN:
