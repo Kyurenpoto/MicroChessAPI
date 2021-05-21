@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, List
+from typing import Final, NamedTuple
 
 import chess
 
@@ -11,16 +11,11 @@ WHITE_CASTLING_UCI: Final[str] = "h4f4"
 CASTLING_SAN: Final[str] = "O-O"
 
 
-class RawLegalMoves:
-    __slots__ = ["__fen"]
+class RawLegalMoves(NamedTuple):
+    fen: str
 
-    __fen: str
-
-    def __init__(self, fen: str):
-        self.__fen = fen
-
-    def value(self) -> List[str]:
+    def value(self) -> list[str]:
         return [
             CASTLING_SAN if move.uci() == BLACK_CASTLING_UCI else move.uci()
-            for move in chess.Board(self.__fen).legal_moves
+            for move in chess.Board(self.fen).legal_moves
         ]

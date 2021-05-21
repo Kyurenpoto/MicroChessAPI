@@ -2,10 +2,12 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, List
+from typing import Final
 
 from domain.dto.modeldto import ModelErrorResponse
 from domain.implementation.indexmessage import IndexMessage
+
+from .errorbase import IndexedFENsError
 
 MSG_INVALID_SYMBOL: Final[
     str
@@ -27,101 +29,56 @@ ERROR_TYPE_NOT_EMPTY_OUTSIDE: Final[str] = "boardstring.NotEmptyOutsideError"
 ERROR_TYPE_INVALID_PIECE_NUMBER: Final[str] = "boardstring.InvalidPieceNumberError"
 
 
-class InvalidSymbol:
-    __slots__ = ["__index", "__fens"]
-
-    __index: int
-    __fens: List[str]
-
-    def __init__(self, index: int, fens: List[str]):
-        self.__index = index
-        self.__fens = fens
-
+class InvalidSymbol(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.__index).value() + MSG_INVALID_SYMBOL,
+            message=IndexMessage(self.index).value() + MSG_INVALID_SYMBOL,
             location="body",
             param="fens",
-            value=self.__fens,
+            value=self.fens,
             error=ERROR_TYPE_INVALID_SYMBOL,
         )
 
 
-class InvalidRowNumber:
-    __slots__ = ["__index", "__fens"]
-
-    __index: int
-    __fens: List[str]
-
-    def __init__(self, index: int, fens: List[str]):
-        self.__index = index
-        self.__fens = fens
-
+class InvalidRowNumber(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.__index).value() + MSG_INVALID_ROW_NUMBER,
+            message=IndexMessage(self.index).value() + MSG_INVALID_ROW_NUMBER,
             location="body",
             param="fens",
-            value=self.__fens,
+            value=self.fens,
             error=ERROR_TYPE_INVALID_ROW_NUMBER,
         )
 
 
-class InvalidSquareNumber:
-    __slots__ = ["__index", "__fens"]
-
-    __index: int
-    __fens: List[str]
-
-    def __init__(self, index: int, fens: List[str]):
-        self.__index = index
-        self.__fens = fens
-
+class InvalidSquareNumber(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.__index).value() + MSG_INVALID_SQUARE_NUMBER,
+            message=IndexMessage(self.index).value() + MSG_INVALID_SQUARE_NUMBER,
             location="body",
             param="fens",
-            value=self.__fens,
+            value=self.fens,
             error=ERROR_TYPE_INVALID_SQUARE_NUMBER,
         )
 
 
-class NotEmptyOutside:
-    __slots__ = ["__index", "__fens"]
-
-    __index: int
-    __fens: List[str]
-
-    def __init__(self, index: int, fens: List[str]):
-        self.__index = index
-        self.__fens = fens
-
+class NotEmptyOutside(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.__index).value() + MSG_NOT_EMPTY_OUTSIDE,
+            message=IndexMessage(self.index).value() + MSG_NOT_EMPTY_OUTSIDE,
             location="body",
             param="fens",
-            value=self.__fens,
+            value=self.fens,
             error=ERROR_TYPE_NOT_EMPTY_OUTSIDE,
         )
 
 
-class InvalidPieceNumber:
-    __slots__ = ["__index", "__fens"]
-
-    __index: int
-    __fens: List[str]
-
-    def __init__(self, index: int, fens: List[str]):
-        self.__index = index
-        self.__fens = fens
-
+class InvalidPieceNumber(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.__index).value() + MSG_INVALID_PIECE_NUMBER,
+            message=IndexMessage(self.index).value() + MSG_INVALID_PIECE_NUMBER,
             location="body",
             param="fens",
-            value=self.__fens,
+            value=self.fens,
             error=ERROR_TYPE_INVALID_PIECE_NUMBER,
         )

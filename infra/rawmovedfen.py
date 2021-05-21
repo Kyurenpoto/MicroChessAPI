@@ -2,11 +2,11 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Dict, Final, List, Tuple
+from typing import Final, NamedTuple
 
 import chess
 
-CASTLING_PART_TRANSFORM: Final[Dict[Tuple[str, str], str]] = {
+CASTLING_PART_TRANSFORM: Final[dict[tuple[str, str], str]] = {
     ("w", "Kk"): "k",
     ("w", "K"): "-",
     ("w", "k"): "k",
@@ -18,40 +18,27 @@ CASTLING_PART_TRANSFORM: Final[Dict[Tuple[str, str], str]] = {
 }
 
 
-class TransformedCastlingPart:
-    __slots__ = ["__turn", "__castling", "__piece"]
-
-    __turn: str
-    __castling: str
-    __piece: str
-
-    def __init__(self, turn: str, castling: str, piece: str):
-        self.__turn = turn
-        self.__castling = castling
-        self.__piece = piece
+class TransformedCastlingPart(NamedTuple):
+    turn: str
+    castling: str
+    piece: str
 
     def value(self) -> str:
-        return CASTLING_PART_TRANSFORM[(self.__turn, self.__castling)] if self.__piece in "KkRr" else self.__castling
+        return CASTLING_PART_TRANSFORM[(self.turn, self.castling)] if self.piece in "KkRr" else self.castling
 
 
-class RawMovedFen:
-    __slots__ = ["__fen", "__san"]
-
-    __fen: str
-    __san: str
-
-    def __init__(self, fen: str, san: str):
-        self.__fen = fen
-        self.__san = san
+class RawMovedFen(NamedTuple):
+    fen: str
+    san: str
 
     def __str__(self) -> str:
-        origin: List[str] = self.__fen.split(" ")
+        origin: list[str] = self.fen.split(" ")
 
-        board: chess.Board = chess.Board(self.__fen)
-        move: chess.Move = board.parse_san(self.__san)
+        board: chess.Board = chess.Board(self.fen)
+        move: chess.Move = board.parse_san(self.san)
         piece: str = board.piece_at(move.from_square).symbol()
         board.push(move)
 
-        moved: List[str] = board.fen().split(" ")
+        moved: list[str] = board.fen().split(" ")
 
         return " ".join(moved[:2] + [TransformedCastlingPart(origin[1], origin[2], piece).value()] + moved[3:])
