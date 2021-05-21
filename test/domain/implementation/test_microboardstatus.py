@@ -4,22 +4,24 @@
 
 import pytest
 from domain.implementation.basictype import FEN
-from domain.implementation.fenstatus import FENStatus
 from domain.implementation.legalsan import MICRO_INITIAL_LEGAL_MOVES
 from domain.implementation.microboardstatus import MicroBoardStatus
 from domain.implementation.validmicrofen import MICRO_CHECKMATE_FEN, MICRO_STALEMATE_FEN, MICRO_STARTING_FEN
 
 
 def test_none() -> None:
-    assert MicroBoardStatus.NONE == FENStatus(MICRO_STARTING_FEN, len(MICRO_INITIAL_LEGAL_MOVES)).value()
+    assert (
+        MicroBoardStatus.from_fen_with_legal_moves(MICRO_STARTING_FEN, len(MICRO_INITIAL_LEGAL_MOVES))
+        == MicroBoardStatus.NONE
+    )
 
 
 def test_checkmate() -> None:
-    assert MicroBoardStatus.CHECKMATE == FENStatus(MICRO_CHECKMATE_FEN, 0).value()
+    assert MicroBoardStatus.from_fen_with_legal_moves(MICRO_CHECKMATE_FEN, 0) == MicroBoardStatus.CHECKMATE
 
 
 def test_stalemate() -> None:
-    assert MicroBoardStatus.STALEMATE == FENStatus(MICRO_STALEMATE_FEN, 0).value()
+    assert MicroBoardStatus.from_fen_with_legal_moves(MICRO_STALEMATE_FEN, 0) == MicroBoardStatus.STALEMATE
 
 
 @pytest.mark.parametrize(
@@ -32,8 +34,11 @@ def test_stalemate() -> None:
     ],
 )
 def test_insufficient_material(fen: FEN) -> None:
-    assert MicroBoardStatus.INSUFFICIENT_MATERIAL == FENStatus(fen, 1).value()
+    assert MicroBoardStatus.from_fen_with_legal_moves(fen, 1) == MicroBoardStatus.INSUFFICIENT_MATERIAL
 
 
 def test_fifty_moves() -> None:
-    assert MicroBoardStatus.FIFTY_MOVES == FENStatus(FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 50 51"), 1).value()
+    assert (
+        MicroBoardStatus.from_fen_with_legal_moves(FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 50 51"), 1)
+        == MicroBoardStatus.FIFTY_MOVES
+    )

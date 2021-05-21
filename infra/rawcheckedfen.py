@@ -2,15 +2,11 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import NamedTuple, Optional
+from typing import Optional
 
 import chess
 
 
-class RawCheckedFEN(NamedTuple):
-    fen: str
-
-    def value(self) -> Optional[str]:
-        board: chess.Board = chess.Board(self.fen)
-
-        return self.fen if board.is_check() else None
+class RawCheckedFEN(str):
+    def checked(self) -> Optional[str]:
+        return self if chess.Board(self).is_check() else None
