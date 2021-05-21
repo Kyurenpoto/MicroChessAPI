@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final
+from typing import Final, NamedTuple
 
 from domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
 
@@ -20,80 +20,55 @@ PROMOTIONABLE_PIECES: Final[str] = "QqRrBbNn"
 VALID_SQUARES: Final[set[str]] = set([i + j for j in "45678" for i in "efgh"])
 
 
-class LengthValidSAN:
-    __slots__ = ["__san"]
-
-    __san: MicroSAN
-
-    def __init__(self, san: MicroSAN):
-        self.__san = san
+class LengthValidSAN(NamedTuple):
+    san: MicroSAN
 
     def value(self) -> MicroSAN:
-        if not (4 <= len(self.__san.san()) <= 5):
-            raise RuntimeError(InvalidLength(self.__san.index(), self.__san.sans()).value())
+        if not (4 <= len(self.san.san()) <= 5):
+            raise RuntimeError(InvalidLength(self.san.index(), self.san.sans()).value())
 
-        return self.__san
+        return self.san
 
 
-class FromSquareValidSAN:
-    __slots__ = ["__san"]
-
-    __san: MicroSAN
-
-    def __init__(self, san: MicroSAN):
-        self.__san = san
+class FromSquareValidSAN(NamedTuple):
+    san: MicroSAN
 
     def value(self) -> MicroSAN:
-        if self.__san.san()[:2] not in VALID_SQUARES:
-            raise RuntimeError(InvalidFromSquare(self.__san.index(), self.__san.sans()).value())
+        if self.san.san()[:2] not in VALID_SQUARES:
+            raise RuntimeError(InvalidFromSquare(self.san.index(), self.san.sans()).value())
 
-        return self.__san
+        return self.san
 
 
-class ToSquareValidSAN:
-    __slots__ = ["__san"]
-
-    __san: MicroSAN
-
-    def __init__(self, san: MicroSAN):
-        self.__san = san
+class ToSquareValidSAN(NamedTuple):
+    san: MicroSAN
 
     def value(self) -> MicroSAN:
-        if self.__san.san()[2:4] not in VALID_SQUARES:
-            raise RuntimeError(InvalidToSquare(self.__san.index(), self.__san.sans()).value())
+        if self.san.san()[2:4] not in VALID_SQUARES:
+            raise RuntimeError(InvalidToSquare(self.san.index(), self.san.sans()).value())
 
-        return self.__san
+        return self.san
 
 
-class PromotionValidSAN:
-    __slots__ = ["__san"]
-
-    __san: MicroSAN
-
-    def __init__(self, san: MicroSAN):
-        self.__san = san
+class PromotionValidSAN(NamedTuple):
+    san: MicroSAN
 
     def value(self) -> MicroSAN:
-        if len(self.__san.san()) == 5 and self.__san.san()[4] not in PROMOTIONABLE_PIECES:
-            raise RuntimeError(InvalidPromotion(self.__san.index(), self.__san.sans()).value())
+        if len(self.san.san()) == 5 and self.san.san()[4] not in PROMOTIONABLE_PIECES:
+            raise RuntimeError(InvalidPromotion(self.san.index(), self.san.sans()).value())
 
-        return self.__san
+        return self.san
 
 
-class ValidMicroSAN:
-    __slots__ = ["__san"]
-
-    __san: MicroSAN
-
-    def __init__(self, san: MicroSAN):
-        self.__san = san
+class ValidMicroSAN(NamedTuple):
+    san: MicroSAN
 
     def value(self) -> MicroSAN:
         return (
-            self.__san
-            if self.__san.san() == MICRO_CASTLING_SAN
+            self.san
+            if self.san.san() == MICRO_CASTLING_SAN
             else (
-                Mappable(LengthValidSAN(self.__san).value())
+                Mappable(LengthValidSAN(self.san).value())
                 .mapped(lambda x: FromSquareValidSAN(x).value())
                 .mapped(lambda x: ToSquareValidSAN(x).value())
                 .mapped(lambda x: PromotionValidSAN(x).value())

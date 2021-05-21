@@ -2,6 +2,8 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
+from typing import NamedTuple
+
 from .mappable import Mappable
 
 EXPAND_LEFT_SPACE: dict[str, str] = {
@@ -12,28 +14,18 @@ EXPAND_LEFT_SPACE: dict[str, str] = {
 }
 
 
-class ExpandedRow:
-    __slots__ = ["__row"]
-
-    __row: str
-
-    def __init__(self, row: str):
-        self.__row = row
+class ExpandedRow(NamedTuple):
+    row: str
 
     def value(self) -> str:
-        return self.__row if self.__row[0] == "4" else EXPAND_LEFT_SPACE[self.__row[0]] + self.__row[1:]
+        return self.row if self.row[0] == "4" else EXPAND_LEFT_SPACE[self.row[0]] + self.row[1:]
 
 
-class PartialMirroredRow:
-    __slots__ = ["__row"]
-
-    __row: str
-
-    def __init__(self, row: str):
-        self.__row = row
+class PartialMirroredRow(NamedTuple):
+    row: str
 
     def value(self) -> str:
-        return self.__row[0] + self.__row[:0:-1]
+        return self.row[0] + self.row[:0:-1]
 
 
 SQUEEZE_LEFT_SPACE: dict[str, str] = {
@@ -55,32 +47,22 @@ SQUEEZE_LEFT_SPACE: dict[str, str] = {
 }
 
 
-class SqueezedRow:
-    __slots__ = ["__row"]
-
-    __row: str
-
-    def __init__(self, row: str):
-        self.__row = row
+class SqueezedRow(NamedTuple):
+    row: str
 
     def value(self) -> str:
-        return SQUEEZE_LEFT_SPACE[self.__row[:2]] + self.__row[2:]
+        return SQUEEZE_LEFT_SPACE[self.row[:2]] + self.row[2:]
 
 
-class MirroredRow:
-    __slots__ = ["__row"]
-
-    __row: str
-
-    def __init__(self, row: str):
-        self.__row = row
+class MirroredRow(NamedTuple):
+    row: str
 
     def value(self) -> str:
         return (
-            self.__row
-            if self.__row == "8"
+            self.row
+            if self.row == "8"
             else (
-                Mappable(self.__row)
+                Mappable(self.row)
                 .mapped(lambda x: ExpandedRow(x).value())
                 .mapped(lambda x: PartialMirroredRow(x).value())
                 .mapped(lambda x: SqueezedRow(x).value())

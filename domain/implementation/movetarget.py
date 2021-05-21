@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 
-from typing import Optional
+from typing import NamedTuple, Optional
 
 from domain.error.movetargeterror import (
     CannotCastle,
@@ -63,91 +63,66 @@ class MoveTarget:
         return self.microsan().san()
 
 
-class CastlableMoveTarget:
-    __slots__ = ["__target"]
-
-    __target: MoveTarget
-
-    def __init__(self, target: MoveTarget):
-        self.__target = target
+class CastlableMoveTarget(NamedTuple):
+    target: MoveTarget
 
     def value(self) -> MoveTarget:
         if (
             MICRO_CASTLING_SAN
             not in LegalSANs(
-                self.__target.fen()
-                if self.__target.fen().split(" ")[1] == "b"
-                else MirroredMicroFEN(self.__target.fen()).value()
+                self.target.fen()
+                if self.target.fen().split(" ")[1] == "b"
+                else MirroredMicroFEN(self.target.fen()).value()
             ).value()
         ):
-            raise RuntimeError(CannotCastle(*(self.__target.value())).value())
+            raise RuntimeError(CannotCastle(*(self.target.value())).value())
 
-        return self.__target
+        return self.target
 
 
-class FromSquarePieceValidMoveTarget:
-    __slots__ = ["__target"]
-
-    __target: MoveTarget
-
-    def __init__(self, target: MoveTarget):
-        self.__target = target
+class FromSquarePieceValidMoveTarget(NamedTuple):
+    target: MoveTarget
 
     def value(self) -> MoveTarget:
-        piece: Piece = PieceAt(BoardString(self.__target.microfen()), FromSquare(self.__target.san())).value()
-        if piece.symbol() == ".":
-            raise RuntimeError(EmptyFromSquare(*(self.__target.value())).value())
-        if piece.color() != self.__target.fen().split(" ")[1]:
-            raise RuntimeError(OppositeFromSquare(*(self.__target.value())).value())
+        piece: Piece = PieceAt(BoardString(self.target.microfen()), FromSquare(self.target.san())).value()
+        if piece.symbol == ".":
+            raise RuntimeError(EmptyFromSquare(*(self.target.value())).value())
+        if piece.color() != self.target.fen().split(" ")[1]:
+            raise RuntimeError(OppositeFromSquare(*(self.target.value())).value())
 
-        return self.__target
+        return self.target
 
 
-class ToSquarePieceValidMoveTarget:
-    __slots__ = ["__target"]
-
-    __target: MoveTarget
-
-    def __init__(self, target: MoveTarget):
-        self.__target = target
+class ToSquarePieceValidMoveTarget(NamedTuple):
+    target: MoveTarget
 
     def value(self) -> MoveTarget:
-        piece: Piece = PieceAt(BoardString(self.__target.microfen()), ToSquare(self.__target.san())).value()
-        if piece.symbol() != "." and piece.color() == self.__target.fen().split(" ")[1]:
-            raise RuntimeError(FullToSquare(*(self.__target.value())).value())
+        piece: Piece = PieceAt(BoardString(self.target.microfen()), ToSquare(self.target.san())).value()
+        if piece.symbol != "." and piece.color() == self.target.fen().split(" ")[1]:
+            raise RuntimeError(FullToSquare(*(self.target.value())).value())
 
-        return self.__target
+        return self.target
 
 
-class LegalMoveMoveTarget:
-    __slots__ = ["__target"]
-
-    __target: MoveTarget
-
-    def __init__(self, target: MoveTarget):
-        self.__target = target
+class LegalMoveMoveTarget(NamedTuple):
+    target: MoveTarget
 
     def value(self) -> MoveTarget:
-        if self.__target.san() not in LegalSANs(self.__target.fen()).value():
-            raise RuntimeError(InvalidPieceMove(*(self.__target.value())).value())
+        if self.target.san() not in LegalSANs(self.target.fen()).value():
+            raise RuntimeError(InvalidPieceMove(*(self.target.value())).value())
 
-        return self.__target
+        return self.target
 
 
-class ValidMoveTarget:
-    __slots__ = ["__target"]
-
-    __target: MoveTarget
-
-    def __init__(self, target: MoveTarget):
-        self.__target = target
+class ValidMoveTarget(NamedTuple):
+    target: MoveTarget
 
     def value(self) -> MoveTarget:
         return (
-            CastlableMoveTarget(self.__target).value()
-            if self.__target.san() == MICRO_CASTLING_SAN
+            CastlableMoveTarget(self.target).value()
+            if self.target.san() == MICRO_CASTLING_SAN
             else (
-                Mappable(FromSquarePieceValidMoveTarget(self.__target).value())
+                Mappable(FromSquarePieceValidMoveTarget(self.target).value())
                 .mapped(lambda x: ToSquarePieceValidMoveTarget(x).value())
                 .mapped(lambda x: LegalMoveMoveTarget(x).value())
                 .value()

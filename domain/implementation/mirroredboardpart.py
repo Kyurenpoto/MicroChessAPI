@@ -2,6 +2,8 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
+from typing import NamedTuple
+
 from .mirroredrow import MirroredRow
 
 MIRRORED_PIECE: dict[str, str] = {
@@ -29,15 +31,10 @@ MIRRORED_PIECE: dict[str, str] = {
 }
 
 
-class MirroredBoardPart:
-    __slots__ = ["__boardpart"]
-
-    __boardpart: str
-
-    def __init__(self, boardpart: str):
-        self.__boardpart = boardpart
+class MirroredBoardPart(NamedTuple):
+    boardpart: str
 
     def value(self) -> str:
-        splited: list[str] = "".join(map(lambda x: MIRRORED_PIECE[x], self.__boardpart)).split("/")
+        splited: list[str] = "".join(map(lambda x: MIRRORED_PIECE[x], self.boardpart)).split("/")
 
         return "/".join([MirroredRow(row).value() for row in splited[4::-1]] + splited[5:])

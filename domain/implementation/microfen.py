@@ -2,6 +2,8 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
+from typing import NamedTuple
+
 from .basictype import FEN
 from .mirroredboardpart import MirroredBoardPart
 
@@ -35,16 +37,11 @@ MIRRORED_CASTLING_PART: dict[str, str] = {"Kk": "Kk", "K": "k", "k": "K", "-": "
 MIRRORED_TURN_PART: dict[str, str] = {"w": "b", "b": "w"}
 
 
-class MirroredMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
+class MirroredMicroFEN(NamedTuple):
+    fen: FEN
 
     def value(self) -> FEN:
-        splited: list[str] = self.__fen.split(" ")
+        splited: list[str] = self.fen.split(" ")
 
         return FEN(
             " ".join(

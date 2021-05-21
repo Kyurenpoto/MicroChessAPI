@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final
+from typing import Final, NamedTuple
 
 from domain.error.microfenerror import (
     InvalidCastlingPart,
@@ -30,127 +30,87 @@ MICRO_ONLY_KING_FEN: Final[FEN] = FEN("4k3/8/8/8/7K/8/8/8 w - - 0 1")
 MICRO_SWAP_KING_BISHOP_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/4RK1B/8/8/8 w Kk - 0 1")
 
 
-class ValidStructedMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: MicroFEN
-
-    def __init__(self, fen: MicroFEN):
-        self.__fen = fen
+class ValidStructedMicroFEN(NamedTuple):
+    fen: MicroFEN
 
     def value(self) -> MicroFEN:
-        if len(self.__fen.fen().split(" ")) != 6:
-            raise RuntimeError(InvalidStructure(self.__fen.index(), self.__fen.fens()).value())
+        if len(self.fen.fen().split(" ")) != 6:
+            raise RuntimeError(InvalidStructure(self.fen.index(), self.fen.fens()).value())
 
-        return self.__fen
+        return self.fen
 
 
-class ValidBoardPartMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: MicroFEN
-
-    def __init__(self, fen: MicroFEN):
-        self.__fen = fen
+class ValidBoardPartMicroFEN(NamedTuple):
+    fen: MicroFEN
 
     def value(self) -> MicroFEN:
-        return ValidMicroBoardString(BoardString(self.__fen)).value().fen()
+        return ValidMicroBoardString(BoardString(self.fen)).value().fen()
 
 
 VALID_TURN_PART: Final[set[str]] = set(["w", "b"])
 
 
-class ValidTurnPartMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: MicroFEN
-
-    def __init__(self, fen: MicroFEN):
-        self.__fen = fen
+class ValidTurnPartMicroFEN(NamedTuple):
+    fen: MicroFEN
 
     def value(self) -> MicroFEN:
-        if self.__fen.fen().split(" ")[1] not in VALID_TURN_PART:
-            raise RuntimeError(InvalidTurnPart(self.__fen.index(), self.__fen.fens()).value())
+        if self.fen.fen().split(" ")[1] not in VALID_TURN_PART:
+            raise RuntimeError(InvalidTurnPart(self.fen.index(), self.fen.fens()).value())
 
-        return self.__fen
+        return self.fen
 
 
 VALID_CASTLING_PART: Final[set[str]] = set(["Kk", "K", "k", "-"])
 
 
-class ValidCastlingPartMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: MicroFEN
-
-    def __init__(self, fen: MicroFEN):
-        self.__fen = fen
+class ValidCastlingPartMicroFEN(NamedTuple):
+    fen: MicroFEN
 
     def value(self) -> MicroFEN:
-        if self.__fen.fen().split(" ")[2] not in VALID_CASTLING_PART:
-            raise RuntimeError(InvalidCastlingPart(self.__fen.index(), self.__fen.fens()).value())
+        if self.fen.fen().split(" ")[2] not in VALID_CASTLING_PART:
+            raise RuntimeError(InvalidCastlingPart(self.fen.index(), self.fen.fens()).value())
 
-        return self.__fen
+        return self.fen
 
 
-class ValidEnpassantPartMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: MicroFEN
-
-    def __init__(self, fen: MicroFEN):
-        self.__fen = fen
+class ValidEnpassantPartMicroFEN(NamedTuple):
+    fen: MicroFEN
 
     def value(self) -> MicroFEN:
-        if self.__fen.fen().split(" ")[3] != "-":
-            raise RuntimeError(InvalidEnpassantPart(self.__fen.index(), self.__fen.fens()).value())
+        if self.fen.fen().split(" ")[3] != "-":
+            raise RuntimeError(InvalidEnpassantPart(self.fen.index(), self.fen.fens()).value())
 
-        return self.__fen
+        return self.fen
 
 
-class ValidHalfmovePartMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: MicroFEN
-
-    def __init__(self, fen: MicroFEN):
-        self.__fen = fen
+class ValidHalfmovePartMicroFEN(NamedTuple):
+    fen: MicroFEN
 
     def value(self) -> MicroFEN:
-        halfmove: str = self.__fen.fen().split(" ")[4]
+        halfmove: str = self.fen.fen().split(" ")[4]
         if not (halfmove.isdigit() and 0 <= int(halfmove) <= 50):
-            raise RuntimeError(InvalidHalfmovePart(self.__fen.index(), self.__fen.fens()).value())
+            raise RuntimeError(InvalidHalfmovePart(self.fen.index(), self.fen.fens()).value())
 
-        return self.__fen
+        return self.fen
 
 
-class ValidFullmovePartMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: MicroFEN
-
-    def __init__(self, fen: MicroFEN):
-        self.__fen = fen
+class ValidFullmovePartMicroFEN(NamedTuple):
+    fen: MicroFEN
 
     def value(self) -> MicroFEN:
-        fullmove: str = self.__fen.fen().split(" ")[5]
+        fullmove: str = self.fen.fen().split(" ")[5]
         if not (fullmove.isdigit() and 1 <= int(fullmove) <= 80):
-            raise RuntimeError(InvalidFullmovePart(self.__fen.index(), self.__fen.fens()).value())
+            raise RuntimeError(InvalidFullmovePart(self.fen.index(), self.fen.fens()).value())
 
-        return self.__fen
+        return self.fen
 
 
-class ValidMicroFEN:
-    __slots__ = ["__fen"]
-
-    __fen: MicroFEN
-
-    def __init__(self, fen: MicroFEN):
-        self.__fen = fen
+class ValidMicroFEN(NamedTuple):
+    fen: MicroFEN
 
     def value(self) -> MicroFEN:
         return (
-            Mappable(ValidStructedMicroFEN(self.__fen).value())
+            Mappable(ValidStructedMicroFEN(self.fen).value())
             .mapped(lambda x: ValidBoardPartMicroFEN(x).value())
             .mapped(lambda x: ValidTurnPartMicroFEN(x).value())
             .mapped(lambda x: ValidCastlingPartMicroFEN(x).value())

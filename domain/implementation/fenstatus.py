@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, Optional
+from typing import Final, NamedTuple, Optional
 
 from domain.implementation.microfen import MicroFEN
 from infra.rawcheckedfen import RawCheckedFEN
@@ -51,57 +51,39 @@ def same_color_bishop_with_opponent_pawn_knight(board: str, color: str) -> bool:
     ) + board.count(KNIGHT[OPPONENT[color]]) > 0
 
 
-class SufficientMeterialFEN:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
+class SufficientMeterialFEN(NamedTuple):
+    fen: FEN
 
     def value(self) -> Optional[FEN]:
-        board: str = BoardString(MicroFEN(0, [self.__fen])).value()
-        color: str = self.__fen.split(" ")[1]
+        board: str = BoardString(MicroFEN(0, [self.fen])).value()
+        color: str = self.fen.split(" ")[1]
         if with_pawn_queen_rook(board, color):
-            return self.__fen
+            return self.fen
         if knight_with_opponent_pawn_rook_knight_bishop(board, color):
-            return self.__fen
+            return self.fen
         if same_color_bishop_with_opponent_pawn_knight(board, color):
-            return self.__fen
+            return self.fen
 
         return None
 
 
-class InnerFiftyMovesFEN:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
+class InnerFiftyMovesFEN(NamedTuple):
+    fen: FEN
 
     def value(self) -> Optional[FEN]:
-        return self.__fen if int(self.__fen.split(" ")[-2]) < 50 else None
+        return self.fen if int(self.fen.split(" ")[-2]) < 50 else None
 
 
-class FENStatus:
-    __slots__ = ["__fen", "__cnt_legal_moves"]
-
-    __fen: FEN
-    __cnt_legal_moves: int
-
-    def __init__(self, fen: FEN, cnt_legal_moves: int):
-        self.__fen = fen
-        self.__cnt_legal_moves = cnt_legal_moves
+class FENStatus(NamedTuple):
+    fen: FEN
+    cnt_legal_moves: int
 
     def value(self) -> MicroBoardStatus:
-        if SufficientMeterialFEN(self.__fen).value() is None:
+        if SufficientMeterialFEN(self.fen).value() is None:
             return MicroBoardStatus.INSUFFICIENT_MATERIAL
-        if InnerFiftyMovesFEN(self.__fen).value() is None:
+        if InnerFiftyMovesFEN(self.fen).value() is None:
             return MicroBoardStatus.FIFTY_MOVES
-        if self.__cnt_legal_moves == 0:
-            return (
-                MicroBoardStatus.STALEMATE if RawCheckedFEN(self.__fen).value() is None else MicroBoardStatus.CHECKMATE
-            )
+        if self.cnt_legal_moves == 0:
+            return MicroBoardStatus.STALEMATE if RawCheckedFEN(self.fen).value() is None else MicroBoardStatus.CHECKMATE
 
         return MicroBoardStatus.NONE

@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final
+from typing import Final, NamedTuple
 
 from .boardstring import BoardString
 from .square import Square
@@ -25,33 +25,19 @@ PIECE_COLOR: Final[dict[str, str]] = {
 }
 
 
-class Piece:
-    __slots__ = ["__symbol"]
-
-    __symbol: str
-
-    def __init__(self, symbol: str):
-        self.__symbol = symbol
-
-    def symbol(self) -> str:
-        return self.__symbol
+class Piece(NamedTuple):
+    symbol: str
 
     def color(self) -> str:
-        return PIECE_COLOR[self.__symbol]
+        return PIECE_COLOR[self.symbol]
 
 
-class PieceAt:
-    __slots__ = ["__board", "__square"]
-
-    __board: BoardString
-    __square: Square
-
-    def __init__(self, board: BoardString, square: Square):
-        self.__board = board
-        self.__square = square
+class PieceAt(NamedTuple):
+    board: BoardString
+    square: Square
 
     def value(self) -> Piece:
-        file_val: int = ord(self.__square.file()) - ord("a")
-        rank_val: int = ord(self.__square.rank()) - ord("1")
+        file_val: int = ord(self.square.file()) - ord("a")
+        rank_val: int = ord(self.square.rank()) - ord("1")
 
-        return Piece(self.__board.value()[file_val + ((7 - rank_val) * 8)])
+        return Piece(self.board.value()[file_val + ((7 - rank_val) * 8)])

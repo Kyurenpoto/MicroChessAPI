@@ -2,95 +2,67 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
+from typing import NamedTuple
+
 from domain.dto.modeldto import ModelFENStatusRequest, ModelNextFENRequest
 from domain.error.dtoerror import EmptyFENs, EmptySANs, NotMatchedNumberFENsSANs
 from domain.implementation.mappable import Mappable
 
 
-class NotEmptyFENsModelNextFENRequest:
-    __slots__ = ["__request"]
-
-    __request: ModelNextFENRequest
-
-    def __init__(self, request: ModelNextFENRequest):
-        self.__request = request
+class NotEmptyFENsModelNextFENRequest(NamedTuple):
+    request: ModelNextFENRequest
 
     def value(self) -> ModelNextFENRequest:
-        if len(self.__request.fens) == 0:
-            raise RuntimeError(EmptyFENs(self.__request.fens).value())
+        if len(self.request.fens) == 0:
+            raise RuntimeError(EmptyFENs(self.request.fens).value())
 
-        return self.__request
+        return self.request
 
 
-class NotEmptySANsModelNextFENRequest:
-    __slots__ = ["__request"]
-
-    __request: ModelNextFENRequest
-
-    def __init__(self, request: ModelNextFENRequest):
-        self.__request = request
+class NotEmptySANsModelNextFENRequest(NamedTuple):
+    request: ModelNextFENRequest
 
     def value(self) -> ModelNextFENRequest:
-        if len(self.__request.sans) == 0:
-            raise RuntimeError(EmptySANs(self.__request.sans).value())
+        if len(self.request.sans) == 0:
+            raise RuntimeError(EmptySANs(self.request.sans).value())
 
-        return self.__request
+        return self.request
 
 
-class FENsSANsNumberMatchtedModelNextFENRequest:
-    __slots__ = ["__request"]
-
-    __request: ModelNextFENRequest
-
-    def __init__(self, request: ModelNextFENRequest):
-        self.__request = request
+class FENsSANsNumberMatchtedModelNextFENRequest(NamedTuple):
+    request: ModelNextFENRequest
 
     def value(self) -> ModelNextFENRequest:
-        if len(self.__request.fens) != len(self.__request.sans):
-            raise RuntimeError(NotMatchedNumberFENsSANs(self.__request.fens, self.__request.sans).value())
+        if len(self.request.fens) != len(self.request.sans):
+            raise RuntimeError(NotMatchedNumberFENsSANs(self.request.fens, self.request.sans).value())
 
-        return self.__request
+        return self.request
 
 
-class ValidModelNextFENRequest:
-    __slots__ = ["__request"]
-
-    __request: ModelNextFENRequest
-
-    def __init__(self, request: ModelNextFENRequest):
-        self.__request = request
+class ValidModelNextFENRequest(NamedTuple):
+    request: ModelNextFENRequest
 
     def value(self) -> ModelNextFENRequest:
         return (
-            Mappable(NotEmptyFENsModelNextFENRequest(self.__request).value())
+            Mappable(NotEmptyFENsModelNextFENRequest(self.request).value())
             .mapped(lambda x: NotEmptySANsModelNextFENRequest(x).value())
             .mapped(lambda x: FENsSANsNumberMatchtedModelNextFENRequest(x).value())
             .value()
         )
 
 
-class NotEmptyFENsModelFENStatusRequest:
-    __slots__ = ["__request"]
-
-    __request: ModelFENStatusRequest
-
-    def __init__(self, request: ModelFENStatusRequest):
-        self.__request = request
+class NotEmptyFENsModelFENStatusRequest(NamedTuple):
+    request: ModelFENStatusRequest
 
     def value(self) -> ModelFENStatusRequest:
-        if len(self.__request.fens) == 0:
-            raise RuntimeError(EmptyFENs(self.__request.fens).value())
+        if len(self.request.fens) == 0:
+            raise RuntimeError(EmptyFENs(self.request.fens).value())
 
-        return self.__request
+        return self.request
 
 
-class ValidModelFENStatusRequest:
-    __slots__ = ["__request"]
-
-    __request: ModelFENStatusRequest
-
-    def __init__(self, request: ModelFENStatusRequest):
-        self.__request = request
+class ValidModelFENStatusRequest(NamedTuple):
+    request: ModelFENStatusRequest
 
     def value(self) -> ModelFENStatusRequest:
-        return NotEmptyFENsModelFENStatusRequest(self.__request).value()
+        return NotEmptyFENsModelFENStatusRequest(self.request).value()

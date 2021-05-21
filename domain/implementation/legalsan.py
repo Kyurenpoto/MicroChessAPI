@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, Optional
+from typing import Final, NamedTuple, Optional
 
 from infra.rawlegalmoves import CASTLING_SAN, RawLegalMoves
 
@@ -12,17 +12,12 @@ from .microsan import MicroSAN
 from .validmicrosan import MICRO_BLACK_DOUBLE_MOVE_SAN, ValidMicroSAN
 
 
-class LegalSAN:
-    __slots__ = ["__san"]
-
-    __san: SAN
-
-    def __init__(self, san: SAN):
-        self.__san = san
+class LegalSAN(NamedTuple):
+    san: SAN
 
     def value(self) -> Optional[SAN]:
         try:
-            return ValidMicroSAN(MicroSAN(0, [self.__san])).value().san()
+            return ValidMicroSAN(MicroSAN(0, [self.san])).value().san()
         except RuntimeError:
             return None
 
@@ -65,30 +60,20 @@ MICRO_WHITE_CASTLABLE_LEGAL_MOVES: Final[list[SAN]] = [
 ]
 
 
-class CorrectedRawLegalMoves:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
+class CorrectedRawLegalMoves(NamedTuple):
+    fen: FEN
 
     def value(self) -> list[str]:
-        if self.__fen.split(" ")[1] == "w":
-            return RawLegalMoves(self.__fen).value() + (
-                [CASTLING_SAN] if CASTLING_SAN in RawLegalMoves(MirroredMicroFEN(self.__fen).value()).value() else []
+        if self.fen.split(" ")[1] == "w":
+            return RawLegalMoves(self.fen).value() + (
+                [CASTLING_SAN] if CASTLING_SAN in RawLegalMoves(MirroredMicroFEN(self.fen).value()).value() else []
             )
         else:
-            return RawLegalMoves(self.__fen).value()
+            return RawLegalMoves(self.fen).value()
 
 
-class LegalSANs:
-    __slots__ = ["__fen"]
-
-    __fen: FEN
-
-    def __init__(self, fen: FEN):
-        self.__fen = fen
+class LegalSANs(NamedTuple):
+    fen: FEN
 
     def value(self) -> list[SAN]:
         return sorted(
@@ -96,7 +81,7 @@ class LegalSANs:
                 lambda x: x != MICRO_BLACK_DOUBLE_MOVE_SAN,
                 filter(
                     lambda x: LegalSAN(x).value() is not None,
-                    map(lambda x: SAN(x), CorrectedRawLegalMoves(self.__fen).value()),
+                    map(lambda x: SAN(x), CorrectedRawLegalMoves(self.fen).value()),
                 ),
             )
         )
