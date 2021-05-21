@@ -16,7 +16,7 @@ class NextFen(NamedTuple):
     def value(self) -> str:
         target: MoveTarget = ValidMoveTarget(MoveTarget(self.index, self.fens, self.sans)).value()
 
-        return str(MovedFEN(target.fen(), target.san()).value())
+        return MovedFEN.from_FEN_SAN(target.fen(), target.san())
 
 
 class ModelNextFENResult(NamedTuple):

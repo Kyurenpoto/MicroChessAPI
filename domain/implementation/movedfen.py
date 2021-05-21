@@ -2,9 +2,9 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import NamedTuple
+from __future__ import annotations
 
-from infra.rawmovedfen import RawMovedFen
+from infra.rawmovedfen import RawMovedFEN
 
 from .basictype import FEN, SAN
 from .mappable import Mappable
@@ -12,42 +12,35 @@ from .microfen import MirroredMicroFEN
 from .validmicrosan import MICRO_CASTLING_SAN
 
 
-class NormalMovedFEN(NamedTuple):
-    fen: FEN
-    san: SAN
-
-    def value(self) -> FEN:
-        return FEN(str(RawMovedFen(self.fen, self.san)))
+class NormalMovedFEN(FEN):
+    @classmethod
+    def from_FEN_SAN(cls, fen: FEN, san: SAN) -> NormalMovedFEN:
+        return NormalMovedFEN(RawMovedFEN.from_FEN_SAN(fen, san))
 
 
-class WhiteFullMoveCorrectedFEN(NamedTuple):
-    origin: FEN
-    moved: FEN
-
-    def value(self) -> FEN:
-        return FEN(" ".join(self.moved.split(" ")[:-1] + [self.origin.split(" ")[-1]]))
+class WhiteFullMoveCorrectedFEN(FEN):
+    @classmethod
+    def from_trace_FEN(cls, fen: FEN, next_fen: FEN) -> WhiteFullMoveCorrectedFEN:
+        return WhiteFullMoveCorrectedFEN(" ".join(next_fen.split(" ")[:-1] + [fen.split(" ")[-1]]))
 
 
-class WhiteCastledFEN(NamedTuple):
-    fen: FEN
-
-    def value(self) -> FEN:
-        return (
-            Mappable(MirroredMicroFEN(self.fen).value())
-            .mapped(lambda x: NormalMovedFEN(x, MICRO_CASTLING_SAN).value())
+class WhiteCastledFEN(FEN):
+    @classmethod
+    def from_FEN(cls, fen: FEN) -> WhiteCastledFEN:
+        return WhiteCastledFEN(
+            Mappable(MirroredMicroFEN(fen).value())
+            .mapped(lambda x: NormalMovedFEN.from_FEN_SAN(x, MICRO_CASTLING_SAN))
             .mapped(lambda x: MirroredMicroFEN(x).value())
-            .mapped(lambda x: WhiteFullMoveCorrectedFEN(self.fen, x).value())
+            .mapped(lambda x: WhiteFullMoveCorrectedFEN.from_trace_FEN(fen, x))
             .value()
         )
 
 
-class MovedFEN(NamedTuple):
-    fen: FEN
-    san: SAN
-
-    def value(self) -> FEN:
-        return (
-            WhiteCastledFEN(self.fen).value()
-            if self.san == MICRO_CASTLING_SAN and self.fen.split(" ")[1] == "w"
-            else NormalMovedFEN(self.fen, self.san).value()
+class MovedFEN(FEN):
+    @classmethod
+    def from_FEN_SAN(cls, fen: FEN, san: SAN) -> MovedFEN:
+        return MovedFEN(
+            WhiteCastledFEN.from_FEN(fen)
+            if san == MICRO_CASTLING_SAN and fen.split(" ")[1] == "w"
+            else NormalMovedFEN.from_FEN_SAN(fen, san)
         )

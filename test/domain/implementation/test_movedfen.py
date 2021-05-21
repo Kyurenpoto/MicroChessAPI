@@ -15,12 +15,12 @@ from domain.implementation.validmicrosan import MICRO_CASTLING_SAN, MICRO_FIRST_
 
 
 def test_normal() -> None:
-    assert MovedFEN(MICRO_STARTING_FEN, MICRO_FIRST_MOVE_SAN).value() == MICRO_FIRST_MOVE_FEN
+    assert MovedFEN.from_FEN_SAN(MICRO_STARTING_FEN, MICRO_FIRST_MOVE_SAN) == MICRO_FIRST_MOVE_FEN
 
 
 def test_black_castling() -> None:
-    assert MovedFEN(MICRO_BLACK_CASTLABLE_FEN, MICRO_CASTLING_SAN).value() == MICRO_BLACK_CASTLED_FEN
+    assert MovedFEN.from_FEN_SAN(MICRO_BLACK_CASTLABLE_FEN, MICRO_CASTLING_SAN) == MICRO_BLACK_CASTLED_FEN
 
 
 def test_white_castling() -> None:
-    assert MovedFEN(MICRO_WHITE_CASTLABLE_FEN, MICRO_CASTLING_SAN).value() == MICRO_WHITE_CASTLED_FEN
+    assert MovedFEN.from_FEN_SAN(MICRO_WHITE_CASTLABLE_FEN, MICRO_CASTLING_SAN) == MICRO_WHITE_CASTLED_FEN

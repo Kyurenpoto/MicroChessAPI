@@ -8,21 +8,20 @@ from enum import Enum, auto
 from functools import reduce
 from typing import NamedTuple
 
-from domain.implementation.microfen import MicroFEN
 from infra.rawcheckedfen import RawCheckedFEN
 
 from .basictype import FEN
-from .boardstring import BoardString
+from .splitablefen import BoardPart, ColorPart
 
 
 def square_color(loc: int) -> int:
     return ((loc // 8) + (loc % 8)) % 2
 
 
-class BoardPart(str):
+class CountableBoardPart(BoardPart):
     @classmethod
-    def from_FEN(cls, fen: FEN) -> BoardPart:
-        return BoardPart(BoardString(MicroFEN(0, [fen])).value())
+    def from_FEN(cls, fen: FEN) -> CountableBoardPart:
+        return CountableBoardPart(BoardPart.from_FEN(fen))
 
     def count_symbols(self, symbols: str) -> int:
         return reduce(lambda x, y: x + y, [self.count(x) for x in symbols])
@@ -36,13 +35,13 @@ class BoardPart(str):
         return loc2 != -1 and square_color(loc1) != square_color(loc2)
 
 
-class ColorPart(str):
+class SymbolizableColorPart(ColorPart):
     @classmethod
-    def from_FEN(cls, fen: FEN) -> ColorPart:
-        return ColorPart(fen.split(" ")[1])
+    def from_FEN(cls, fen: FEN) -> SymbolizableColorPart:
+        return SymbolizableColorPart(ColorPart.from_FEN(fen))
 
-    def opposite(self) -> ColorPart:
-        return ColorPart({"w": "b", "b": "w"}[self])
+    def opposite(self) -> SymbolizableColorPart:
+        return SymbolizableColorPart({"w": "b", "b": "w"}[self])
 
     def pawn_queen_rook(self) -> str:
         return {"w": "PQR", "b": "pqr"}[self]
@@ -61,12 +60,12 @@ class ColorPart(str):
 
 
 class BoardColorPart(NamedTuple):
-    board: BoardPart
-    color: ColorPart
+    board: CountableBoardPart
+    color: SymbolizableColorPart
 
     @classmethod
     def from_FEN(cls, fen: FEN) -> BoardColorPart:
-        return BoardColorPart(BoardPart.from_FEN(fen), ColorPart.from_FEN(fen))
+        return BoardColorPart(CountableBoardPart.from_FEN(fen), SymbolizableColorPart.from_FEN(fen))
 
     def insufficient(self) -> bool:
         return not (
@@ -96,12 +95,8 @@ class BoardColorPart(NamedTuple):
 
 class HalfMovePart(int):
     @classmethod
-    def from_halfmove_clock(cls, halfmove: int) -> HalfMovePart:
-        return HalfMovePart(halfmove)
-
-    @classmethod
     def from_FEN(cls, fen: FEN) -> HalfMovePart:
-        return HalfMovePart.from_halfmove_clock(int(fen.split(" ")[-2]))
+        return HalfMovePart(int(fen.split(" ")[-2]))
 
     def over_fifty_moves(self) -> bool:
         return self >= 50
