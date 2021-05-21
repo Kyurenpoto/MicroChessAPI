@@ -8,15 +8,15 @@ from domain.implementation.microfen import MicroFEN
 from domain.implementation.validmicrofen import ValidMicroFEN
 
 from .basictype import FEN
-from .fenstatus import FENStatus
 from .legalsan import LegalSANs
+from .microboardstatus import MicroBoardStatus
 
 
 class LegalMoves(NamedTuple):
     moved_boards: list[str]
 
     def value(self) -> list[list[str]]:
-        return [[str(san) for san in LegalSANs(FEN(fen)).value()] for fen in self.moved_boards]
+        return [[str(san) for san in LegalSANs.from_FEN(FEN(fen))] for fen in self.moved_boards]
 
 
 class Statuses(NamedTuple):
@@ -25,7 +25,7 @@ class Statuses(NamedTuple):
 
     def value(self) -> list[int]:
         return [
-            int(FENStatus(FEN(fen), len(moves)).value().value)
+            int(MicroBoardStatus.from_fen_with_legal_moves(FEN(fen), len(moves)).value)
             for fen, moves in zip(self.moved_boards, self.legal_moves)
         ]
 

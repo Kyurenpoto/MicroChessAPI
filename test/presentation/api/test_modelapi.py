@@ -4,7 +4,7 @@
 
 import pytest
 from domain.error.dtoerror import ERROR_TYPE_EMPTY_FENS, ERROR_TYPE_EMPTY_SANS, ERROR_TYPE_NOT_MATCHED_NUMBER_FENS_SANS
-from domain.implementation.legalsan import MICRO_INITIAL_LEGAL_MOVES
+from domain.implementation.legalsan import LegalSANs
 from domain.implementation.validmicrofen import MICRO_FIRST_MOVE_FEN, MICRO_STARTING_FEN
 from domain.implementation.validmicrosan import MICRO_FIRST_MOVE_SAN
 from fastapi import status
@@ -21,7 +21,7 @@ async def test_fen_status_normal(async_client: AsyncClient) -> None:
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
         "statuses": [1],
-        "legal_moves": [MICRO_INITIAL_LEGAL_MOVES],
+        "legal_moves": [LegalSANs.initial()],
     }
 
 

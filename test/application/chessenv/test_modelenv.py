@@ -5,7 +5,7 @@
 import pytest
 from application.chessenv.modelenv import MicroChessEnvironment
 from domain.dto.modeldto import ModelFENStatusRequest, ModelFENStatusResponse, ModelNextFENRequest, ModelNextFENResponse
-from domain.implementation.legalsan import MICRO_INITIAL_LEGAL_MOVES
+from domain.implementation.legalsan import LegalSANs
 from domain.implementation.validmicrofen import MICRO_FIRST_MOVE_FEN, MICRO_STARTING_FEN
 from domain.implementation.validmicrosan import MICRO_FIRST_MOVE_SAN
 from domain.model import Fake
@@ -17,7 +17,7 @@ async def test_fen_status() -> None:
     request: ModelFENStatusRequest = ModelFENStatusRequest(fens=[MICRO_STARTING_FEN])
     response: ModelFENStatusResponse = await env.fen_status(request)
 
-    assert response == ModelFENStatusResponse(statuses=[1], legal_moves=[MICRO_INITIAL_LEGAL_MOVES])
+    assert response == ModelFENStatusResponse(statuses=[1], legal_moves=[LegalSANs.initial()])
 
 
 @pytest.mark.asyncio

@@ -2,7 +2,10 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import NewType
 
-FEN = NewType("FEN", str)
-SAN = NewType("SAN", str)
+class FEN(str):
+    pass
+
+
+class SAN(str):
+    pass

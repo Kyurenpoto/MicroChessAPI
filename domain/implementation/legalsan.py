@@ -2,9 +2,9 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, NamedTuple, Optional
+from __future__ import annotations
 
-from infra.rawlegalmoves import CASTLING_SAN, RawLegalMoves
+from infra.rawlegalmoves import RawLegalMoves, RawMove
 
 from .basictype import FEN, SAN
 from .microfen import MirroredMicroFEN
@@ -12,76 +12,93 @@ from .microsan import MicroSAN
 from .validmicrosan import MICRO_BLACK_DOUBLE_MOVE_SAN, ValidMicroSAN
 
 
-class LegalSAN(NamedTuple):
-    san: SAN
+class CorrectedRawLegalMoves(list[str]):
+    @classmethod
+    def from_normal_FEN(cls, fen: FEN) -> CorrectedRawLegalMoves:
+        return CorrectedRawLegalMoves(RawLegalMoves.from_FEN(fen))
 
-    def value(self) -> Optional[SAN]:
-        try:
-            return ValidMicroSAN(MicroSAN(0, [self.san])).value().san()
-        except RuntimeError:
-            return None
+    @classmethod
+    def from_mirrored_FEN(cls, fen: FEN) -> CorrectedRawLegalMoves:
+        return CorrectedRawLegalMoves([RawMove.castling()] if RawLegalMoves.from_FEN(fen).castlable() else [])
 
-
-MICRO_MAX_LEGAL_MOVES: Final[int] = 34
-MICRO_INITIAL_LEGAL_MOVES: Final[list[SAN]] = [
-    SAN("e4e5"),
-    SAN("e4e6"),
-    SAN("e4e7"),
-    SAN("f4e5"),
-    SAN("f4g5"),
-    SAN("f4h6"),
-    SAN("g4e5"),
-    SAN("g4f6"),
-    SAN("g4h6"),
-    SAN("h4g5"),
-    SAN("h5h6"),
-]
-MICRO_BLACK_CASTLABLE_LEGAL_MOVES: Final[list[SAN]] = [
-    SAN("O-O"),
-    SAN("e7e6"),
-    SAN("e8f7"),
-    SAN("e8f8"),
-    SAN("h8f8"),
-    SAN("h8g8"),
-    SAN("h8h5"),
-    SAN("h8h6"),
-    SAN("h8h7"),
-]
-MICRO_WHITE_CASTLABLE_LEGAL_MOVES: Final[list[SAN]] = [
-    SAN("O-O"),
-    SAN("e4e5"),
-    SAN("e4e6"),
-    SAN("e4e7"),
-    SAN("e4f4"),
-    SAN("e4g4"),
-    SAN("h4g4"),
-    SAN("h4g5"),
-    SAN("h5h6"),
-]
-
-
-class CorrectedRawLegalMoves(NamedTuple):
-    fen: FEN
-
-    def value(self) -> list[str]:
-        if self.fen.split(" ")[1] == "w":
-            return RawLegalMoves(self.fen).value() + (
-                [CASTLING_SAN] if CASTLING_SAN in RawLegalMoves(MirroredMicroFEN(self.fen).value()).value() else []
+    @classmethod
+    def from_FEN(cls, fen: FEN) -> CorrectedRawLegalMoves:
+        if fen.split(" ")[1] == "w":
+            return CorrectedRawLegalMoves(
+                CorrectedRawLegalMoves.from_normal_FEN(fen)
+                + CorrectedRawLegalMoves.from_mirrored_FEN(MirroredMicroFEN(fen).value())
             )
         else:
-            return RawLegalMoves(self.fen).value()
+            return CorrectedRawLegalMoves.from_normal_FEN(fen)
 
 
-class LegalSANs(NamedTuple):
-    fen: FEN
+class LegalMicroSAN(SAN):
+    def legal(self) -> bool:
+        try:
+            return ValidMicroSAN(MicroSAN(0, [self])).value().san() != MICRO_BLACK_DOUBLE_MOVE_SAN
+        except RuntimeError:
+            return False
 
-    def value(self) -> list[SAN]:
-        return sorted(
-            filter(
-                lambda x: x != MICRO_BLACK_DOUBLE_MOVE_SAN,
-                filter(
-                    lambda x: LegalSAN(x).value() is not None,
-                    map(lambda x: SAN(x), CorrectedRawLegalMoves(self.fen).value()),
-                ),
-            )
+
+class LegalSANs(list[SAN]):
+    @classmethod
+    def from_filtered_legal_moves(cls, legal_moves: filter[str]) -> LegalSANs:
+        return LegalSANs(sorted(map(lambda x: SAN(x), legal_moves)))
+
+    @classmethod
+    def from_corrected_raw_legal_moves(cls, legal_moves: CorrectedRawLegalMoves) -> LegalSANs:
+        return LegalSANs.from_filtered_legal_moves(filter(lambda x: LegalMicroSAN(x).legal(), legal_moves))
+
+    @classmethod
+    def from_FEN(cls, fen: FEN) -> LegalSANs:
+        return LegalSANs.from_corrected_raw_legal_moves(CorrectedRawLegalMoves.from_FEN(fen))
+
+    @classmethod
+    def initial(cls) -> LegalSANs:
+        return LegalSANs(
+            [
+                SAN("e4e5"),
+                SAN("e4e6"),
+                SAN("e4e7"),
+                SAN("f4e5"),
+                SAN("f4g5"),
+                SAN("f4h6"),
+                SAN("g4e5"),
+                SAN("g4f6"),
+                SAN("g4h6"),
+                SAN("h4g5"),
+                SAN("h5h6"),
+            ]
+        )
+
+    @classmethod
+    def black_castable(cls) -> LegalSANs:
+        return LegalSANs(
+            [
+                SAN("O-O"),
+                SAN("e7e6"),
+                SAN("e8f7"),
+                SAN("e8f8"),
+                SAN("h8f8"),
+                SAN("h8g8"),
+                SAN("h8h5"),
+                SAN("h8h6"),
+                SAN("h8h7"),
+            ]
+        )
+
+    @classmethod
+    def white_castable(cls) -> LegalSANs:
+        return LegalSANs(
+            [
+                SAN("O-O"),
+                SAN("e4e5"),
+                SAN("e4e6"),
+                SAN("e4e7"),
+                SAN("e4f4"),
+                SAN("e4g4"),
+                SAN("h4g4"),
+                SAN("h4g5"),
+                SAN("h5h6"),
+            ]
         )

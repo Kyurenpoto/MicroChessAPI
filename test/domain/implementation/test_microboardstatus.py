@@ -4,14 +4,14 @@
 
 import pytest
 from domain.implementation.basictype import FEN
-from domain.implementation.legalsan import MICRO_INITIAL_LEGAL_MOVES
+from domain.implementation.legalsan import LegalSANs
 from domain.implementation.microboardstatus import MicroBoardStatus
 from domain.implementation.validmicrofen import MICRO_CHECKMATE_FEN, MICRO_STALEMATE_FEN, MICRO_STARTING_FEN
 
 
 def test_none() -> None:
     assert (
-        MicroBoardStatus.from_fen_with_legal_moves(MICRO_STARTING_FEN, len(MICRO_INITIAL_LEGAL_MOVES))
+        MicroBoardStatus.from_fen_with_legal_moves(MICRO_STARTING_FEN, len(LegalSANs.initial()))
         == MicroBoardStatus.NONE
     )
 

@@ -2,20 +2,45 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, NamedTuple
+from __future__ import annotations
 
 import chess
 
-BLACK_CASTLING_UCI: Final[str] = "e8g8"
-WHITE_CASTLING_UCI: Final[str] = "h4f4"
-CASTLING_SAN: Final[str] = "O-O"
+
+class RawUci(str):
+    @classmethod
+    def from_move(cls, move: chess.Move) -> RawUci:
+        return RawUci(move.uci())
+
+    @classmethod
+    def black_castling(cls) -> RawUci:
+        return RawUci("e8g8")
 
 
-class RawLegalMoves(NamedTuple):
-    fen: str
+class RawMove(str):
+    @classmethod
+    def from_uci(cls, uci: RawUci) -> RawMove:
+        return RawMove(uci)
 
-    def value(self) -> list[str]:
-        return [
-            CASTLING_SAN if move.uci() == BLACK_CASTLING_UCI else move.uci()
-            for move in chess.Board(self.fen).legal_moves
-        ]
+    @classmethod
+    def castling(cls) -> RawMove:
+        return RawMove("O-O")
+
+    @classmethod
+    def from_move(cls, move: chess.Move) -> RawMove:
+        rawuci: RawUci = RawUci.from_move(move)
+
+        return RawMove.castling() if rawuci == RawUci.black_castling() else RawMove.from_uci(rawuci)
+
+
+class RawLegalMoves(list[str]):
+    @classmethod
+    def from_original_legal_moves(cls, legal_moves: chess.LegalMoveGenerator) -> RawLegalMoves:
+        return RawLegalMoves([RawMove.from_move(move) for move in legal_moves])
+
+    @classmethod
+    def from_FEN(cls, fen: str) -> RawLegalMoves:
+        return RawLegalMoves.from_original_legal_moves(chess.Board(fen).legal_moves)
+
+    def castlable(self) -> bool:
+        return RawMove.castling() in self

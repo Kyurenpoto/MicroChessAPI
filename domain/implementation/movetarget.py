@@ -67,13 +67,8 @@ class CastlableMoveTarget(NamedTuple):
     target: MoveTarget
 
     def value(self) -> MoveTarget:
-        if (
-            MICRO_CASTLING_SAN
-            not in LegalSANs(
-                self.target.fen()
-                if self.target.fen().split(" ")[1] == "b"
-                else MirroredMicroFEN(self.target.fen()).value()
-            ).value()
+        if MICRO_CASTLING_SAN not in LegalSANs.from_FEN(
+            self.target.fen() if self.target.fen().split(" ")[1] == "b" else MirroredMicroFEN(self.target.fen()).value()
         ):
             raise RuntimeError(CannotCastle(*(self.target.value())).value())
 
@@ -108,7 +103,7 @@ class LegalMoveMoveTarget(NamedTuple):
     target: MoveTarget
 
     def value(self) -> MoveTarget:
-        if self.target.san() not in LegalSANs(self.target.fen()).value():
+        if self.target.san() not in LegalSANs.from_FEN(self.target.fen()):
             raise RuntimeError(InvalidPieceMove(*(self.target.value())).value())
 
         return self.target

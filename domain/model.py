@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 
 from domain.dto.modeldto import ModelFENStatusRequest, ModelFENStatusResponse, ModelNextFENRequest, ModelNextFENResponse
-from domain.implementation.legalsan import MICRO_INITIAL_LEGAL_MOVES
+from domain.implementation.legalsan import LegalSANs
 from domain.implementation.modelfenstatusresult import ModelFENStatusResult
 from domain.implementation.modelnextfenresult import ModelNextFENResult
 from domain.implementation.validmicrofen import MICRO_FIRST_MOVE_FEN
@@ -28,7 +28,7 @@ class Fake(ChessModelBase):
     def fen_status(self, request: ModelFENStatusRequest) -> ModelFENStatusResponse:
         return ModelFENStatusResponse(
             statuses=[1],
-            legal_moves=[MICRO_INITIAL_LEGAL_MOVES],
+            legal_moves=[LegalSANs.initial()],
         )
 
 
