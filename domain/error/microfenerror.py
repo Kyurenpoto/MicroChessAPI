@@ -5,7 +5,7 @@
 from typing import Final
 
 from domain.dto.modeldto import ModelErrorResponse
-from domain.implementation.indexmessage import IndexMessage
+from domain.implementation.numeralmessage import NumeralMessage
 
 from .errorbase import IndexedFENsError
 
@@ -29,7 +29,7 @@ ERROR_TYPE_INVALID_FULLMOVE_PART: Final[str] = "microfen.InvalidFullmovePartErro
 class InvalidStructure(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_STRUCTURE,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_STRUCTURE,
             location="body",
             param="fens",
             value=self.fens,
@@ -40,7 +40,7 @@ class InvalidStructure(IndexedFENsError):
 class InvalidTurnPart(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_TURN_PART,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_TURN_PART,
             location="body",
             param="fens",
             value=self.fens,
@@ -51,7 +51,7 @@ class InvalidTurnPart(IndexedFENsError):
 class InvalidCastlingPart(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_CASTLING_PART,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_CASTLING_PART,
             location="body",
             param="fens",
             value=self.fens,
@@ -62,7 +62,7 @@ class InvalidCastlingPart(IndexedFENsError):
 class InvalidEnpassantPart(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_ENPASSANT_PART,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_ENPASSANT_PART,
             location="body",
             param="fens",
             value=self.fens,
@@ -73,7 +73,7 @@ class InvalidEnpassantPart(IndexedFENsError):
 class InvalidHalfmovePart(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_HALFMOVE_PART,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_HALFMOVE_PART,
             location="body",
             param="fens",
             value=self.fens,
@@ -84,7 +84,7 @@ class InvalidHalfmovePart(IndexedFENsError):
 class InvalidFullmovePart(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_FULLMOVE_PART,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_FULLMOVE_PART,
             location="body",
             param="fens",
             value=self.fens,

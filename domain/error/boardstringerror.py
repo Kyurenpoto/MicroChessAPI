@@ -5,7 +5,7 @@
 from typing import Final
 
 from domain.dto.modeldto import ModelErrorResponse
-from domain.implementation.indexmessage import IndexMessage
+from domain.implementation.numeralmessage import NumeralMessage
 
 from .errorbase import IndexedFENsError
 
@@ -32,7 +32,7 @@ ERROR_TYPE_INVALID_PIECE_NUMBER: Final[str] = "boardstring.InvalidPieceNumberErr
 class InvalidSymbol(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_SYMBOL,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_SYMBOL,
             location="body",
             param="fens",
             value=self.fens,
@@ -43,7 +43,7 @@ class InvalidSymbol(IndexedFENsError):
 class InvalidRowNumber(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_ROW_NUMBER,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_ROW_NUMBER,
             location="body",
             param="fens",
             value=self.fens,
@@ -54,7 +54,7 @@ class InvalidRowNumber(IndexedFENsError):
 class InvalidSquareNumber(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_SQUARE_NUMBER,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_SQUARE_NUMBER,
             location="body",
             param="fens",
             value=self.fens,
@@ -65,7 +65,7 @@ class InvalidSquareNumber(IndexedFENsError):
 class NotEmptyOutside(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_NOT_EMPTY_OUTSIDE,
+            message=NumeralMessage.from_index(self.index) + MSG_NOT_EMPTY_OUTSIDE,
             location="body",
             param="fens",
             value=self.fens,
@@ -76,7 +76,7 @@ class NotEmptyOutside(IndexedFENsError):
 class InvalidPieceNumber(IndexedFENsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_PIECE_NUMBER,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_PIECE_NUMBER,
             location="body",
             param="fens",
             value=self.fens,

@@ -5,7 +5,7 @@
 from typing import Final
 
 from domain.dto.modeldto import ModelErrorResponse
-from domain.implementation.indexmessage import IndexMessage
+from domain.implementation.numeralmessage import NumeralMessage
 
 from .errorbase import IndexedParamsError
 
@@ -28,7 +28,7 @@ ERROR_TYPE_INVALID_PIECE_MOVE: Final[str] = "movetarget.InvalidPieceMoveError"
 class CannotCastle(IndexedParamsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_CANNOT_CASTLE,
+            message=NumeralMessage.from_index(self.index) + MSG_CANNOT_CASTLE,
             location="body",
             param="fens, sans",
             value=[self.fens, self.sans],
@@ -39,7 +39,7 @@ class CannotCastle(IndexedParamsError):
 class EmptyFromSquare(IndexedParamsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_EMPTY_FROM_SQUARE,
+            message=NumeralMessage.from_index(self.index) + MSG_EMPTY_FROM_SQUARE,
             location="body",
             param="fens, sans",
             value=[self.fens, self.sans],
@@ -50,7 +50,7 @@ class EmptyFromSquare(IndexedParamsError):
 class OppositeFromSquare(IndexedParamsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_OPPOSITE_FROM_SQUARE,
+            message=NumeralMessage.from_index(self.index) + MSG_OPPOSITE_FROM_SQUARE,
             location="body",
             param="fens, sans",
             value=[self.fens, self.sans],
@@ -61,7 +61,7 @@ class OppositeFromSquare(IndexedParamsError):
 class FullToSquare(IndexedParamsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_FULL_TO_SQUARE,
+            message=NumeralMessage.from_index(self.index) + MSG_FULL_TO_SQUARE,
             location="body",
             param="fens, sans",
             value=[self.fens, self.sans],
@@ -72,7 +72,7 @@ class FullToSquare(IndexedParamsError):
 class InvalidPieceMove(IndexedParamsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_PIECE_MOVE,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_PIECE_MOVE,
             location="body",
             param="fens, sans",
             value=[self.fens, self.sans],

@@ -5,7 +5,7 @@
 from typing import Final
 
 from domain.dto.modeldto import ModelErrorResponse
-from domain.implementation.indexmessage import IndexMessage
+from domain.implementation.numeralmessage import NumeralMessage
 
 from .errorbase import IndexedSANsError
 
@@ -22,7 +22,7 @@ ERROR_TYPE_INVALID_PROMOTION: Final[str] = "microsan.InvalidPromotionError"
 class InvalidLength(IndexedSANsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_LENGTH,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_LENGTH,
             location="body",
             param="sans",
             value=self.sans,
@@ -33,7 +33,7 @@ class InvalidLength(IndexedSANsError):
 class InvalidFromSquare(IndexedSANsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_FROM_SQUARE,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_FROM_SQUARE,
             location="body",
             param="sans",
             value=self.sans,
@@ -44,7 +44,7 @@ class InvalidFromSquare(IndexedSANsError):
 class InvalidToSquare(IndexedSANsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_TO_SQUARE,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_TO_SQUARE,
             location="body",
             param="sans",
             value=self.sans,
@@ -55,7 +55,7 @@ class InvalidToSquare(IndexedSANsError):
 class InvalidPromotion(IndexedSANsError):
     def value(self) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=IndexMessage(self.index).value() + MSG_INVALID_PROMOTION,
+            message=NumeralMessage.from_index(self.index) + MSG_INVALID_PROMOTION,
             location="body",
             param="sans",
             value=self.sans,
