@@ -15,7 +15,7 @@ from domain.error.boardstringerror import (
 from .mappable import Mappable
 from .microfen import MicroFEN
 
-REPLACE_FOR_EXPAND: dict[str, str] = {
+REPLACE_FOR_EXPAND: Final[dict[str, str]] = {
     "1": ".",
     "2": "..",
     "3": "...",
@@ -60,45 +60,38 @@ class BoardString:
         return self.__fen
 
 
-class SymbolValidMicroBoardString(NamedTuple):
-    board: BoardString
-
-    def value(self) -> BoardString:
-        fen: MicroFEN = self.board.fen()
-        board: set[str] = set(fen.fen().split(" ")[0])
-        max_valid: set[str] = set(REPLACE_FOR_EXPAND.keys())
-        if board & max_valid != board:
-            raise RuntimeError(InvalidSymbol(fen.index(), fen.fens()).value())
-
-        return self.board
+MICROCHESS_SYMBOL: Final[set[str]] = set(REPLACE_FOR_EXPAND.keys())
 
 
-class SizeValidMicroBoardString(NamedTuple):
-    board: BoardString
+def symbol_valid_micro_board_string(board: BoardString) -> BoardString:
+    fen: MicroFEN = board.fen()
+    symbol: set[str] = set(fen.fen().split(" ")[0])
+    if symbol & MICROCHESS_SYMBOL != symbol:
+        raise RuntimeError(InvalidSymbol.from_index_with_FENs(fen.index(), fen.fens()))
 
-    def value(self) -> BoardString:
-        fen: MicroFEN = self.board.fen()
-        splited: list[str] = fen.fen().split(" ")[0].split("/")
-        if len(splited) != 8:
-            raise RuntimeError(InvalidRowNumber(fen.index(), fen.fens()).value())
-        for row in splited:
-            if len("".join(map(lambda x: REPLACE_FOR_EXPAND[x], row))) != 8:
-                raise RuntimeError(InvalidSquareNumber(fen.index(), fen.fens()).value())
-
-        return self.board
+    return board
 
 
-class EmptyOutsideMicroBoardString(NamedTuple):
-    board: BoardString
+def size_valid_micro_board_string(board: BoardString) -> BoardString:
+    fen: MicroFEN = board.fen()
+    splited: list[str] = fen.fen().split(" ")[0].split("/")
+    if len(splited) != 8:
+        raise RuntimeError(InvalidRowNumber.from_index_with_FENs(fen.index(), fen.fens()))
+    for row in splited:
+        if len("".join(map(lambda x: REPLACE_FOR_EXPAND[x], row))) != 8:
+            raise RuntimeError(InvalidSquareNumber.from_index_with_FENs(fen.index(), fen.fens()))
 
-    def value(self) -> BoardString:
-        if (
-            "".join([self.board.value()[(i * 8) : (i * 8 + 4)] for i in range(0, 5)]) + self.board.value()[40:]
-            != "." * 44
-        ):
-            raise RuntimeError(NotEmptyOutside(self.board.fen().index(), self.board.fen().fens()).value())
+    return board
 
-        return self.board
+
+EMPTY_BOARDSTRING: Final[str] = "." * 44
+
+
+def empty_outside_micro_board_string(board: BoardString) -> BoardString:
+    if "".join([board.value()[i : i + 4] for i in range(0, 40, 8)]) + board.value()[40:] != EMPTY_BOARDSTRING:
+        raise RuntimeError(NotEmptyOutside.from_index_with_FENs(board.fen().index(), board.fen().fens()))
+
+    return board
 
 
 CHESS_PIECES: Final[str] = "KkQqPpRrBbNn"
@@ -131,30 +124,24 @@ MICROCHESS_PIECE_RANGES: Final[dict[str, PieceRange]] = dict(
 )
 
 
-class PieceCountValidMicroBoardString(NamedTuple):
-    board: BoardString
+def piece_count_valid_micro_board_string(board: BoardString) -> BoardString:
+    piece: str = board.value().replace(".", "")
+    for i in CHESS_PIECES:
+        if not MICROCHESS_PIECE_RANGES[i].contained(piece.count(i)):
+            raise RuntimeError(InvalidPieceNumber.from_index_with_FENs(board.fen().index(), board.fen().fens()))
 
-    def value(self) -> BoardString:
-        board: str = self.board.value().replace(".", "")
-        for i in CHESS_PIECES:
-            if not MICROCHESS_PIECE_RANGES[i].contained(board.count(i)):
-                raise RuntimeError(InvalidPieceNumber(self.board.fen().index(), self.board.fen().fens()).value())
+    for i in PROMOTION_TO:
+        if piece.count(i) + piece.count(PROMOTION_FROM[i]) > MICROCHESS_PIECE_RANGES[i].max_val:
+            raise RuntimeError(InvalidPieceNumber.from_index_with_FENs(board.fen().index(), board.fen().fens()))
 
-        for i in PROMOTION_TO:
-            if board.count(i) + board.count(PROMOTION_FROM[i]) > MICROCHESS_PIECE_RANGES[i].max_val:
-                raise RuntimeError(InvalidPieceNumber(self.board.fen().index(), self.board.fen().fens()).value())
-
-        return self.board
+    return board
 
 
-class ValidMicroBoardString(NamedTuple):
-    board: BoardString
-
-    def value(self) -> BoardString:
-        return (
-            Mappable(SymbolValidMicroBoardString(self.board).value())
-            .mapped(lambda x: SizeValidMicroBoardString(x).value())
-            .mapped(lambda x: EmptyOutsideMicroBoardString(x).value())
-            .mapped(lambda x: PieceCountValidMicroBoardString(x).value())
-            .value()
-        )
+def valid_micro_board_string(board: BoardString) -> BoardString:
+    return (
+        Mappable(symbol_valid_micro_board_string(board))
+        .mapped(lambda x: size_valid_micro_board_string(x))
+        .mapped(lambda x: empty_outside_micro_board_string(x))
+        .mapped(lambda x: piece_count_valid_micro_board_string(x))
+        .value()
+    )

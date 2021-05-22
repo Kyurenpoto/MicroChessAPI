@@ -2,45 +2,56 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, NamedTuple
-
 from domain.dto.modeldto import ModelErrorResponse
 
-MSG_EMPTY_FENS: Final[str] = "At least one FEN must be entered"
-MSG_EMPTY_SANS: Final[str] = "At least one SAN must be entered"
-MSG_NOT_MATCHED_NUMBER_FENS_SANS: Final[str] = "The number of FENs and the number of SANs must be the same"
-ERROR_TYPE_EMPTY_FENS: Final[str] = "modeldto.EmptyFENsError"
-ERROR_TYPE_EMPTY_SANS: Final[str] = "modeldto.EmptySANsError"
-ERROR_TYPE_NOT_MATCHED_NUMBER_FENS_SANS: Final[str] = "modeldto.NotMatchedNumberFENsSANsError"
 
+class EmptyFENs:
+    @classmethod
+    def msg(cls) -> str:
+        return "At least one FEN must be entered"
 
-class EmptyFENs(NamedTuple):
-    fens: list[str]
+    @classmethod
+    def error_type(cls) -> str:
+        return "modeldto.EmptyFENsError"
 
-    def value(self) -> ModelErrorResponse:
+    @classmethod
+    def from_FENs(cls, fens: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=MSG_EMPTY_FENS, location="body", param="fens", value=self.fens, error=ERROR_TYPE_EMPTY_FENS
+            message=EmptyFENs.msg(), location="body", param="fens", value=fens, error=EmptyFENs.error_type()
         )
 
 
-class EmptySANs(NamedTuple):
-    sans: list[str]
+class EmptySANs:
+    @classmethod
+    def msg(cls) -> str:
+        return "At least one SAN must be entered"
 
-    def value(self) -> ModelErrorResponse:
+    @classmethod
+    def error_type(cls) -> str:
+        return "modeldto.EmptySANsError"
+
+    @classmethod
+    def from_SANs(cls, sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=MSG_EMPTY_SANS, location="body", param="sans", value=self.sans, error=ERROR_TYPE_EMPTY_SANS
+            message=EmptySANs.msg(), location="body", param="sans", value=sans, error=EmptySANs.error_type()
         )
 
 
-class NotMatchedNumberFENsSANs(NamedTuple):
-    fens: list[str]
-    sans: list[str]
+class NotMatchedNumberFENsSANs:
+    @classmethod
+    def msg(cls) -> str:
+        return "The number of FENs and the number of SANs must be the same"
 
-    def value(self) -> ModelErrorResponse:
+    @classmethod
+    def error_type(cls) -> str:
+        return "modeldto.NotMatchedNumberFENsSANsError"
+
+    @classmethod
+    def from_FENs_SANs(cls, fens: list[str], sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=MSG_NOT_MATCHED_NUMBER_FENS_SANS,
+            message=NotMatchedNumberFENsSANs.msg(),
             location="body",
             param="fens, sans",
-            value=[self.fens, self.sans],
-            error=ERROR_TYPE_NOT_MATCHED_NUMBER_FENS_SANS,
+            value=[fens, sans],
+            error=NotMatchedNumberFENsSANs.error_type(),
         )

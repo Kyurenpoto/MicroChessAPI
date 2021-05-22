@@ -25,7 +25,7 @@ class LengthValidSAN(NamedTuple):
 
     def value(self) -> MicroSAN:
         if not (4 <= len(self.san.san()) <= 5):
-            raise RuntimeError(InvalidLength(self.san.index(), self.san.sans()).value())
+            raise RuntimeError(InvalidLength.from_index_with_SANs(self.san.index(), self.san.sans()))
 
         return self.san
 
@@ -35,7 +35,7 @@ class FromSquareValidSAN(NamedTuple):
 
     def value(self) -> MicroSAN:
         if self.san.san()[:2] not in VALID_SQUARES:
-            raise RuntimeError(InvalidFromSquare(self.san.index(), self.san.sans()).value())
+            raise RuntimeError(InvalidFromSquare.from_index_with_SANs(self.san.index(), self.san.sans()))
 
         return self.san
 
@@ -45,7 +45,7 @@ class ToSquareValidSAN(NamedTuple):
 
     def value(self) -> MicroSAN:
         if self.san.san()[2:4] not in VALID_SQUARES:
-            raise RuntimeError(InvalidToSquare(self.san.index(), self.san.sans()).value())
+            raise RuntimeError(InvalidToSquare.from_index_with_SANs(self.san.index(), self.san.sans()))
 
         return self.san
 
@@ -55,7 +55,7 @@ class PromotionValidSAN(NamedTuple):
 
     def value(self) -> MicroSAN:
         if len(self.san.san()) == 5 and self.san.san()[4] not in PROMOTIONABLE_PIECES:
-            raise RuntimeError(InvalidPromotion(self.san.index(), self.san.sans()).value())
+            raise RuntimeError(InvalidPromotion.from_index_with_SANs(self.san.index(), self.san.sans()))
 
         return self.san
 

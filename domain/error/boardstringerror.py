@@ -2,83 +2,122 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final
-
 from domain.dto.modeldto import ModelErrorResponse
 from domain.implementation.numeralmessage import NumeralMessage
 
-from .errorbase import IndexedFENsError
 
-MSG_INVALID_SYMBOL: Final[
-    str
-] = "The board part of the FEN should contain only the numbers 1~8, '/', and symbols representing chess pieces"
-MSG_INVALID_ROW_NUMBER: Final[
-    str
-] = "The board part of the FEN should contain only The board part of FEN should have 8 rows separated by '/'"
-MSG_INVALID_SQUARE_NUMBER: Final[
-    str
-] = "Each row in the board part of FEN should contain 8 squares, including a blank and a piece"
-MSG_NOT_EMPTY_OUTSIDE: Final[str] = "All outside the MicroChess area in the board part of FEN should be blank"
-MSG_INVALID_PIECE_NUMBER: Final[
-    str
-] = "Only one King, a maximum of 1 Queen and Pawn, and a maximum of 2 Rooks, Bishops, and Nights should exist in the board part"
-ERROR_TYPE_INVALID_SYMBOL: Final[str] = "boardstring.InvalidSymbolError"
-ERROR_TYPE_INVALID_ROW_NUMBER: Final[str] = "boardstring.InvalidRowNumberError"
-ERROR_TYPE_INVALID_SQUARE_NUMBER: Final[str] = "boardstring.InvalidSquareNumberError"
-ERROR_TYPE_NOT_EMPTY_OUTSIDE: Final[str] = "boardstring.NotEmptyOutsideError"
-ERROR_TYPE_INVALID_PIECE_NUMBER: Final[str] = "boardstring.InvalidPieceNumberError"
+class InvalidSymbol:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return (
+            NumeralMessage.from_index(index)
+            + "The board part of the FEN should contain "
+            + "only the numbers 1~8, '/', and symbols representing chess pieces"
+        )
 
+    @classmethod
+    def error_type(cls) -> str:
+        return "boardstring.InvalidSymbolError"
 
-class InvalidSymbol(IndexedFENsError):
-    def value(self) -> ModelErrorResponse:
+    @classmethod
+    def from_index_with_FENs(cls, index: int, fens: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_INVALID_SYMBOL,
+            message=InvalidSymbol.msg(index),
             location="body",
             param="fens",
-            value=self.fens,
-            error=ERROR_TYPE_INVALID_SYMBOL,
+            value=fens,
+            error=InvalidSymbol.error_type(),
         )
 
 
-class InvalidRowNumber(IndexedFENsError):
-    def value(self) -> ModelErrorResponse:
+class InvalidRowNumber:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return (
+            NumeralMessage.from_index(index)
+            + "The board part of the FEN should contain only The board part of FEN should have 8 rows separated by '/'"
+        )
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "boardstring.InvalidRowNumberError"
+
+    @classmethod
+    def from_index_with_FENs(cls, index: int, fens: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_INVALID_ROW_NUMBER,
+            message=InvalidRowNumber.msg(index),
             location="body",
             param="fens",
-            value=self.fens,
-            error=ERROR_TYPE_INVALID_ROW_NUMBER,
+            value=fens,
+            error=InvalidRowNumber.error_type(),
         )
 
 
-class InvalidSquareNumber(IndexedFENsError):
-    def value(self) -> ModelErrorResponse:
+class InvalidSquareNumber:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return (
+            NumeralMessage.from_index(index)
+            + "Each row in the board part of FEN should contain 8 squares, including a blank and a piece"
+        )
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "boardstring.InvalidSquareNumberError"
+
+    @classmethod
+    def from_index_with_FENs(cls, index: int, fens: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_INVALID_SQUARE_NUMBER,
+            message=InvalidSquareNumber.msg(index),
             location="body",
             param="fens",
-            value=self.fens,
-            error=ERROR_TYPE_INVALID_SQUARE_NUMBER,
+            value=fens,
+            error=InvalidSquareNumber.error_type(),
         )
 
 
-class NotEmptyOutside(IndexedFENsError):
-    def value(self) -> ModelErrorResponse:
+class NotEmptyOutside:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return (
+            NumeralMessage.from_index(index)
+            + "All outside the MicroChess area in the board part of FEN should be blank"
+        )
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "boardstring.NotEmptyOutsideError"
+
+    @classmethod
+    def from_index_with_FENs(cls, index: int, fens: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_NOT_EMPTY_OUTSIDE,
+            message=NotEmptyOutside.msg(index),
             location="body",
             param="fens",
-            value=self.fens,
-            error=ERROR_TYPE_NOT_EMPTY_OUTSIDE,
+            value=fens,
+            error=NotEmptyOutside.error_type(),
         )
 
 
-class InvalidPieceNumber(IndexedFENsError):
-    def value(self) -> ModelErrorResponse:
+class InvalidPieceNumber:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return (
+            NumeralMessage.from_index(index)
+            + "Only one King, a maximum of 1 Queen and Pawn, and a maximum of 2 Rooks, Bishops, and Nights"
+            + " should exist in the board part"
+        )
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "boardstring.InvalidPieceNumberError"
+
+    @classmethod
+    def from_index_with_FENs(cls, index: int, fens: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_INVALID_PIECE_NUMBER,
+            message=InvalidPieceNumber.msg(index),
             location="body",
             param="fens",
-            value=self.fens,
-            error=ERROR_TYPE_INVALID_PIECE_NUMBER,
+            value=fens,
+            error=InvalidPieceNumber.error_type(),
         )

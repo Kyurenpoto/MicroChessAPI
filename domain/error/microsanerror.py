@@ -2,62 +2,85 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final
-
 from domain.dto.modeldto import ModelErrorResponse
 from domain.implementation.numeralmessage import NumeralMessage
 
-from .errorbase import IndexedSANsError
 
-MSG_INVALID_LENGTH: Final[str] = "The length of the normal SAN string must be 4 or 5"
-MSG_INVALID_FROM_SQUARE: Final[str] = "Only files e to h and ranks 4 to 8 are used in MicroChess"
-MSG_INVALID_TO_SQUARE: Final[str] = "Only files e to h and ranks 4 to 8 are used in MicroChess"
-MSG_INVALID_PROMOTION: Final[str] = "Pawn can only promote to Queen, Rook, Knight, and Bishop"
-ERROR_TYPE_INVALID_LENGTH: Final[str] = "microsan.InvalidLengthError"
-ERROR_TYPE_INVALID_FROM_SQUARE: Final[str] = "microsan.InvalidFromSquareError"
-ERROR_TYPE_INVALID_TO_SQUARE: Final[str] = "microsan.InvalidToSquareError"
-ERROR_TYPE_INVALID_PROMOTION: Final[str] = "microsan.InvalidPromotionError"
+class InvalidLength:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return NumeralMessage.from_index(index) + "The length of the normal SAN string must be 4 or 5"
 
+    @classmethod
+    def error_type(cls) -> str:
+        return "microsan.InvalidLengthError"
 
-class InvalidLength(IndexedSANsError):
-    def value(self) -> ModelErrorResponse:
+    @classmethod
+    def from_index_with_SANs(cls, index: int, sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_INVALID_LENGTH,
+            message=InvalidLength.msg(index),
             location="body",
             param="sans",
-            value=self.sans,
-            error=ERROR_TYPE_INVALID_LENGTH,
+            value=sans,
+            error=InvalidLength.error_type(),
         )
 
 
-class InvalidFromSquare(IndexedSANsError):
-    def value(self) -> ModelErrorResponse:
+class InvalidFromSquare:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return NumeralMessage.from_index(index) + "Only files e to h and ranks 4 to 8 are used in MicroChess"
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "microsan.InvalidFromSquareError"
+
+    @classmethod
+    def from_index_with_SANs(cls, index: int, sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_INVALID_FROM_SQUARE,
+            message=InvalidFromSquare.msg(index),
             location="body",
             param="sans",
-            value=self.sans,
-            error=ERROR_TYPE_INVALID_FROM_SQUARE,
+            value=sans,
+            error=InvalidFromSquare.error_type(),
         )
 
 
-class InvalidToSquare(IndexedSANsError):
-    def value(self) -> ModelErrorResponse:
+class InvalidToSquare:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return NumeralMessage.from_index(index) + "Only files e to h and ranks 4 to 8 are used in MicroChess"
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "microsan.InvalidToSquareError"
+
+    @classmethod
+    def from_index_with_SANs(cls, index: int, sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_INVALID_TO_SQUARE,
+            message=InvalidToSquare.msg(index),
             location="body",
             param="sans",
-            value=self.sans,
-            error=ERROR_TYPE_INVALID_TO_SQUARE,
+            value=sans,
+            error=InvalidToSquare.error_type(),
         )
 
 
-class InvalidPromotion(IndexedSANsError):
-    def value(self) -> ModelErrorResponse:
+class InvalidPromotion:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return NumeralMessage.from_index(index) + "Pawn can only promote to Queen, Rook, Knight, and Bishop"
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "microsan.InvalidPromotionError"
+
+    @classmethod
+    def from_index_with_SANs(cls, index: int, sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_INVALID_PROMOTION,
+            message=InvalidPromotion.msg(index),
             location="body",
             param="sans",
-            value=self.sans,
-            error=ERROR_TYPE_INVALID_PROMOTION,
+            value=sans,
+            error=InvalidPromotion.error_type(),
         )

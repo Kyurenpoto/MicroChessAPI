@@ -3,12 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
-from domain.error.microsanerror import (
-    ERROR_TYPE_INVALID_FROM_SQUARE,
-    ERROR_TYPE_INVALID_LENGTH,
-    ERROR_TYPE_INVALID_PROMOTION,
-    ERROR_TYPE_INVALID_TO_SQUARE,
-)
+from domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
 from domain.implementation.basictype import SAN
 from domain.implementation.microsan import MicroSAN
 from domain.implementation.validmicrosan import MICRO_CASTLING_SAN, MICRO_FIRST_MOVE_SAN, ValidMicroSAN
@@ -33,7 +28,7 @@ def test_invalid_length(san: SAN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroSAN(MicroSAN(0, [san])).value()
 
-    assert exinfo.value.args[0].error == ERROR_TYPE_INVALID_LENGTH
+    assert exinfo.value.args[0].error == InvalidLength.error_type()
 
 
 @pytest.mark.parametrize(
@@ -48,7 +43,7 @@ def test_invalid_from_square(san: SAN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroSAN(MicroSAN(0, [san])).value()
 
-    assert exinfo.value.args[0].error == ERROR_TYPE_INVALID_FROM_SQUARE
+    assert exinfo.value.args[0].error == InvalidFromSquare.error_type()
 
 
 @pytest.mark.parametrize(
@@ -63,7 +58,7 @@ def test_invalid_to_square(san: SAN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroSAN(MicroSAN(0, [san])).value()
 
-    assert exinfo.value.args[0].error == ERROR_TYPE_INVALID_TO_SQUARE
+    assert exinfo.value.args[0].error == InvalidToSquare.error_type()
 
 
 @pytest.mark.parametrize(
@@ -76,4 +71,4 @@ def test_invalid_promotion(san: SAN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroSAN(MicroSAN(0, [san])).value()
 
-    assert exinfo.value.args[0].error == ERROR_TYPE_INVALID_PROMOTION
+    assert exinfo.value.args[0].error == InvalidPromotion.error_type()

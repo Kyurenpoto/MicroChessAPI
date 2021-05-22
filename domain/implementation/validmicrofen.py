@@ -14,7 +14,7 @@ from domain.error.microfenerror import (
 )
 
 from .basictype import FEN
-from .boardstring import BoardString, ValidMicroBoardString
+from .boardstring import BoardString, valid_micro_board_string
 from .mappable import Mappable
 from .microfen import MicroFEN
 
@@ -35,7 +35,7 @@ class ValidStructedMicroFEN(NamedTuple):
 
     def value(self) -> MicroFEN:
         if len(self.fen.fen().split(" ")) != 6:
-            raise RuntimeError(InvalidStructure(self.fen.index(), self.fen.fens()).value())
+            raise RuntimeError(InvalidStructure.from_index_with_FENs(self.fen.index(), self.fen.fens()))
 
         return self.fen
 
@@ -44,7 +44,7 @@ class ValidBoardPartMicroFEN(NamedTuple):
     fen: MicroFEN
 
     def value(self) -> MicroFEN:
-        return ValidMicroBoardString(BoardString(self.fen)).value().fen()
+        return valid_micro_board_string(BoardString(self.fen)).fen()
 
 
 VALID_TURN_PART: Final[set[str]] = set(["w", "b"])
@@ -55,7 +55,7 @@ class ValidTurnPartMicroFEN(NamedTuple):
 
     def value(self) -> MicroFEN:
         if self.fen.fen().split(" ")[1] not in VALID_TURN_PART:
-            raise RuntimeError(InvalidTurnPart(self.fen.index(), self.fen.fens()).value())
+            raise RuntimeError(InvalidTurnPart.from_index_with_FENs(self.fen.index(), self.fen.fens()))
 
         return self.fen
 
@@ -68,7 +68,7 @@ class ValidCastlingPartMicroFEN(NamedTuple):
 
     def value(self) -> MicroFEN:
         if self.fen.fen().split(" ")[2] not in VALID_CASTLING_PART:
-            raise RuntimeError(InvalidCastlingPart(self.fen.index(), self.fen.fens()).value())
+            raise RuntimeError(InvalidCastlingPart.from_index_with_FENs(self.fen.index(), self.fen.fens()))
 
         return self.fen
 
@@ -78,7 +78,7 @@ class ValidEnpassantPartMicroFEN(NamedTuple):
 
     def value(self) -> MicroFEN:
         if self.fen.fen().split(" ")[3] != "-":
-            raise RuntimeError(InvalidEnpassantPart(self.fen.index(), self.fen.fens()).value())
+            raise RuntimeError(InvalidEnpassantPart.from_index_with_FENs(self.fen.index(), self.fen.fens()))
 
         return self.fen
 
@@ -89,7 +89,7 @@ class ValidHalfmovePartMicroFEN(NamedTuple):
     def value(self) -> MicroFEN:
         halfmove: str = self.fen.fen().split(" ")[4]
         if not (halfmove.isdigit() and 0 <= int(halfmove) <= 50):
-            raise RuntimeError(InvalidHalfmovePart(self.fen.index(), self.fen.fens()).value())
+            raise RuntimeError(InvalidHalfmovePart.from_index_with_FENs(self.fen.index(), self.fen.fens()))
 
         return self.fen
 
@@ -100,7 +100,7 @@ class ValidFullmovePartMicroFEN(NamedTuple):
     def value(self) -> MicroFEN:
         fullmove: str = self.fen.fen().split(" ")[5]
         if not (fullmove.isdigit() and 1 <= int(fullmove) <= 80):
-            raise RuntimeError(InvalidFullmovePart(self.fen.index(), self.fen.fens()).value())
+            raise RuntimeError(InvalidFullmovePart.from_index_with_FENs(self.fen.index(), self.fen.fens()))
 
         return self.fen
 

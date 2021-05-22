@@ -2,79 +2,111 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final
-
 from domain.dto.modeldto import ModelErrorResponse
 from domain.implementation.numeralmessage import NumeralMessage
 
-from .errorbase import IndexedParamsError
 
-MSG_CANNOT_CASTLE: Final[
-    str
-] = "Castling is only possible when FEN's castling availability is active and between king and rook is empty"
-MSG_EMPTY_FROM_SQUARE: Final[str] = "An active color piece should be placed on the from-square of SAN"
-MSG_OPPOSITE_FROM_SQUARE: Final[str] = "An active color piece should be placed on the from-square of SAN"
-MSG_FULL_TO_SQUARE: Final[str] = "The to-square of SAN must be empty or place an inactive color piece"
-MSG_INVALID_PIECE_MOVE: Final[
-    str
-] = "An piece located on the from-square of SAN cannot be moved to the to-square of SAN"
-ERROR_TYPE_CANNOT_CASTLE: Final[str] = "movetarget.CannotCastleError"
-ERROR_TYPE_EMPTY_FROM_SQUARE: Final[str] = "movetarget.EmptyFromSquareError"
-ERROR_TYPE_OPPOSITE_FROM_SQUARE: Final[str] = "movetarget.OppositeFromSquareError"
-ERROR_TYPE_FULL_TO_SQUARE: Final[str] = "movetarget.FullToSquareError"
-ERROR_TYPE_INVALID_PIECE_MOVE: Final[str] = "movetarget.InvalidPieceMoveError"
+class CannotCastle:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return (
+            NumeralMessage.from_index(index)
+            + "Castling is only possible when FEN's castling availability is active and between king and rook is empty"
+        )
 
+    @classmethod
+    def error_type(cls) -> str:
+        return "movetarget.CannotCastleError"
 
-class CannotCastle(IndexedParamsError):
-    def value(self) -> ModelErrorResponse:
+    @classmethod
+    def from_index_with_FENs_SANs(cls, index: int, fens: list[str], sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_CANNOT_CASTLE,
+            message=CannotCastle.msg(index),
             location="body",
             param="fens, sans",
-            value=[self.fens, self.sans],
-            error=ERROR_TYPE_CANNOT_CASTLE,
+            value=[fens, sans],
+            error=CannotCastle.error_type(),
         )
 
 
-class EmptyFromSquare(IndexedParamsError):
-    def value(self) -> ModelErrorResponse:
+class EmptyFromSquare:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return NumeralMessage.from_index(index) + "An active color piece should be placed on the from-square of SAN"
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "movetarget.EmptyFromSquareError"
+
+    @classmethod
+    def from_index_with_FENs_SANs(cls, index: int, fens: list[str], sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_EMPTY_FROM_SQUARE,
+            message=EmptyFromSquare.msg(index),
             location="body",
             param="fens, sans",
-            value=[self.fens, self.sans],
-            error=ERROR_TYPE_EMPTY_FROM_SQUARE,
+            value=[fens, sans],
+            error=EmptyFromSquare.error_type(),
         )
 
 
-class OppositeFromSquare(IndexedParamsError):
-    def value(self) -> ModelErrorResponse:
+class OppositeFromSquare:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return NumeralMessage.from_index(index) + "An active color piece should be placed on the from-square of SAN"
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "movetarget.OppositeFromSquareError"
+
+    @classmethod
+    def from_index_with_FENs_SANs(cls, index: int, fens: list[str], sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_OPPOSITE_FROM_SQUARE,
+            message=OppositeFromSquare.msg(index),
             location="body",
             param="fens, sans",
-            value=[self.fens, self.sans],
-            error=ERROR_TYPE_OPPOSITE_FROM_SQUARE,
+            value=[fens, sans],
+            error=OppositeFromSquare.error_type(),
         )
 
 
-class FullToSquare(IndexedParamsError):
-    def value(self) -> ModelErrorResponse:
+class FullToSquare:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return NumeralMessage.from_index(index) + "The to-square of SAN must be empty or place an inactive color piece"
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "movetarget.FullToSquareError"
+
+    @classmethod
+    def from_index_with_FENs_SANs(cls, index: int, fens: list[str], sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_FULL_TO_SQUARE,
+            message=FullToSquare.msg(index),
             location="body",
             param="fens, sans",
-            value=[self.fens, self.sans],
-            error=ERROR_TYPE_FULL_TO_SQUARE,
+            value=[fens, sans],
+            error=FullToSquare.error_type(),
         )
 
 
-class InvalidPieceMove(IndexedParamsError):
-    def value(self) -> ModelErrorResponse:
+class InvalidPieceMove:
+    @classmethod
+    def msg(cls, index: int) -> str:
+        return (
+            NumeralMessage.from_index(index)
+            + "An piece located on the from-square of SAN cannot be moved to the to-square of SAN"
+        )
+
+    @classmethod
+    def error_type(cls) -> str:
+        return "movetarget.InvalidPieceMoveError"
+
+    @classmethod
+    def from_index_with_FENs_SANs(cls, index: int, fens: list[str], sans: list[str]) -> ModelErrorResponse:
         return ModelErrorResponse(
-            message=NumeralMessage.from_index(self.index) + MSG_INVALID_PIECE_MOVE,
+            message=InvalidPieceMove.msg(index),
             location="body",
             param="fens, sans",
-            value=[self.fens, self.sans],
-            error=ERROR_TYPE_INVALID_PIECE_MOVE,
+            value=[fens, sans],
+            error=InvalidPieceMove.error_type(),
         )

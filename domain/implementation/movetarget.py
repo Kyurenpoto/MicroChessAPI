@@ -70,7 +70,7 @@ class CastlableMoveTarget(NamedTuple):
         if MICRO_CASTLING_SAN not in LegalSANs.from_FEN(
             self.target.fen() if self.target.fen().split(" ")[1] == "b" else MirroredMicroFEN(self.target.fen()).value()
         ):
-            raise RuntimeError(CannotCastle(*(self.target.value())).value())
+            raise RuntimeError(CannotCastle.from_index_with_FENs_SANs(*(self.target.value())))
 
         return self.target
 
@@ -81,9 +81,9 @@ class FromSquarePieceValidMoveTarget(NamedTuple):
     def value(self) -> MoveTarget:
         piece: Piece = PieceAt(BoardString(self.target.microfen()), FromSquare(self.target.san())).value()
         if piece.symbol == ".":
-            raise RuntimeError(EmptyFromSquare(*(self.target.value())).value())
+            raise RuntimeError(EmptyFromSquare.from_index_with_FENs_SANs(*(self.target.value())))
         if piece.color() != self.target.fen().split(" ")[1]:
-            raise RuntimeError(OppositeFromSquare(*(self.target.value())).value())
+            raise RuntimeError(OppositeFromSquare.from_index_with_FENs_SANs(*(self.target.value())))
 
         return self.target
 
@@ -94,7 +94,7 @@ class ToSquarePieceValidMoveTarget(NamedTuple):
     def value(self) -> MoveTarget:
         piece: Piece = PieceAt(BoardString(self.target.microfen()), ToSquare(self.target.san())).value()
         if piece.symbol != "." and piece.color() == self.target.fen().split(" ")[1]:
-            raise RuntimeError(FullToSquare(*(self.target.value())).value())
+            raise RuntimeError(FullToSquare.from_index_with_FENs_SANs(*(self.target.value())))
 
         return self.target
 
@@ -104,7 +104,7 @@ class LegalMoveMoveTarget(NamedTuple):
 
     def value(self) -> MoveTarget:
         if self.target.san() not in LegalSANs.from_FEN(self.target.fen()):
-            raise RuntimeError(InvalidPieceMove(*(self.target.value())).value())
+            raise RuntimeError(InvalidPieceMove.from_index_with_FENs_SANs(*(self.target.value())))
 
         return self.target
 

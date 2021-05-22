@@ -14,7 +14,7 @@ class NotEmptyFENsModelNextFENRequest(NamedTuple):
 
     def value(self) -> ModelNextFENRequest:
         if len(self.request.fens) == 0:
-            raise RuntimeError(EmptyFENs(self.request.fens).value())
+            raise RuntimeError(EmptyFENs.from_FENs(self.request.fens))
 
         return self.request
 
@@ -24,7 +24,7 @@ class NotEmptySANsModelNextFENRequest(NamedTuple):
 
     def value(self) -> ModelNextFENRequest:
         if len(self.request.sans) == 0:
-            raise RuntimeError(EmptySANs(self.request.sans).value())
+            raise RuntimeError(EmptySANs.from_SANs(self.request.sans))
 
         return self.request
 
@@ -34,7 +34,7 @@ class FENsSANsNumberMatchtedModelNextFENRequest(NamedTuple):
 
     def value(self) -> ModelNextFENRequest:
         if len(self.request.fens) != len(self.request.sans):
-            raise RuntimeError(NotMatchedNumberFENsSANs(self.request.fens, self.request.sans).value())
+            raise RuntimeError(NotMatchedNumberFENsSANs.from_FENs_SANs(self.request.fens, self.request.sans))
 
         return self.request
 
@@ -56,7 +56,7 @@ class NotEmptyFENsModelFENStatusRequest(NamedTuple):
 
     def value(self) -> ModelFENStatusRequest:
         if len(self.request.fens) == 0:
-            raise RuntimeError(EmptyFENs(self.request.fens).value())
+            raise RuntimeError(EmptyFENs.from_FENs(self.request.fens))
 
         return self.request
 

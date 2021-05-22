@@ -4,14 +4,14 @@
 
 import pytest
 from domain.error.boardstringerror import (
-    ERROR_TYPE_INVALID_PIECE_NUMBER,
-    ERROR_TYPE_INVALID_ROW_NUMBER,
-    ERROR_TYPE_INVALID_SQUARE_NUMBER,
-    ERROR_TYPE_INVALID_SYMBOL,
-    ERROR_TYPE_NOT_EMPTY_OUTSIDE,
+    InvalidPieceNumber,
+    InvalidRowNumber,
+    InvalidSquareNumber,
+    InvalidSymbol,
+    NotEmptyOutside,
 )
 from domain.implementation.basictype import FEN
-from domain.implementation.boardstring import BoardString, ValidMicroBoardString
+from domain.implementation.boardstring import BoardString, valid_micro_board_string
 from domain.implementation.microfen import MicroFEN
 from domain.implementation.validmicrofen import (
     MICRO_BLACK_CASTLABLE_FEN,
@@ -22,13 +22,13 @@ from domain.implementation.validmicrofen import (
 
 
 def test_normal() -> None:
-    ValidMicroBoardString(BoardString(MicroFEN(0, [MICRO_STARTING_FEN]))).value().fen().fen() == MICRO_STARTING_FEN
-    ValidMicroBoardString(
+    valid_micro_board_string(BoardString(MicroFEN(0, [MICRO_STARTING_FEN]))).fen().fen() == MICRO_STARTING_FEN
+    valid_micro_board_string(
         BoardString(MicroFEN(0, [MICRO_WHITE_CASTLABLE_FEN]))
-    ).value().fen().fen() == MICRO_WHITE_CASTLABLE_FEN
-    ValidMicroBoardString(
+    ).fen().fen() == MICRO_WHITE_CASTLABLE_FEN
+    valid_micro_board_string(
         BoardString(MicroFEN(0, [MICRO_BLACK_CASTLABLE_FEN]))
-    ).value().fen().fen() == MICRO_BLACK_CASTLABLE_FEN
+    ).fen().fen() == MICRO_BLACK_CASTLABLE_FEN
 
 
 @pytest.mark.parametrize(
@@ -45,7 +45,7 @@ def test_invalid_symbol(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN(MicroFEN(0, [fen])).value()
 
-    assert exinfo.value.args[0].error == ERROR_TYPE_INVALID_SYMBOL
+    assert exinfo.value.args[0].error == InvalidSymbol.error_type()
 
 
 @pytest.mark.parametrize(
@@ -59,7 +59,7 @@ def test_invalid_row_number(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN(MicroFEN(0, [fen])).value()
 
-    assert exinfo.value.args[0].error == ERROR_TYPE_INVALID_ROW_NUMBER
+    assert exinfo.value.args[0].error == InvalidRowNumber.error_type()
 
 
 @pytest.mark.parametrize(
@@ -75,7 +75,7 @@ def test_invalid_square_number(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN(MicroFEN(0, [fen])).value()
 
-    assert exinfo.value.args[0].error == ERROR_TYPE_INVALID_SQUARE_NUMBER
+    assert exinfo.value.args[0].error == InvalidSquareNumber.error_type()
 
 
 @pytest.mark.parametrize(
@@ -89,7 +89,7 @@ def test_not_empty_outside(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN(MicroFEN(0, [fen])).value()
 
-    assert exinfo.value.args[0].error == ERROR_TYPE_NOT_EMPTY_OUTSIDE
+    assert exinfo.value.args[0].error == NotEmptyOutside.error_type()
 
 
 @pytest.mark.parametrize(
@@ -123,4 +123,4 @@ def test_invalid_piece_number(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN(MicroFEN(0, [fen])).value()
 
-    assert exinfo.value.args[0].error == ERROR_TYPE_INVALID_PIECE_NUMBER
+    assert exinfo.value.args[0].error == InvalidPieceNumber.error_type()

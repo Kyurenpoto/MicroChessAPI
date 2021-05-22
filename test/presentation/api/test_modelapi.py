@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
-from domain.error.dtoerror import ERROR_TYPE_EMPTY_FENS, ERROR_TYPE_EMPTY_SANS, ERROR_TYPE_NOT_MATCHED_NUMBER_FENS_SANS
+from domain.error.dtoerror import EmptyFENs, EmptySANs, NotMatchedNumberFENsSANs
 from domain.implementation.legalsan import LegalSANs
 from domain.implementation.validmicrofen import MICRO_FIRST_MOVE_FEN, MICRO_STARTING_FEN
 from domain.implementation.validmicrosan import MICRO_FIRST_MOVE_SAN
@@ -30,7 +30,7 @@ async def test_fen_status_empty_FENs(async_client: AsyncClient) -> None:
     response = await async_client.post(url="/model/fen-status", json={"fens": []})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
-    assert response.json()["error"] == ERROR_TYPE_EMPTY_FENS
+    assert response.json()["error"] == EmptyFENs.error_type()
 
 
 @pytest.mark.asyncio
@@ -49,7 +49,7 @@ async def test_next_fen_empty_FENs(async_client: AsyncClient) -> None:
     response = await async_client.post(url="/model/next-fen", json={"fens": [], "sans": [MICRO_FIRST_MOVE_SAN]})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
-    assert response.json()["error"] == ERROR_TYPE_EMPTY_FENS
+    assert response.json()["error"] == EmptyFENs.error_type()
 
 
 @pytest.mark.asyncio
@@ -57,7 +57,7 @@ async def test_next_fen_empty_SANs(async_client: AsyncClient) -> None:
     response = await async_client.post(url="/model/next-fen", json={"fens": [MICRO_STARTING_FEN], "sans": []})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
-    assert response.json()["error"] == ERROR_TYPE_EMPTY_SANS
+    assert response.json()["error"] == EmptySANs.error_type()
 
 
 @pytest.mark.asyncio
@@ -73,4 +73,4 @@ async def test_next_fen_not_matched_number_FENs_SANs(async_client: AsyncClient, 
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     print(response.json())
-    assert response.json()["error"] == ERROR_TYPE_NOT_MATCHED_NUMBER_FENS_SANS
+    assert response.json()["error"] == NotMatchedNumberFENsSANs.error_type()
