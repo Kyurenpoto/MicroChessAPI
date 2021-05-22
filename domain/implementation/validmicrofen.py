@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, NamedTuple
+from __future__ import annotations
 
 from domain.error.microfenerror import (
     InvalidCastlingPart,
@@ -13,109 +13,86 @@ from domain.error.microfenerror import (
     InvalidTurnPart,
 )
 
-from .basictype import FEN
 from .boardstring import BoardString, valid_micro_board_string
 from .mappable import Mappable
 from .microfen import MicroFEN
 
-MICRO_STARTING_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 0 1")
-MICRO_FIRST_MOVE_FEN: Final[FEN] = FEN("4knbr/4p3/7P/8/4RBNK/8/8/8 b Kk - 0 1")
-MICRO_CHECKMATE_FEN: Final[FEN] = FEN("4k3/6B1/4R1K1/4p3/8/8/8/8 b Kk - 0 1")
-MICRO_STALEMATE_FEN: Final[FEN] = FEN("4k3/4pR1K/4RPB1/8/8/8/8/8 b Kk - 0 1")
-MICRO_BLACK_CASTLABLE_FEN: Final[FEN] = FEN("4k2r/4p3/8/7P/4RBNK/8/8/8 b Kk - 0 1")
-MICRO_WHITE_CASTLABLE_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/4R2K/8/8/8 w Kk - 0 1")
-MICRO_BLACK_CASTLED_FEN: Final[FEN] = FEN("5rk1/4p3/8/7P/4RBNK/8/8/8 w K - 1 2")
-MICRO_WHITE_CASTLED_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/5KR1/8/8/8 b k - 1 1")
-MICRO_ONLY_KING_FEN: Final[FEN] = FEN("4k3/8/8/8/7K/8/8/8 w - - 0 1")
-MICRO_SWAP_KING_BISHOP_FEN: Final[FEN] = FEN("4knbr/4p3/8/7P/4RK1B/8/8/8 w Kk - 0 1")
+
+class ValidStructedMicroFEN(MicroFEN):
+    @classmethod
+    def from_MicroFEN(cls, fen: MicroFEN) -> ValidStructedMicroFEN:
+        if len(fen.fen().split(" ")) != 6:
+            raise RuntimeError(InvalidStructure.from_index_with_FENs(fen.index(), fen.fens()))
+
+        return ValidStructedMicroFEN(fen.index(), fen.fens())
 
 
-class ValidStructedMicroFEN(NamedTuple):
-    fen: MicroFEN
-
-    def value(self) -> MicroFEN:
-        if len(self.fen.fen().split(" ")) != 6:
-            raise RuntimeError(InvalidStructure.from_index_with_FENs(self.fen.index(), self.fen.fens()))
-
-        return self.fen
+class ValidBoardPartMicroFEN(MicroFEN):
+    @classmethod
+    def from_MicroFEN(cls, fen: MicroFEN) -> ValidBoardPartMicroFEN:
+        valid: MicroFEN = valid_micro_board_string(BoardString(fen)).fen()
+        return ValidBoardPartMicroFEN(valid.index(), valid.fens())
 
 
-class ValidBoardPartMicroFEN(NamedTuple):
-    fen: MicroFEN
+class ValidTurnPartMicroFEN(MicroFEN):
+    @classmethod
+    def from_MicroFEN(cls, fen: MicroFEN) -> ValidTurnPartMicroFEN:
+        if fen.fen().split(" ")[1] not in ["w", "b"]:
+            raise RuntimeError(InvalidTurnPart.from_index_with_FENs(fen.index(), fen.fens()))
 
-    def value(self) -> MicroFEN:
-        return valid_micro_board_string(BoardString(self.fen)).fen()
-
-
-VALID_TURN_PART: Final[set[str]] = set(["w", "b"])
-
-
-class ValidTurnPartMicroFEN(NamedTuple):
-    fen: MicroFEN
-
-    def value(self) -> MicroFEN:
-        if self.fen.fen().split(" ")[1] not in VALID_TURN_PART:
-            raise RuntimeError(InvalidTurnPart.from_index_with_FENs(self.fen.index(), self.fen.fens()))
-
-        return self.fen
+        return ValidTurnPartMicroFEN(fen.index(), fen.fens())
 
 
-VALID_CASTLING_PART: Final[set[str]] = set(["Kk", "K", "k", "-"])
+class ValidCastlingPartMicroFEN(MicroFEN):
+    @classmethod
+    def from_MicroFEN(cls, fen: MicroFEN) -> ValidCastlingPartMicroFEN:
+        if fen.fen().split(" ")[2] not in ["Kk", "K", "k", "-"]:
+            raise RuntimeError(InvalidCastlingPart.from_index_with_FENs(fen.index(), fen.fens()))
+
+        return ValidCastlingPartMicroFEN(fen.index(), fen.fens())
 
 
-class ValidCastlingPartMicroFEN(NamedTuple):
-    fen: MicroFEN
+class ValidEnpassantPartMicroFEN(MicroFEN):
+    @classmethod
+    def from_MicroFEN(cls, fen: MicroFEN) -> ValidEnpassantPartMicroFEN:
+        if fen.fen().split(" ")[3] != "-":
+            raise RuntimeError(InvalidEnpassantPart.from_index_with_FENs(fen.index(), fen.fens()))
 
-    def value(self) -> MicroFEN:
-        if self.fen.fen().split(" ")[2] not in VALID_CASTLING_PART:
-            raise RuntimeError(InvalidCastlingPart.from_index_with_FENs(self.fen.index(), self.fen.fens()))
-
-        return self.fen
-
-
-class ValidEnpassantPartMicroFEN(NamedTuple):
-    fen: MicroFEN
-
-    def value(self) -> MicroFEN:
-        if self.fen.fen().split(" ")[3] != "-":
-            raise RuntimeError(InvalidEnpassantPart.from_index_with_FENs(self.fen.index(), self.fen.fens()))
-
-        return self.fen
+        return ValidEnpassantPartMicroFEN(fen.index(), fen.fens())
 
 
-class ValidHalfmovePartMicroFEN(NamedTuple):
-    fen: MicroFEN
-
-    def value(self) -> MicroFEN:
-        halfmove: str = self.fen.fen().split(" ")[4]
+class ValidHalfmovePartMicroFEN(MicroFEN):
+    @classmethod
+    def from_MicroFEN(cls, fen: MicroFEN) -> ValidHalfmovePartMicroFEN:
+        halfmove: str = fen.fen().split(" ")[4]
         if not (halfmove.isdigit() and 0 <= int(halfmove) <= 50):
-            raise RuntimeError(InvalidHalfmovePart.from_index_with_FENs(self.fen.index(), self.fen.fens()))
+            raise RuntimeError(InvalidHalfmovePart.from_index_with_FENs(fen.index(), fen.fens()))
 
-        return self.fen
+        return ValidHalfmovePartMicroFEN(fen.index(), fen.fens())
 
 
-class ValidFullmovePartMicroFEN(NamedTuple):
-    fen: MicroFEN
-
-    def value(self) -> MicroFEN:
-        fullmove: str = self.fen.fen().split(" ")[5]
+class ValidFullmovePartMicroFEN(MicroFEN):
+    @classmethod
+    def from_MicroFEN(cls, fen: MicroFEN) -> ValidFullmovePartMicroFEN:
+        fullmove: str = fen.fen().split(" ")[5]
         if not (fullmove.isdigit() and 1 <= int(fullmove) <= 80):
-            raise RuntimeError(InvalidFullmovePart.from_index_with_FENs(self.fen.index(), self.fen.fens()))
+            raise RuntimeError(InvalidFullmovePart.from_index_with_FENs(fen.index(), fen.fens()))
 
-        return self.fen
+        return ValidFullmovePartMicroFEN(fen.index(), fen.fens())
 
 
-class ValidMicroFEN(NamedTuple):
-    fen: MicroFEN
-
-    def value(self) -> MicroFEN:
-        return (
-            Mappable(ValidStructedMicroFEN(self.fen).value())
-            .mapped(lambda x: ValidBoardPartMicroFEN(x).value())
-            .mapped(lambda x: ValidTurnPartMicroFEN(x).value())
-            .mapped(lambda x: ValidCastlingPartMicroFEN(x).value())
-            .mapped(lambda x: ValidEnpassantPartMicroFEN(x).value())
-            .mapped(lambda x: ValidHalfmovePartMicroFEN(x).value())
-            .mapped(lambda x: ValidFullmovePartMicroFEN(x).value())
+class ValidMicroFEN(MicroFEN):
+    @classmethod
+    def from_MicroFEN(cls, fen: MicroFEN) -> ValidMicroFEN:
+        valid: MicroFEN = (
+            Mappable(ValidStructedMicroFEN.from_MicroFEN(fen))
+            .mapped(lambda x: ValidBoardPartMicroFEN.from_MicroFEN(x))
+            .mapped(lambda x: ValidTurnPartMicroFEN.from_MicroFEN(x))
+            .mapped(lambda x: ValidCastlingPartMicroFEN.from_MicroFEN(x))
+            .mapped(lambda x: ValidEnpassantPartMicroFEN.from_MicroFEN(x))
+            .mapped(lambda x: ValidHalfmovePartMicroFEN.from_MicroFEN(x))
+            .mapped(lambda x: ValidFullmovePartMicroFEN.from_MicroFEN(x))
             .value()
         )
+
+        return ValidMicroFEN(valid.index(), valid.fens())

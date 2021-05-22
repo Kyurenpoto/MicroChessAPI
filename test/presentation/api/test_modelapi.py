@@ -4,8 +4,8 @@
 
 import pytest
 from domain.error.dtoerror import EmptyFENs, EmptySANs, NotMatchedNumberFENsSANs
+from domain.implementation.basictype import FEN
 from domain.implementation.legalsan import LegalSANs
-from domain.implementation.validmicrofen import MICRO_FIRST_MOVE_FEN, MICRO_STARTING_FEN
 from domain.implementation.validmicrosan import MICRO_FIRST_MOVE_SAN
 from fastapi import status
 from httpx import AsyncClient
@@ -15,7 +15,7 @@ from httpx import AsyncClient
 async def test_fen_status_normal(async_client: AsyncClient) -> None:
     response = await async_client.post(
         url="/model/fen-status",
-        json={"fens": [MICRO_STARTING_FEN]},
+        json={"fens": [FEN.starting()]},
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -37,11 +37,11 @@ async def test_fen_status_empty_FENs(async_client: AsyncClient) -> None:
 async def test_next_fen_normal(async_client: AsyncClient) -> None:
     response = await async_client.post(
         url="/model/next-fen",
-        json={"fens": [MICRO_STARTING_FEN], "sans": [MICRO_FIRST_MOVE_SAN]},
+        json={"fens": [FEN.starting()], "sans": [MICRO_FIRST_MOVE_SAN]},
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"next_fens": [MICRO_FIRST_MOVE_FEN]}
+    assert response.json() == {"next_fens": [FEN.first_move()]}
 
 
 @pytest.mark.asyncio
@@ -54,7 +54,7 @@ async def test_next_fen_empty_FENs(async_client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_next_fen_empty_SANs(async_client: AsyncClient) -> None:
-    response = await async_client.post(url="/model/next-fen", json={"fens": [MICRO_STARTING_FEN], "sans": []})
+    response = await async_client.post(url="/model/next-fen", json={"fens": [FEN.starting()], "sans": []})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert response.json()["error"] == EmptySANs.error_type()
@@ -64,8 +64,8 @@ async def test_next_fen_empty_SANs(async_client: AsyncClient) -> None:
 @pytest.mark.parametrize(
     "json",
     [
-        ({"fens": [MICRO_STARTING_FEN, MICRO_STARTING_FEN], "sans": [MICRO_FIRST_MOVE_SAN]}),
-        ({"fens": [MICRO_STARTING_FEN], "sans": [MICRO_FIRST_MOVE_SAN, MICRO_FIRST_MOVE_SAN]}),
+        ({"fens": [FEN.starting(), FEN.starting()], "sans": [MICRO_FIRST_MOVE_SAN]}),
+        ({"fens": [FEN.starting()], "sans": [MICRO_FIRST_MOVE_SAN, MICRO_FIRST_MOVE_SAN]}),
     ],
 )
 async def test_next_fen_not_matched_number_FENs_SANs(async_client: AsyncClient, json: dict[str, list[str]]) -> None:

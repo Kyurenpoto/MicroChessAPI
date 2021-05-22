@@ -33,10 +33,6 @@ class MicroFEN:
         return self.__fens
 
 
-MIRRORED_CASTLING_PART: dict[str, str] = {"Kk": "Kk", "K": "k", "k": "K", "-": "-"}
-MIRRORED_TURN_PART: dict[str, str] = {"w": "b", "b": "w"}
-
-
 class MirroredMicroFEN(NamedTuple):
     fen: FEN
 
@@ -47,8 +43,8 @@ class MirroredMicroFEN(NamedTuple):
             " ".join(
                 [
                     MirroredBoardPart(splited[0]).value(),
-                    MIRRORED_TURN_PART[splited[1]],
-                    MIRRORED_CASTLING_PART[splited[2]],
+                    {"w": "b", "b": "w"}[splited[1]],
+                    {"Kk": "Kk", "K": "k", "k": "K", "-": "-"}[splited[2]],
                 ]
                 + splited[3:]
             )

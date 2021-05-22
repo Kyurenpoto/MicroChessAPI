@@ -6,22 +6,18 @@ import pytest
 from domain.implementation.basictype import FEN
 from domain.implementation.legalsan import LegalSANs
 from domain.implementation.microboardstatus import MicroBoardStatus
-from domain.implementation.validmicrofen import MICRO_CHECKMATE_FEN, MICRO_STALEMATE_FEN, MICRO_STARTING_FEN
 
 
 def test_none() -> None:
-    assert (
-        MicroBoardStatus.from_fen_with_legal_moves(MICRO_STARTING_FEN, len(LegalSANs.initial()))
-        == MicroBoardStatus.NONE
-    )
+    assert MicroBoardStatus.from_fen_with_legal_moves(FEN.starting(), len(LegalSANs.initial())) == MicroBoardStatus.NONE
 
 
 def test_checkmate() -> None:
-    assert MicroBoardStatus.from_fen_with_legal_moves(MICRO_CHECKMATE_FEN, 0) == MicroBoardStatus.CHECKMATE
+    assert MicroBoardStatus.from_fen_with_legal_moves(FEN.checkmate(), 0) == MicroBoardStatus.CHECKMATE
 
 
 def test_stalemate() -> None:
-    assert MicroBoardStatus.from_fen_with_legal_moves(MICRO_STALEMATE_FEN, 0) == MicroBoardStatus.STALEMATE
+    assert MicroBoardStatus.from_fen_with_legal_moves(FEN.stalemate(), 0) == MicroBoardStatus.STALEMATE
 
 
 @pytest.mark.parametrize(
