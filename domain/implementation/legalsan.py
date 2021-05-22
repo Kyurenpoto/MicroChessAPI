@@ -9,7 +9,7 @@ from infra.rawlegalmoves import RawLegalMoves, RawMove
 from .basictype import FEN, SAN
 from .microfen import MirroredMicroFEN
 from .microsan import MicroSAN
-from .validmicrosan import MICRO_BLACK_DOUBLE_MOVE_SAN, ValidMicroSAN
+from .validmicrosan import ValidMicroSAN
 
 
 class CorrectedRawLegalMoves(list[str]):
@@ -35,7 +35,7 @@ class CorrectedRawLegalMoves(list[str]):
 class LegalMicroSAN(SAN):
     def legal(self) -> bool:
         try:
-            return ValidMicroSAN(MicroSAN(0, [self])).value().san() != MICRO_BLACK_DOUBLE_MOVE_SAN
+            return ValidMicroSAN.from_MicroSAN(MicroSAN(0, [self])).san() != SAN.black_double_move()
         except RuntimeError:
             return False
 

@@ -9,7 +9,6 @@ from infra.rawmovedfen import RawMovedFEN
 from .basictype import FEN, SAN
 from .mappable import Mappable
 from .microfen import MirroredMicroFEN
-from .validmicrosan import MICRO_CASTLING_SAN
 
 
 class NormalMovedFEN(FEN):
@@ -29,7 +28,7 @@ class WhiteCastledFEN(FEN):
     def from_FEN(cls, fen: FEN) -> WhiteCastledFEN:
         return WhiteCastledFEN(
             Mappable(MirroredMicroFEN(fen).value())
-            .mapped(lambda x: NormalMovedFEN.from_FEN_SAN(x, MICRO_CASTLING_SAN))
+            .mapped(lambda x: NormalMovedFEN.from_FEN_SAN(x, SAN.castling()))
             .mapped(lambda x: MirroredMicroFEN(x).value())
             .mapped(lambda x: WhiteFullMoveCorrectedFEN.from_trace_FEN(fen, x))
             .value()
@@ -41,6 +40,6 @@ class MovedFEN(FEN):
     def from_FEN_SAN(cls, fen: FEN, san: SAN) -> MovedFEN:
         return MovedFEN(
             WhiteCastledFEN.from_FEN(fen)
-            if san == MICRO_CASTLING_SAN and fen.split(" ")[1] == "w"
+            if san == SAN.castling() and fen.split(" ")[1] == "w"
             else NormalMovedFEN.from_FEN_SAN(fen, san)
         )

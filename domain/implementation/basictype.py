@@ -48,4 +48,22 @@ class FEN(str):
 
 
 class SAN(str):
-    pass
+    @classmethod
+    def castling(cls) -> SAN:
+        return SAN("O-O")
+
+    @classmethod
+    def first_move(cls) -> SAN:
+        return SAN("h5h6")
+
+    @classmethod
+    def second_move(cls) -> SAN:
+        return SAN("e7e6")
+
+    @classmethod
+    def king_side_move(cls) -> SAN:
+        return SAN("h4g4")
+
+    @classmethod
+    def black_double_move(cls) -> SAN:
+        return SAN("e7e5")

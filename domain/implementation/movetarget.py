@@ -20,9 +20,8 @@ from .legalsan import LegalSANs
 from .mappable import Mappable
 from .microfen import MicroFEN, MirroredMicroFEN
 from .microsan import MicroSAN
-from .piece import Piece, PieceAt
-from .square import FromSquare, ToSquare
-from .validmicrosan import MICRO_CASTLING_SAN, ValidMicroSAN
+from .square import FromSquare, Square, ToSquare
+from .validmicrosan import ValidMicroSAN
 
 
 class MoveTarget:
@@ -52,7 +51,7 @@ class MoveTarget:
 
     def microsan(self) -> MicroSAN:
         if self.__san is None:
-            self.__san = ValidMicroSAN(MicroSAN(self.__index, self.__sans)).value()
+            self.__san = ValidMicroSAN.from_MicroSAN(MicroSAN(self.__index, self.__sans))
 
         return self.__san
 
@@ -67,7 +66,7 @@ class CastlableMoveTarget(NamedTuple):
     target: MoveTarget
 
     def value(self) -> MoveTarget:
-        if MICRO_CASTLING_SAN not in LegalSANs.from_FEN(
+        if SAN.castling() not in LegalSANs.from_FEN(
             self.target.fen() if self.target.fen().split(" ")[1] == "b" else MirroredMicroFEN(self.target.fen()).value()
         ):
             raise RuntimeError(CannotCastle.from_index_with_FENs_SANs(*(self.target.value())))
@@ -75,12 +74,26 @@ class CastlableMoveTarget(NamedTuple):
         return self.target
 
 
+class Piece(str):
+    @classmethod
+    def from_board_with_square(cls, board: BoardString, square: Square):
+        file_val: int = ord(square.file()) - ord("a")
+        rank_val: int = ord(square.rank()) - ord("1")
+
+        return Piece(board.value()[file_val + ((7 - rank_val) * 8)])
+
+    def color(self) -> str:
+        return "w" if self.isupper() else "b"
+
+
 class FromSquarePieceValidMoveTarget(NamedTuple):
     target: MoveTarget
 
     def value(self) -> MoveTarget:
-        piece: Piece = PieceAt(BoardString(self.target.microfen()), FromSquare(self.target.san())).value()
-        if piece.symbol == ".":
+        piece: Piece = Piece.from_board_with_square(
+            BoardString(self.target.microfen()), FromSquare.from_SAN(self.target.san())
+        )
+        if piece == ".":
             raise RuntimeError(EmptyFromSquare.from_index_with_FENs_SANs(*(self.target.value())))
         if piece.color() != self.target.fen().split(" ")[1]:
             raise RuntimeError(OppositeFromSquare.from_index_with_FENs_SANs(*(self.target.value())))
@@ -92,8 +105,10 @@ class ToSquarePieceValidMoveTarget(NamedTuple):
     target: MoveTarget
 
     def value(self) -> MoveTarget:
-        piece: Piece = PieceAt(BoardString(self.target.microfen()), ToSquare(self.target.san())).value()
-        if piece.symbol != "." and piece.color() == self.target.fen().split(" ")[1]:
+        piece: Piece = Piece.from_board_with_square(
+            BoardString(self.target.microfen()), ToSquare.from_SAN(self.target.san())
+        )
+        if piece != "." and piece.color() == self.target.fen().split(" ")[1]:
             raise RuntimeError(FullToSquare.from_index_with_FENs_SANs(*(self.target.value())))
 
         return self.target
@@ -115,7 +130,7 @@ class ValidMoveTarget(NamedTuple):
     def value(self) -> MoveTarget:
         return (
             CastlableMoveTarget(self.target).value()
-            if self.target.san() == MICRO_CASTLING_SAN
+            if self.target.san() == SAN.castling()
             else (
                 Mappable(FromSquarePieceValidMoveTarget(self.target).value())
                 .mapped(lambda x: ToSquarePieceValidMoveTarget(x).value())

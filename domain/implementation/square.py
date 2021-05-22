@@ -2,42 +2,30 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from abc import ABCMeta, abstractmethod
+from __future__ import annotations
 
 from .basictype import SAN
 
 
-class Square(metaclass=ABCMeta):
-    @abstractmethod
-    def value(self) -> str:
-        pass
-
+class Square(str):
     def file(self) -> str:
-        return self.value()[0]
+        return self[0]
 
     def rank(self) -> str:
-        return self.value()[1]
+        return self[1]
+
+    @classmethod
+    def valid_set(cls) -> set[Square]:
+        return set([Square(i + j) for j in "45678" for i in "efgh"])
 
 
 class FromSquare(Square):
-    __slots__ = ["__san"]
-
-    __san: SAN
-
-    def __init__(self, san: SAN):
-        self.__san = san
-
-    def value(self) -> str:
-        return self.__san[:2]
+    @classmethod
+    def from_SAN(cls, san: SAN) -> FromSquare:
+        return FromSquare(san[:2])
 
 
 class ToSquare(Square):
-    __slots__ = ["__san"]
-
-    __san: SAN
-
-    def __init__(self, san: SAN):
-        self.__san = san
-
-    def value(self) -> str:
-        return self.__san[2:4]
+    @classmethod
+    def from_SAN(cls, san: SAN) -> FromSquare:
+        return FromSquare(san[2:4])

@@ -2,76 +2,65 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import Final, NamedTuple
+from __future__ import annotations
 
 from domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
 
 from .basictype import SAN
 from .mappable import Mappable
 from .microsan import MicroSAN
-
-MICRO_CASTLING_SAN: Final[SAN] = SAN("O-O")
-MICRO_FIRST_MOVE_SAN: Final[SAN] = SAN("h5h6")
-MICRO_SECOND_MOVE_SAN: Final[SAN] = SAN("e7e6")
-MICRO_KING_SIDE_MOVE_SAN: Final[SAN] = SAN("h4g4")
-MICRO_BLACK_DOUBLE_MOVE_SAN: Final[SAN] = SAN("e7e5")
-
-PROMOTIONABLE_PIECES: Final[str] = "QqRrBbNn"
-VALID_SQUARES: Final[set[str]] = set([i + j for j in "45678" for i in "efgh"])
+from .square import Square
 
 
-class LengthValidSAN(NamedTuple):
-    san: MicroSAN
+class LengthValidSAN(MicroSAN):
+    @classmethod
+    def from_MicroSAN(cls, san: MicroSAN) -> LengthValidSAN:
+        if not (4 <= len(san.san()) <= 5):
+            raise RuntimeError(InvalidLength.from_index_with_SANs(san.index(), san.sans()))
 
-    def value(self) -> MicroSAN:
-        if not (4 <= len(self.san.san()) <= 5):
-            raise RuntimeError(InvalidLength.from_index_with_SANs(self.san.index(), self.san.sans()))
-
-        return self.san
-
-
-class FromSquareValidSAN(NamedTuple):
-    san: MicroSAN
-
-    def value(self) -> MicroSAN:
-        if self.san.san()[:2] not in VALID_SQUARES:
-            raise RuntimeError(InvalidFromSquare.from_index_with_SANs(self.san.index(), self.san.sans()))
-
-        return self.san
+        return LengthValidSAN(san.index(), san.sans())
 
 
-class ToSquareValidSAN(NamedTuple):
-    san: MicroSAN
+class FromSquareValidSAN(MicroSAN):
+    @classmethod
+    def from_MicroSAN(cls, san: MicroSAN) -> FromSquareValidSAN:
+        if san.san()[:2] not in Square.valid_set():
+            raise RuntimeError(InvalidFromSquare.from_index_with_SANs(san.index(), san.sans()))
 
-    def value(self) -> MicroSAN:
-        if self.san.san()[2:4] not in VALID_SQUARES:
-            raise RuntimeError(InvalidToSquare.from_index_with_SANs(self.san.index(), self.san.sans()))
-
-        return self.san
-
-
-class PromotionValidSAN(NamedTuple):
-    san: MicroSAN
-
-    def value(self) -> MicroSAN:
-        if len(self.san.san()) == 5 and self.san.san()[4] not in PROMOTIONABLE_PIECES:
-            raise RuntimeError(InvalidPromotion.from_index_with_SANs(self.san.index(), self.san.sans()))
-
-        return self.san
+        return FromSquareValidSAN(san.index(), san.sans())
 
 
-class ValidMicroSAN(NamedTuple):
-    san: MicroSAN
+class ToSquareValidSAN(MicroSAN):
+    @classmethod
+    def from_MicroSAN(cls, san: MicroSAN) -> ToSquareValidSAN:
+        if san.san()[2:4] not in Square.valid_set():
+            raise RuntimeError(InvalidToSquare.from_index_with_SANs(san.index(), san.sans()))
 
-    def value(self) -> MicroSAN:
-        return (
-            self.san
-            if self.san.san() == MICRO_CASTLING_SAN
+        return ToSquareValidSAN(san.index(), san.sans())
+
+
+class PromotionValidSAN(MicroSAN):
+    @classmethod
+    def from_MicroSAN(cls, san: MicroSAN) -> PromotionValidSAN:
+        if len(san.san()) == 5 and san.san()[4] not in "QqRrBbNn":
+            raise RuntimeError(InvalidPromotion.from_index_with_SANs(san.index(), san.sans()))
+
+        return PromotionValidSAN(san.index(), san.sans())
+
+
+class ValidMicroSAN(MicroSAN):
+    @classmethod
+    def from_MicroSAN(cls, san: MicroSAN) -> ValidMicroSAN:
+        valid: MicroSAN = (
+            san
+            if san.san() == SAN.castling()
             else (
-                Mappable(LengthValidSAN(self.san).value())
-                .mapped(lambda x: FromSquareValidSAN(x).value())
-                .mapped(lambda x: ToSquareValidSAN(x).value())
-                .mapped(lambda x: PromotionValidSAN(x).value())
+                Mappable(LengthValidSAN.from_MicroSAN(san))
+                .mapped(lambda x: FromSquareValidSAN.from_MicroSAN(x))
+                .mapped(lambda x: ToSquareValidSAN.from_MicroSAN(x))
+                .mapped(lambda x: PromotionValidSAN.from_MicroSAN(x))
                 .value()
             )
         )
+
+        return ValidMicroSAN(valid.index(), valid.sans())

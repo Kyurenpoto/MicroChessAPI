@@ -4,9 +4,8 @@
 
 import pytest
 from domain.error.dtoerror import EmptyFENs, EmptySANs, NotMatchedNumberFENsSANs
-from domain.implementation.basictype import FEN
+from domain.implementation.basictype import FEN, SAN
 from domain.implementation.legalsan import LegalSANs
-from domain.implementation.validmicrosan import MICRO_FIRST_MOVE_SAN
 from fastapi import status
 from httpx import AsyncClient
 
@@ -37,7 +36,7 @@ async def test_fen_status_empty_FENs(async_client: AsyncClient) -> None:
 async def test_next_fen_normal(async_client: AsyncClient) -> None:
     response = await async_client.post(
         url="/model/next-fen",
-        json={"fens": [FEN.starting()], "sans": [MICRO_FIRST_MOVE_SAN]},
+        json={"fens": [FEN.starting()], "sans": [SAN.first_move()]},
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -46,7 +45,7 @@ async def test_next_fen_normal(async_client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_next_fen_empty_FENs(async_client: AsyncClient) -> None:
-    response = await async_client.post(url="/model/next-fen", json={"fens": [], "sans": [MICRO_FIRST_MOVE_SAN]})
+    response = await async_client.post(url="/model/next-fen", json={"fens": [], "sans": [SAN.first_move()]})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert response.json()["error"] == EmptyFENs.error_type()
@@ -64,8 +63,8 @@ async def test_next_fen_empty_SANs(async_client: AsyncClient) -> None:
 @pytest.mark.parametrize(
     "json",
     [
-        ({"fens": [FEN.starting(), FEN.starting()], "sans": [MICRO_FIRST_MOVE_SAN]}),
-        ({"fens": [FEN.starting()], "sans": [MICRO_FIRST_MOVE_SAN, MICRO_FIRST_MOVE_SAN]}),
+        ({"fens": [FEN.starting(), FEN.starting()], "sans": [SAN.first_move()]}),
+        ({"fens": [FEN.starting()], "sans": [SAN.first_move(), SAN.first_move()]}),
     ],
 )
 async def test_next_fen_not_matched_number_FENs_SANs(async_client: AsyncClient, json: dict[str, list[str]]) -> None:
