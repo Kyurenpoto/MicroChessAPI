@@ -19,9 +19,8 @@ from .boardstring import BoardString
 from .legalsan import LegalSANs
 from .mappable import Mappable
 from .microfen import MicroFEN, MirroredMicroFEN
-from .microsan import MicroSAN
+from .microsan import MicroSAN, ValidMicroSAN
 from .square import FromSquare, Square, ToSquare
-from .validmicrosan import ValidMicroSAN
 
 
 class MoveTarget:

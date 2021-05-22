@@ -8,8 +8,7 @@ from infra.rawlegalmoves import RawLegalMoves, RawMove
 
 from .basictype import FEN, SAN
 from .microfen import MirroredMicroFEN
-from .microsan import MicroSAN
-from .validmicrosan import ValidMicroSAN
+from .microsan import MicroSAN, ValidMicroSAN
 
 
 class CorrectedRawLegalMoves(list[str]):

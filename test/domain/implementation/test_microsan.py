@@ -5,8 +5,7 @@
 import pytest
 from domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
 from domain.implementation.basictype import SAN
-from domain.implementation.microsan import MicroSAN
-from domain.implementation.validmicrosan import ValidMicroSAN
+from domain.implementation.microsan import MicroSAN, ValidMicroSAN
 
 
 def test_normal() -> None:
