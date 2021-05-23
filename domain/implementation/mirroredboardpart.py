@@ -2,39 +2,65 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import NamedTuple
+from __future__ import annotations
 
+from domain.implementation.microfen import MicroFEN
+
+from .basictype import FEN
 from .mirroredrow import MirroredRow
-
-MIRRORED_PIECE: dict[str, str] = {
-    "/": "/",
-    "1": "1",
-    "2": "2",
-    "3": "3",
-    "4": "4",
-    "5": "5",
-    "6": "6",
-    "7": "7",
-    "8": "8",
-    "P": "p",
-    "p": "P",
-    "K": "k",
-    "k": "K",
-    "Q": "q",
-    "q": "Q",
-    "R": "r",
-    "r": "R",
-    "N": "n",
-    "n": "N",
-    "B": "b",
-    "b": "B",
-}
+from .splitablefen import BoardPart
 
 
-class MirroredBoardPart(NamedTuple):
-    boardpart: str
+class PureBoardPart(str):
+    @classmethod
+    def from_board_part(cls, board: BoardPart) -> PureBoardPart:
+        return PureBoardPart(board.board)
 
-    def value(self) -> str:
-        splited: list[str] = "".join(map(lambda x: MIRRORED_PIECE[x], self.boardpart)).split("/")
 
-        return "/".join([MirroredRow(row).value() for row in splited[4::-1]] + splited[5:])
+class PieceMirroredBoardPart(PureBoardPart):
+    @classmethod
+    def from_pure_board_part(cls, pure: PureBoardPart) -> PieceMirroredBoardPart:
+        return PieceMirroredBoardPart("".join(map(lambda x: PieceMirroredBoardPart.mirror_piece(x), pure)))
+
+    @classmethod
+    def mirror_piece(cls, piece: str) -> str:
+        if piece.isupper():
+            return piece.lower()
+        if piece.islower():
+            return piece.upper()
+        return piece
+
+
+class SplitedBoardPart(list[str]):
+    @classmethod
+    def from_pure_board_part(cls, pure: PureBoardPart) -> SplitedBoardPart:
+        return SplitedBoardPart(pure.split("/"))
+
+    def join_parts(self) -> str:
+        return "/".join(self)
+
+
+class MirroredSplitedBoardPart(SplitedBoardPart):
+    @classmethod
+    def from_splited_board_part(cls, splited: SplitedBoardPart) -> MirroredSplitedBoardPart:
+        return MirroredSplitedBoardPart([MirroredRow(row).value() for row in splited[4::-1]] + splited[5:])
+
+
+class MirroredBoardPart(str):
+    @classmethod
+    def from_piece_mirrored_board_part(cls, mirrored: PieceMirroredBoardPart) -> MirroredBoardPart:
+        return MirroredBoardPart(
+            MirroredSplitedBoardPart.from_splited_board_part(
+                SplitedBoardPart.from_pure_board_part(mirrored)
+            ).join_parts()
+        )
+
+    @classmethod
+    def from_board_part(cls, board: BoardPart) -> MirroredBoardPart:
+        return MirroredBoardPart.from_piece_mirrored_board_part(
+            PieceMirroredBoardPart.from_pure_board_part(PureBoardPart.from_board_part(board))
+        )
+
+    @classmethod
+    def from_FEN(cls, fen: FEN) -> MirroredBoardPart:
+        return MirroredBoardPart.from_board_part(BoardPart.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen])))

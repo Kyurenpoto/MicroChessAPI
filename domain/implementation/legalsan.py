@@ -7,8 +7,9 @@ from __future__ import annotations
 from infra.rawlegalmoves import RawLegalMoves, RawMove
 
 from .basictype import FEN, SAN
-from .microfen import MirroredMicroFEN
 from .microsan import MicroSAN, ValidMicroSAN
+from .movedfen import MirroredMicroFEN
+from .splitablefen import ColorPart
 
 
 class CorrectedRawLegalMoves(list[str]):
@@ -22,10 +23,10 @@ class CorrectedRawLegalMoves(list[str]):
 
     @classmethod
     def from_FEN(cls, fen: FEN) -> CorrectedRawLegalMoves:
-        if fen.split(" ")[1] == "w":
+        if ColorPart.from_FEN(fen) == "w":
             return CorrectedRawLegalMoves(
                 CorrectedRawLegalMoves.from_normal_FEN(fen)
-                + CorrectedRawLegalMoves.from_mirrored_FEN(MirroredMicroFEN(fen).value())
+                + CorrectedRawLegalMoves.from_mirrored_FEN(MirroredMicroFEN.from_FEN(fen))
             )
         else:
             return CorrectedRawLegalMoves.from_normal_FEN(fen)

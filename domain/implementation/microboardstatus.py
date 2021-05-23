@@ -8,20 +8,22 @@ from enum import Enum, auto
 from functools import reduce
 from typing import NamedTuple
 
+from domain.implementation.boardstring import BoardString
+from domain.implementation.microfen import MicroFEN
 from infra.rawcheckedfen import RawCheckedFEN
 
 from .basictype import FEN
-from .splitablefen import BoardPart, ColorPart
+from .splitablefen import ColorPart, HalfmovePart
 
 
 def square_color(loc: int) -> int:
     return ((loc // 8) + (loc % 8)) % 2
 
 
-class CountableBoardPart(BoardPart):
+class CountableBoardPart(str):
     @classmethod
     def from_FEN(cls, fen: FEN) -> CountableBoardPart:
-        return CountableBoardPart(BoardPart.from_FEN(fen))
+        return CountableBoardPart(BoardString.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen])).board)
 
     def count_symbols(self, symbols: str) -> int:
         return reduce(lambda x, y: x + y, [self.count(x) for x in symbols])
@@ -41,7 +43,7 @@ class SymbolizableColorPart(ColorPart):
         return SymbolizableColorPart(ColorPart.from_FEN(fen))
 
     def opposite(self) -> SymbolizableColorPart:
-        return SymbolizableColorPart({"w": "b", "b": "w"}[self])
+        return SymbolizableColorPart(self.mirror())
 
     def pawn_queen_rook(self) -> str:
         return {"w": "PQR", "b": "pqr"}[self]
@@ -93,10 +95,10 @@ class BoardColorPart(NamedTuple):
         )
 
 
-class HalfMovePart(int):
+class ConditionalHalfmovePart(HalfmovePart):
     @classmethod
-    def from_FEN(cls, fen: FEN) -> HalfMovePart:
-        return HalfMovePart(int(fen.split(" ")[-2]))
+    def from_FEN(cls, fen: FEN) -> ConditionalHalfmovePart:
+        return ConditionalHalfmovePart(HalfmovePart.from_FEN(fen))
 
     def over_fifty_moves(self) -> bool:
         return self >= 50
@@ -127,7 +129,7 @@ class MicroBoardStatus(Enum):
     def from_status_clue(cls, clue: StatusClue) -> MicroBoardStatus:
         if BoardColorPart.from_FEN(clue.fen).insufficient():
             return MicroBoardStatus.INSUFFICIENT_MATERIAL
-        if HalfMovePart.from_FEN(clue.fen).over_fifty_moves():
+        if ConditionalHalfmovePart.from_FEN(clue.fen).over_fifty_moves():
             return MicroBoardStatus.FIFTY_MOVES
         return MicroBoardStatus.from_status_check_clue(clue)
 

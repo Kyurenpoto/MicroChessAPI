@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 import chess
-from domain.implementation.splitablefen import ColorPart
+from domain.implementation.splitablefen import CastlingPart, ColorPart, ReplacableSplitedFEN
 
 
 class SymbolizableColorPart(ColorPart):
@@ -20,31 +20,29 @@ class SymbolizableColorPart(ColorPart):
         return {"w": castling[1:], "b": castling[:-1]}[self] if self.king() in castling else castling
 
 
-class CastlingPart(str):
+class SpendableCastlingPart(CastlingPart):
     @classmethod
-    def from_FEN(cls, fen: str) -> CastlingPart:
-        return CastlingPart(fen.split(" ")[2])
+    def from_FEN(cls, fen: str) -> SpendableCastlingPart:
+        return SpendableCastlingPart(CastlingPart.from_FEN(fen))
 
-    def correct(self) -> CastlingPart:
-        return CastlingPart("-" if self == "" else self)
+    def correct(self) -> SpendableCastlingPart:
+        return SpendableCastlingPart("-" if self == "" else self)
 
-    def spend_castlable_piece(self, color: SymbolizableColorPart) -> CastlingPart:
-        return CastlingPart(color.spend_from(self)).correct()
+    def spend_castlable_piece(self, color: SymbolizableColorPart) -> SpendableCastlingPart:
+        return SpendableCastlingPart(color.spend_from(self)).correct()
 
-    def spend(self, color: SymbolizableColorPart, piece: str) -> CastlingPart:
+    def spend(self, color: SymbolizableColorPart, piece: str) -> SpendableCastlingPart:
         return self.spend_castlable_piece(color) if piece in "KkRr" else self
 
     def replace_from(self, fen: str) -> str:
-        splited: list[str] = fen.split(" ")
-
-        return " ".join(splited[:2] + [str(self)] + splited[3:])
+        return ReplacableSplitedFEN.from_FEN(fen).replace_castling(self).join_parts()
 
 
 class RawMovedFEN(str):
     @classmethod
     def from_trace_FEN_with_piece(cls, fen: str, next_fen: str, piece: str) -> RawMovedFEN:
         return RawMovedFEN(
-            CastlingPart.from_FEN(fen).spend(SymbolizableColorPart.from_FEN(fen), piece).replace_from(next_fen)
+            SpendableCastlingPart.from_FEN(fen).spend(SymbolizableColorPart.from_FEN(fen), piece).replace_from(next_fen)
         )
 
     @classmethod

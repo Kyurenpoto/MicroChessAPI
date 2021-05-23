@@ -11,15 +11,20 @@ from domain.error.boardstringerror import (
     NotEmptyOutside,
 )
 from domain.implementation.basictype import FEN
-from domain.implementation.boardstring import BoardString, valid_micro_board_string
 from domain.implementation.microfen import MicroFEN
 from domain.implementation.validmicrofen import ValidMicroFEN
 
 
-def test_normal() -> None:
-    valid_micro_board_string(BoardString(MicroFEN(0, [FEN.starting()]))).fen().fen() == FEN.starting()
-    valid_micro_board_string(BoardString(MicroFEN(0, [FEN.white_castlable()]))).fen().fen() == FEN.white_castlable()
-    valid_micro_board_string(BoardString(MicroFEN(0, [FEN.black_castlable()]))).fen().fen() == FEN.black_castlable()
+@pytest.mark.parametrize(
+    "fen",
+    [
+        (FEN.starting()),
+        (FEN.white_castlable()),
+        (FEN.black_castlable()),
+    ],
+)
+def test_normal(fen: FEN) -> None:
+    ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen])).fen == fen
 
 
 @pytest.mark.parametrize(
@@ -34,7 +39,7 @@ def test_normal() -> None:
 )
 def test_invalid_symbol(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidSymbol.error_type()
 
@@ -48,7 +53,7 @@ def test_invalid_symbol(fen: FEN) -> None:
 )
 def test_invalid_row_number(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidRowNumber.error_type()
 
@@ -64,7 +69,7 @@ def test_invalid_row_number(fen: FEN) -> None:
 )
 def test_invalid_square_number(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidSquareNumber.error_type()
 
@@ -78,7 +83,7 @@ def test_invalid_square_number(fen: FEN) -> None:
 )
 def test_not_empty_outside(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == NotEmptyOutside.error_type()
 
@@ -112,6 +117,6 @@ def test_not_empty_outside(fen: FEN) -> None:
 )
 def test_invalid_piece_number(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidPieceNumber.error_type()

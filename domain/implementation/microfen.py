@@ -2,50 +2,18 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
+from __future__ import annotations
+
 from typing import NamedTuple
 
 from .basictype import FEN
-from .mirroredboardpart import MirroredBoardPart
 
 
-class MicroFEN:
-    __slots__ = ["__index", "__fens", "__fen"]
-
-    __index: int
-    __fens: list[str]
-    __fen: FEN
-
-    def __init__(self, index: int, fens: list[str]):
-        self.__index = index
-        self.__fens = fens
-        self.__fen = FEN("")
-
-    def fen(self) -> FEN:
-        if self.__fen == FEN(""):
-            self.__fen = FEN(self.__fens[self.__index])
-
-        return self.__fen
-
-    def index(self) -> int:
-        return self.__index
-
-    def fens(self) -> list[str]:
-        return self.__fens
-
-
-class MirroredMicroFEN(NamedTuple):
+class MicroFEN(NamedTuple):
+    index: int
+    fens: list[str]
     fen: FEN
 
-    def value(self) -> FEN:
-        splited: list[str] = self.fen.split(" ")
-
-        return FEN(
-            " ".join(
-                [
-                    MirroredBoardPart(splited[0]).value(),
-                    {"w": "b", "b": "w"}[splited[1]],
-                    {"Kk": "Kk", "K": "k", "k": "K", "-": "-"}[splited[2]],
-                ]
-                + splited[3:]
-            )
-        )
+    @classmethod
+    def from_index_with_FENS(cls, index: int, fens: list[str]) -> MicroFEN:
+        return MicroFEN(index, fens, FEN(fens[index]))

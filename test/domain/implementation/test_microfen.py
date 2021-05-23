@@ -12,19 +12,20 @@ from domain.error.microfenerror import (
     InvalidTurnPart,
 )
 from domain.implementation.basictype import FEN
-from domain.implementation.microfen import MicroFEN, MirroredMicroFEN
+from domain.implementation.microfen import MicroFEN
+from domain.implementation.movedfen import MirroredMicroFEN
 from domain.implementation.validmicrofen import ValidMicroFEN
 
 
 def test_castlable() -> None:
-    assert MirroredMicroFEN(FEN.white_castlable()).value() == FEN.black_castlable()
-    assert MirroredMicroFEN(FEN.black_castlable()).value() == FEN.white_castlable()
+    assert MirroredMicroFEN.from_FEN(FEN.white_castlable()) == FEN.black_castlable()
+    assert MirroredMicroFEN.from_FEN(FEN.black_castlable()) == FEN.white_castlable()
 
 
 def test_normal() -> None:
-    ValidMicroFEN.from_MicroFEN(MicroFEN(0, [FEN.starting()])).fen() == FEN.starting()
-    ValidMicroFEN.from_MicroFEN(MicroFEN(0, [FEN.white_castlable()])).fen() == FEN.white_castlable()
-    ValidMicroFEN.from_MicroFEN(MicroFEN(0, [FEN.black_castlable()])).fen() == FEN.black_castlable()
+    ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [FEN.starting()])).fen == FEN.starting()
+    ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [FEN.white_castlable()])).fen == FEN.white_castlable()
+    ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [FEN.black_castlable()])).fen == FEN.black_castlable()
 
 
 @pytest.mark.parametrize(
@@ -37,7 +38,7 @@ def test_normal() -> None:
 )
 def test_invalid_structure(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidStructure.error_type()
 
@@ -53,7 +54,7 @@ def test_invalid_structure(fen: FEN) -> None:
 )
 def test_invalid_turn_part(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidTurnPart.error_type()
 
@@ -69,7 +70,7 @@ def test_invalid_turn_part(fen: FEN) -> None:
 )
 def test_invalid_castling_part(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidCastlingPart.error_type()
 
@@ -83,7 +84,7 @@ def test_invalid_castling_part(fen: FEN) -> None:
 )
 def test_invalid_enpassant_part(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidEnpassantPart.error_type()
 
@@ -99,7 +100,7 @@ def test_invalid_enpassant_part(fen: FEN) -> None:
 )
 def test_invalid_halfmove_part(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidHalfmovePart.error_type()
 
@@ -116,6 +117,6 @@ def test_invalid_halfmove_part(fen: FEN) -> None:
 )
 def test_invalid_fullmove_part(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidFullmovePart.error_type()
