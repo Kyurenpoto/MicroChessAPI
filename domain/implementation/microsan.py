@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
 from domain.implementation.mappable import Mappable
-from domain.implementation.square import Square
+from domain.implementation.square import FromSquare, Square, ToSquare
 
 from .basictype import SAN
 
@@ -48,7 +48,7 @@ class LengthValidSAN(MicroSAN):
 class FromSquareValidSAN(MicroSAN):
     @classmethod
     def from_MicroSAN(cls, san: MicroSAN) -> FromSquareValidSAN:
-        if san.san()[:2] not in Square.valid_set():
+        if not FromSquare.from_SAN(san.san()).valid():
             raise RuntimeError(InvalidFromSquare.from_index_with_SANs(san.index(), san.sans()))
 
         return FromSquareValidSAN(san.index(), san.sans())
@@ -57,7 +57,7 @@ class FromSquareValidSAN(MicroSAN):
 class ToSquareValidSAN(MicroSAN):
     @classmethod
     def from_MicroSAN(cls, san: MicroSAN) -> ToSquareValidSAN:
-        if san.san()[2:4] not in Square.valid_set():
+        if not ToSquare.from_SAN(san.san()).valid():
             raise RuntimeError(InvalidToSquare.from_index_with_SANs(san.index(), san.sans()))
 
         return ToSquareValidSAN(san.index(), san.sans())

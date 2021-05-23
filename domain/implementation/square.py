@@ -14,9 +14,8 @@ class Square(str):
     def rank(self) -> str:
         return self[1]
 
-    @classmethod
-    def valid_set(cls) -> set[Square]:
-        return set([Square(i + j) for j in "45678" for i in "efgh"])
+    def valid(self) -> bool:
+        return (self.file() in "efgh") and (self.rank() in "45678")
 
 
 class FromSquare(Square):
