@@ -21,7 +21,7 @@ from domain.implementation.validmicrofen import ValidMicroFEN
 )
 def test_invalid_symbol(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidSymbol.error_type()
 
@@ -35,7 +35,7 @@ def test_invalid_symbol(fen: FEN) -> None:
 )
 def test_invalid_row_number(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidRowNumber.error_type()
 
@@ -51,6 +51,6 @@ def test_invalid_row_number(fen: FEN) -> None:
 )
 def test_invalid_square_number(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidSquareNumber.error_type()

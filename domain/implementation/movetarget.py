@@ -46,7 +46,7 @@ class MoveTarget:
 
     def microfen(self) -> MicroFEN:
         if self.__fen is None:
-            self.__fen = ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(self.__index, self.__fens))
+            self.__fen = ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(self.__index, self.__fens))
 
         return self.__fen
 

@@ -23,7 +23,7 @@ def square_color(loc: int) -> int:
 class CountableBoardPart(str):
     @classmethod
     def from_FEN(cls, fen: FEN) -> CountableBoardPart:
-        return CountableBoardPart(BoardString.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen])).board)
+        return CountableBoardPart(BoardString.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen])).board)
 
     def count_symbols(self, symbols: str) -> int:
         return reduce(lambda x, y: x + y, [self.count(x) for x in symbols])

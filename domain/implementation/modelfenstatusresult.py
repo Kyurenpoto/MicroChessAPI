@@ -35,7 +35,7 @@ class ModelFENStatusResult(NamedTuple):
 
     def value(self) -> tuple[list[list[str]], list[int]]:
         boards: list[str] = [
-            str(ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(index, self.fens)).fen)
+            str(ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(index, self.fens)).fen)
             for index in range(len(self.fens))
         ]
         legal_moves: list[list[str]] = LegalMoves(boards).value()

@@ -15,5 +15,5 @@ class MicroFEN(NamedTuple):
     fen: FEN
 
     @classmethod
-    def from_index_with_FENS(cls, index: int, fens: list[str]) -> MicroFEN:
+    def from_index_with_FENs(cls, index: int, fens: list[str]) -> MicroFEN:
         return MicroFEN(index, fens, FEN(fens[index]))

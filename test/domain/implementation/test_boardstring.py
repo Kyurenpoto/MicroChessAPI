@@ -18,7 +18,7 @@ from domain.implementation.validmicrofen import ValidMicroFEN
 )
 def test_not_empty_outside(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
     assert exinfo.value.args[0].error == NotEmptyOutside.error_type()
 
@@ -52,6 +52,6 @@ def test_not_empty_outside(fen: FEN) -> None:
 )
 def test_invalid_piece_number(fen: FEN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen]))
+        ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
     assert exinfo.value.args[0].error == InvalidPieceNumber.error_type()
