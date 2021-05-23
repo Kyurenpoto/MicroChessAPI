@@ -10,7 +10,7 @@ class InvalidStructure:
     @classmethod
     def msg(cls, index: int) -> str:
         return (
-            NumeralMessage.from_index(index)
+            NumeralMessage.from_index_starting_zero(index)
             + "The FEN should consist of 6 parts separated by spaces: "
             + "'[Board part] [Turn part] [Castling part] [Enpassant part] [Halfmove part] [Fullmove part]'"
         )
@@ -33,7 +33,7 @@ class InvalidStructure:
 class InvalidTurnPart:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "Turn part of FEN should be one of 'w', 'b'"
+        return NumeralMessage.from_index_starting_zero(index) + "Turn part of FEN should be one of 'w', 'b'"
 
     @classmethod
     def error_type(cls) -> str:
@@ -53,7 +53,10 @@ class InvalidTurnPart:
 class InvalidCastlingPart:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "Castling part of FEN should be one of 'Kk', 'K', 'k', or '-'"
+        return (
+            NumeralMessage.from_index_starting_zero(index)
+            + "Castling part of FEN should be one of 'Kk', 'K', 'k', or '-'"
+        )
 
     @classmethod
     def error_type(cls) -> str:
@@ -73,7 +76,7 @@ class InvalidCastlingPart:
 class InvalidEnpassantPart:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "Enpassant part of FEN should be '-'"
+        return NumeralMessage.from_index_starting_zero(index) + "Enpassant part of FEN should be '-'"
 
     @classmethod
     def error_type(cls) -> str:
@@ -93,7 +96,10 @@ class InvalidEnpassantPart:
 class InvalidHalfmovePart:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "Halfmove part of FEN should be an integer in range [0, 50]"
+        return (
+            NumeralMessage.from_index_starting_zero(index)
+            + "Halfmove part of FEN should be an integer in range [0, 50]"
+        )
 
     @classmethod
     def error_type(cls) -> str:
@@ -113,7 +119,10 @@ class InvalidHalfmovePart:
 class InvalidFullmovePart:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "Fullmove part of FEN should be an integer in range [1, 80]"
+        return (
+            NumeralMessage.from_index_starting_zero(index)
+            + "Fullmove part of FEN should be an integer in range [1, 80]"
+        )
 
     @classmethod
     def error_type(cls) -> str:

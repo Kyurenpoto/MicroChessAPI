@@ -11,7 +11,7 @@ class NumeralMessage(str):
         return NumeralMessage(f"At the {numeral} element: ")
 
     @classmethod
-    def from_index(cls, index: int) -> NumeralMessage:
+    def from_index_starting_one(cls, index: int) -> NumeralMessage:
         if index == 1:
             return NumeralMessage.from_numeral("1st")
         if index == 2:
@@ -20,3 +20,7 @@ class NumeralMessage(str):
             return NumeralMessage.from_numeral("3rd")
 
         return NumeralMessage.from_numeral(f"{index}th")
+
+    @classmethod
+    def from_index_starting_zero(cls, index: int) -> NumeralMessage:
+        return NumeralMessage.from_index_starting_one(index + 1)

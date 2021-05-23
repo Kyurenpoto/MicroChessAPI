@@ -10,7 +10,7 @@ class NotEmptyOutside:
     @classmethod
     def msg(cls, index: int) -> str:
         return (
-            NumeralMessage.from_index(index)
+            NumeralMessage.from_index_starting_zero(index)
             + "All outside the MicroChess area in the board part of FEN should be blank"
         )
 
@@ -33,7 +33,7 @@ class InvalidPieceNumber:
     @classmethod
     def msg(cls, index: int) -> str:
         return (
-            NumeralMessage.from_index(index)
+            NumeralMessage.from_index_starting_zero(index)
             + "Only one King, a maximum of 1 Queen and Pawn, and a maximum of 2 Rooks, Bishops, and Nights"
             + " should exist in the board part"
         )

@@ -9,7 +9,7 @@ from domain.implementation.numeralmessage import NumeralMessage
 class InvalidLength:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "The length of the normal SAN string must be 4 or 5"
+        return NumeralMessage.from_index_starting_zero(index) + "The length of the normal SAN string must be 4 or 5"
 
     @classmethod
     def error_type(cls) -> str:
@@ -29,7 +29,9 @@ class InvalidLength:
 class InvalidFromSquare:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "Only files e to h and ranks 4 to 8 are used in MicroChess"
+        return (
+            NumeralMessage.from_index_starting_zero(index) + "Only files e to h and ranks 4 to 8 are used in MicroChess"
+        )
 
     @classmethod
     def error_type(cls) -> str:
@@ -49,7 +51,9 @@ class InvalidFromSquare:
 class InvalidToSquare:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "Only files e to h and ranks 4 to 8 are used in MicroChess"
+        return (
+            NumeralMessage.from_index_starting_zero(index) + "Only files e to h and ranks 4 to 8 are used in MicroChess"
+        )
 
     @classmethod
     def error_type(cls) -> str:
@@ -69,7 +73,9 @@ class InvalidToSquare:
 class InvalidPromotion:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "Pawn can only promote to Queen, Rook, Knight, and Bishop"
+        return (
+            NumeralMessage.from_index_starting_zero(index) + "Pawn can only promote to Queen, Rook, Knight, and Bishop"
+        )
 
     @classmethod
     def error_type(cls) -> str:

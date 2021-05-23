@@ -10,7 +10,7 @@ class CannotCastle:
     @classmethod
     def msg(cls, index: int) -> str:
         return (
-            NumeralMessage.from_index(index)
+            NumeralMessage.from_index_starting_zero(index)
             + "Castling is only possible when FEN's castling availability is active and between king and rook is empty"
         )
 
@@ -32,7 +32,10 @@ class CannotCastle:
 class EmptyFromSquare:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "An active color piece should be placed on the from-square of SAN"
+        return (
+            NumeralMessage.from_index_starting_zero(index)
+            + "An active color piece should be placed on the from-square of SAN"
+        )
 
     @classmethod
     def error_type(cls) -> str:
@@ -52,7 +55,10 @@ class EmptyFromSquare:
 class OppositeFromSquare:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "An active color piece should be placed on the from-square of SAN"
+        return (
+            NumeralMessage.from_index_starting_zero(index)
+            + "An active color piece should be placed on the from-square of SAN"
+        )
 
     @classmethod
     def error_type(cls) -> str:
@@ -72,7 +78,10 @@ class OppositeFromSquare:
 class FullToSquare:
     @classmethod
     def msg(cls, index: int) -> str:
-        return NumeralMessage.from_index(index) + "The to-square of SAN must be empty or place an inactive color piece"
+        return (
+            NumeralMessage.from_index_starting_zero(index)
+            + "The to-square of SAN must be empty or place an inactive color piece"
+        )
 
     @classmethod
     def error_type(cls) -> str:
@@ -93,7 +102,7 @@ class InvalidPieceMove:
     @classmethod
     def msg(cls, index: int) -> str:
         return (
-            NumeralMessage.from_index(index)
+            NumeralMessage.from_index_starting_zero(index)
             + "An piece located on the from-square of SAN cannot be moved to the to-square of SAN"
         )
 

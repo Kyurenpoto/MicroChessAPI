@@ -10,7 +10,7 @@ class InvalidSymbol:
     @classmethod
     def msg(cls, index: int) -> str:
         return (
-            NumeralMessage.from_index(index)
+            NumeralMessage.from_index_starting_zero(index)
             + "The board part of the FEN should contain "
             + "only the numbers 1~8, '/', and symbols representing chess pieces"
         )
@@ -34,7 +34,7 @@ class InvalidRowNumber:
     @classmethod
     def msg(cls, index: int) -> str:
         return (
-            NumeralMessage.from_index(index)
+            NumeralMessage.from_index_starting_zero(index)
             + "The board part of the FEN should contain only The board part of FEN should have 8 rows separated by '/'"
         )
 
@@ -57,7 +57,7 @@ class InvalidSquareNumber:
     @classmethod
     def msg(cls, index: int) -> str:
         return (
-            NumeralMessage.from_index(index)
+            NumeralMessage.from_index_starting_zero(index)
             + "Each row in the board part of FEN should contain 8 squares, including a blank and a piece"
         )
 
