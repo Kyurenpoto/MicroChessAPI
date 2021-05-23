@@ -8,7 +8,7 @@ from infra.rawlegalmoves import RawLegalMoves, RawMove
 
 from .basictype import FEN, SAN
 from .microsan import MicroSAN, ValidMicroSAN
-from .movedfen import MirroredMicroFEN
+from .movablefen import MovableFEN
 from .splitablefen import ColorPart
 
 
@@ -26,7 +26,7 @@ class CorrectedRawLegalMoves(list[str]):
         if ColorPart.from_FEN(fen) == "w":
             return CorrectedRawLegalMoves(
                 CorrectedRawLegalMoves.from_normal_FEN(fen)
-                + CorrectedRawLegalMoves.from_mirrored_FEN(MirroredMicroFEN.from_FEN(fen))
+                + CorrectedRawLegalMoves.from_mirrored_FEN(MovableFEN(fen).mirrored())
             )
         else:
             return CorrectedRawLegalMoves.from_normal_FEN(fen)

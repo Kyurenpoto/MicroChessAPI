@@ -4,7 +4,7 @@
 
 from typing import NamedTuple
 
-from domain.implementation.movedfen import MovedFEN
+from domain.implementation.movablefen import MovableFEN
 from domain.implementation.movetarget import MoveTarget, ValidMoveTarget
 
 
@@ -16,7 +16,7 @@ class NextFen(NamedTuple):
     def value(self) -> str:
         target: MoveTarget = ValidMoveTarget(MoveTarget(self.index, self.fens, self.sans)).value()
 
-        return MovedFEN.from_FEN_SAN(target.fen(), target.san())
+        return MovableFEN(target.fen()).moved(target.san())
 
 
 class ModelNextFENResult(NamedTuple):

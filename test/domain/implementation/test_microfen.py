@@ -13,19 +13,7 @@ from domain.error.microfenerror import (
 )
 from domain.implementation.basictype import FEN
 from domain.implementation.microfen import MicroFEN
-from domain.implementation.movedfen import MirroredMicroFEN
 from domain.implementation.validmicrofen import ValidMicroFEN
-
-
-@pytest.mark.parametrize(
-    "fen, mirrored",
-    [
-        (FEN.white_castlable(), FEN.black_castlable()),
-        (FEN.black_castlable(), FEN.white_castlable()),
-    ],
-)
-def test_mirror(fen: FEN, mirrored: FEN) -> None:
-    assert MirroredMicroFEN.from_FEN(fen) == mirrored
 
 
 @pytest.mark.parametrize(

@@ -20,7 +20,7 @@ from .legalsan import LegalSANs
 from .mappable import Mappable
 from .microfen import MicroFEN
 from .microsan import MicroSAN, ValidMicroSAN
-from .movedfen import MirroredMicroFEN
+from .movablefen import MovableFEN
 from .splitablefen import ColorPart
 from .square import FromSquare, Square, ToSquare
 
@@ -70,7 +70,7 @@ class CastlableMoveTarget(NamedTuple):
         if SAN.castling() not in LegalSANs.from_FEN(
             self.target.fen()
             if ColorPart.from_FEN(self.target.fen()) == "b"
-            else MirroredMicroFEN.from_FEN(self.target.fen())
+            else MovableFEN(self.target.fen()).mirrored()
         ):
             raise RuntimeError(CannotCastle.from_index_with_FENs_SANs(*(self.target.value())))
 
