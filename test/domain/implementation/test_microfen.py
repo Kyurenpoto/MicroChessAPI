@@ -17,15 +17,27 @@ from domain.implementation.movedfen import MirroredMicroFEN
 from domain.implementation.validmicrofen import ValidMicroFEN
 
 
-def test_castlable() -> None:
-    assert MirroredMicroFEN.from_FEN(FEN.white_castlable()) == FEN.black_castlable()
-    assert MirroredMicroFEN.from_FEN(FEN.black_castlable()) == FEN.white_castlable()
+@pytest.mark.parametrize(
+    "fen, mirrored",
+    [
+        (FEN.white_castlable(), FEN.black_castlable()),
+        (FEN.black_castlable(), FEN.white_castlable()),
+    ],
+)
+def test_mirror(fen: FEN, mirrored: FEN) -> None:
+    assert MirroredMicroFEN.from_FEN(fen) == mirrored
 
 
-def test_normal() -> None:
-    ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [FEN.starting()])).fen == FEN.starting()
-    ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [FEN.white_castlable()])).fen == FEN.white_castlable()
-    ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [FEN.black_castlable()])).fen == FEN.black_castlable()
+@pytest.mark.parametrize(
+    "fen",
+    [
+        (FEN.starting()),
+        (FEN.white_castlable()),
+        (FEN.black_castlable()),
+    ],
+)
+def test_normal(fen: FEN) -> None:
+    ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENS(0, [fen])).fen == fen
 
 
 @pytest.mark.parametrize(

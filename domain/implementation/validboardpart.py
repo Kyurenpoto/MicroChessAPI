@@ -4,23 +4,17 @@
 
 from __future__ import annotations
 
-from domain.error.boardstringerror import InvalidRowNumber, InvalidSquareNumber, InvalidSymbol
+from domain.error.boardparterror import InvalidRowNumber, InvalidSquareNumber, InvalidSymbol
 
 from .mappable import Mappable
 from .splitablefen import BoardPart
 from .symbol import ExpandedSymbol
 
 
-class SqueezedSymbol(str):
-    @classmethod
-    def valid_set(cls) -> set[str]:
-        return set("12345678/PpKkQqRrNnBb")
-
-
 class SymbolValidBoardPart(BoardPart):
     @classmethod
     def from_raw(cls, raw: BoardPart) -> SymbolValidBoardPart:
-        if not SqueezedSymbol.valid_set().issuperset(set(raw.board)):
+        if not set(raw.board).issubset(set("12345678/PpKkQqRrNnBb")):
             raise RuntimeError(InvalidSymbol.from_index_with_FENs(raw.fen.index, raw.fen.fens))
 
         return SymbolValidBoardPart(raw.fen, raw.board)
