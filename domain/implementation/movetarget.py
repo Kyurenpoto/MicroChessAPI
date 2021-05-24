@@ -59,14 +59,9 @@ class ValidMoveTarget(MoveTarget):
     @classmethod
     def from_move_target(cls, target: MoveTarget) -> ValidMoveTarget:
         return (
-            ValidMoveTarget(target.index, target.fens, target.sans, target.fen, target.san).castling_in_legal_moves()
+            ValidMoveTarget._make(target).castling_in_legal_moves()
             if target.san == SAN.castling()
-            else (
-                ValidMoveTarget(target.index, target.fens, target.sans, target.fen, target.san)
-                .valid_from_square_piece()
-                .valid_to_square_piece()
-                .san_in_legal_moves()
-            )
+            else (ValidMoveTarget._make(target).valid_from_square_piece().valid_to_square_piece().san_in_legal_moves())
         )
 
     def castling_in_legal_moves(self) -> ValidMoveTarget:

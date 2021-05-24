@@ -14,7 +14,7 @@ from .symbol import ExpandedSymbol
 class ValidBoardPart(BoardPart):
     @classmethod
     def from_raw(cls, raw: BoardPart) -> ValidBoardPart:
-        return ValidBoardPart(raw.fen, raw.board).valid_symbol().valid_size().valid_board_string()
+        return ValidBoardPart._make(raw).valid_symbol().valid_size().valid_board_string()
 
     def valid_symbol(self) -> ValidBoardPart:
         if not set(self.board).issubset(set("12345678/PpKkQqRrNnBb")):
@@ -33,8 +33,8 @@ class ValidBoardPart(BoardPart):
         return self
 
     def valid_board_string(self) -> ValidBoardPart:
-        valid: BoardPart = BoardPart.from_MicroFEN(
-            ValidMicroBoardString.from_boardstring(BoardString.from_MicroFEN(self.fen)).microfen
+        return ValidBoardPart._make(
+            BoardPart.from_MicroFEN(
+                ValidMicroBoardString.from_boardstring(BoardString.from_MicroFEN(self.fen)).microfen
+            )
         )
-
-        return ValidBoardPart(valid.fen, valid.board)

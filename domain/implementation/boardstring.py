@@ -42,7 +42,7 @@ class PieceRange(NamedTuple):
 class ValidMicroBoardString(BoardString):
     @classmethod
     def from_boardstring(cls, board: BoardString) -> ValidMicroBoardString:
-        return ValidMicroBoardString(board.microfen, board.board).empty_outside().valid_piece_count()
+        return ValidMicroBoardString._make(board).empty_outside().valid_piece_count()
 
     def empty_outside(self) -> ValidMicroBoardString:
         if (

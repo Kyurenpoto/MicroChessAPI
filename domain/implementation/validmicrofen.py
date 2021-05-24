@@ -31,8 +31,8 @@ from .validboardpart import ValidBoardPart
 class ValidMicroFEN(MicroFEN):
     @classmethod
     def from_MicroFEN(cls, microfen: MicroFEN) -> ValidMicroFEN:
-        valid: MicroFEN = (
-            ValidMicroFEN(microfen.index, microfen.fens, microfen.fen)
+        return ValidMicroFEN._make(
+            ValidMicroFEN._make(microfen)
             .valid_structure()
             .valid_board_part()
             .valid_turn_part()
@@ -42,8 +42,6 @@ class ValidMicroFEN(MicroFEN):
             .valid_fullmove_part()
         )
 
-        return ValidMicroFEN(valid.index, valid.fens, valid.fen)
-
     def valid_structure(self) -> ValidMicroFEN:
         if len(SplitedFEN.from_FEN(self.fen)) != 6:
             raise RuntimeError(InvalidStructure.from_index_with_FENs(self.index, self.fens))
@@ -51,9 +49,7 @@ class ValidMicroFEN(MicroFEN):
         return self
 
     def valid_board_part(self) -> ValidMicroFEN:
-        valid: MicroFEN = ValidBoardPart.from_raw(BoardPart.from_MicroFEN(self)).fen
-
-        return ValidMicroFEN(valid.index, valid.fens, valid.fen)
+        return ValidMicroFEN._make(ValidBoardPart.from_raw(BoardPart.from_MicroFEN(self)).fen)
 
     def valid_turn_part(self) -> ValidMicroFEN:
         if ColorPart.from_FEN(self.fen) not in ["w", "b"]:

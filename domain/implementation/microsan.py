@@ -25,19 +25,11 @@ class MicroSAN(NamedTuple):
 class ValidMicroSAN(MicroSAN):
     @classmethod
     def from_MicroSAN(cls, microsan: MicroSAN) -> ValidMicroSAN:
-        valid: MicroSAN = (
+        return ValidMicroSAN._make(
             microsan
             if microsan.san == SAN.castling()
-            else (
-                ValidMicroSAN(microsan.index, microsan.sans, microsan.san)
-                .valid_length()
-                .valid_from_square()
-                .valid_to_square()
-                .valid_promotion()
-            )
+            else (ValidMicroSAN._make(microsan).valid_length().valid_from_square().valid_to_square().valid_promotion())
         )
-
-        return ValidMicroSAN(valid.index, valid.sans, valid.san)
 
     def valid_length(self) -> ValidMicroSAN:
         if not (4 <= len(self.san) <= 5):
