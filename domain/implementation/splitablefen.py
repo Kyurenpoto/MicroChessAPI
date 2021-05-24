@@ -23,29 +23,17 @@ class FromBoardToColorParts(SplitedFEN):
     def from_SplitedFEN(cls, splited: SplitedFEN) -> FromBoardToColorParts:
         return FromBoardToColorParts(splited[:2])
 
-    @classmethod
-    def from_FEN(cls, fen: str) -> FromBoardToColorParts:
-        return FromBoardToColorParts.from_SplitedFEN(SplitedFEN.from_FEN(fen))
-
 
 class FromEnpassantToFullmoveParts(SplitedFEN):
     @classmethod
     def from_SplitedFEN(cls, splited: SplitedFEN) -> FromEnpassantToFullmoveParts:
         return FromEnpassantToFullmoveParts(splited[3:])
 
-    @classmethod
-    def from_FEN(cls, fen: str) -> FromEnpassantToFullmoveParts:
-        return FromEnpassantToFullmoveParts.from_SplitedFEN(SplitedFEN.from_FEN(fen))
-
 
 class FromBoardToHalfmoveParts(SplitedFEN):
     @classmethod
     def from_SplitedFEN(cls, splited: SplitedFEN) -> FromBoardToHalfmoveParts:
         return FromBoardToHalfmoveParts(splited[:-1])
-
-    @classmethod
-    def from_FEN(cls, fen: str) -> FromBoardToHalfmoveParts:
-        return FromBoardToHalfmoveParts.from_SplitedFEN(SplitedFEN.from_FEN(fen))
 
 
 class BoardPart(NamedTuple):

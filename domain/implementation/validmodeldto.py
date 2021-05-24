@@ -2,67 +2,48 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import NamedTuple
+from __future__ import annotations
 
 from domain.dto.modeldto import ModelFENStatusRequest, ModelNextFENRequest
 from domain.error.dtoerror import EmptyFENs, EmptySANs, NotMatchedNumberFENsSANs
-from domain.implementation.mappable import Mappable
 
 
-class NotEmptyFENsModelNextFENRequest(NamedTuple):
-    request: ModelNextFENRequest
-
-    def value(self) -> ModelNextFENRequest:
-        if len(self.request.fens) == 0:
-            raise RuntimeError(EmptyFENs.from_FENs(self.request.fens))
-
-        return self.request
-
-
-class NotEmptySANsModelNextFENRequest(NamedTuple):
-    request: ModelNextFENRequest
-
-    def value(self) -> ModelNextFENRequest:
-        if len(self.request.sans) == 0:
-            raise RuntimeError(EmptySANs.from_SANs(self.request.sans))
-
-        return self.request
-
-
-class FENsSANsNumberMatchtedModelNextFENRequest(NamedTuple):
-    request: ModelNextFENRequest
-
-    def value(self) -> ModelNextFENRequest:
-        if len(self.request.fens) != len(self.request.sans):
-            raise RuntimeError(NotMatchedNumberFENsSANs.from_FENs_SANs(self.request.fens, self.request.sans))
-
-        return self.request
-
-
-class ValidModelNextFENRequest(NamedTuple):
-    request: ModelNextFENRequest
-
-    def value(self) -> ModelNextFENRequest:
+class ValidModelNextFENRequest(ModelNextFENRequest):
+    @classmethod
+    def from_request(cls, request: ModelNextFENRequest) -> ValidModelNextFENRequest:
         return (
-            Mappable(NotEmptyFENsModelNextFENRequest(self.request).value())
-            .mapped(lambda x: NotEmptySANsModelNextFENRequest(x).value())
-            .mapped(lambda x: FENsSANsNumberMatchtedModelNextFENRequest(x).value())
-            .value()
+            ValidModelNextFENRequest(fens=request.fens, sans=request.sans)
+            .not_empty_FENs()
+            .not_empty_SANs()
+            .matched_number_FENs_SANs()
         )
 
+    def not_empty_FENs(self) -> ValidModelNextFENRequest:
+        if len(self.fens) == 0:
+            raise RuntimeError(EmptyFENs.from_FENs(self.fens))
 
-class NotEmptyFENsModelFENStatusRequest(NamedTuple):
-    request: ModelFENStatusRequest
+        return self
 
-    def value(self) -> ModelFENStatusRequest:
-        if len(self.request.fens) == 0:
-            raise RuntimeError(EmptyFENs.from_FENs(self.request.fens))
+    def not_empty_SANs(self) -> ValidModelNextFENRequest:
+        if len(self.sans) == 0:
+            raise RuntimeError(EmptySANs.from_SANs(self.sans))
 
-        return self.request
+        return self
+
+    def matched_number_FENs_SANs(self) -> ValidModelNextFENRequest:
+        if len(self.fens) != len(self.sans):
+            raise RuntimeError(NotMatchedNumberFENsSANs.from_FENs_SANs(self.fens, self.sans))
+
+        return self
 
 
-class ValidModelFENStatusRequest(NamedTuple):
-    request: ModelFENStatusRequest
+class ValidModelFENStatusRequest(ModelFENStatusRequest):
+    @classmethod
+    def from_request(cls, request: ModelFENStatusRequest) -> ValidModelFENStatusRequest:
+        return ValidModelFENStatusRequest(fens=request.fens).not_empty_FENs()
 
-    def value(self) -> ModelFENStatusRequest:
-        return NotEmptyFENsModelFENStatusRequest(self.request).value()
+    def not_empty_FENs(self) -> ValidModelFENStatusRequest:
+        if len(self.fens) == 0:
+            raise RuntimeError(EmptyFENs.from_FENs(self.fens))
+
+        return self

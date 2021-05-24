@@ -18,7 +18,9 @@ env: MicroChessEnvironment = MicroChessEnvironment()
 )
 async def fen_status(request: ModelFENStatusRequest) -> JSONResponse:
     try:
-        return JSONResponse(content=jsonable_encoder(await env.fen_status(ValidModelFENStatusRequest(request).value())))
+        return JSONResponse(
+            content=jsonable_encoder(await env.fen_status(ValidModelFENStatusRequest.from_request(request)))
+        )
     except RuntimeError as ex:
         return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=jsonable_encoder(ex.args[0]))
 
@@ -30,6 +32,8 @@ async def fen_status(request: ModelFENStatusRequest) -> JSONResponse:
 )
 async def next_fen(request: ModelNextFENRequest) -> JSONResponse:
     try:
-        return JSONResponse(content=jsonable_encoder(await env.next_fen(ValidModelNextFENRequest(request).value())))
+        return JSONResponse(
+            content=jsonable_encoder(await env.next_fen(ValidModelNextFENRequest.from_request(request)))
+        )
     except RuntimeError as ex:
         return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=jsonable_encoder(ex.args[0]))
