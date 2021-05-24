@@ -9,11 +9,11 @@ from domain.implementation.microsan import MicroSAN, ValidMicroSAN
 
 
 def test_normal() -> None:
-    ValidMicroSAN.from_MicroSAN(MicroSAN(0, [SAN.first_move()])).san() == SAN.first_move()
+    ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [SAN.first_move()])).san == SAN.first_move()
 
 
 def test_castling() -> None:
-    ValidMicroSAN.from_MicroSAN(MicroSAN(0, [SAN.castling()])).san() == SAN.castling()
+    ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [SAN.castling()])).san == SAN.castling()
 
 
 @pytest.mark.parametrize(
@@ -25,7 +25,7 @@ def test_castling() -> None:
 )
 def test_invalid_length(san: SAN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroSAN.from_MicroSAN(MicroSAN(0, [san]))
+        ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [san]))
 
     assert exinfo.value.args[0].error == InvalidLength.error_type()
 
@@ -40,7 +40,7 @@ def test_invalid_length(san: SAN) -> None:
 )
 def test_invalid_from_square(san: SAN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroSAN.from_MicroSAN(MicroSAN(0, [san]))
+        ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [san]))
 
     assert exinfo.value.args[0].error == InvalidFromSquare.error_type()
 
@@ -55,7 +55,7 @@ def test_invalid_from_square(san: SAN) -> None:
 )
 def test_invalid_to_square(san: SAN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroSAN.from_MicroSAN(MicroSAN(0, [san]))
+        ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [san]))
 
     assert exinfo.value.args[0].error == InvalidToSquare.error_type()
 
@@ -68,6 +68,6 @@ def test_invalid_to_square(san: SAN) -> None:
 )
 def test_invalid_promotion(san: SAN) -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMicroSAN.from_MicroSAN(MicroSAN(0, [san]))
+        ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [san]))
 
     assert exinfo.value.args[0].error == InvalidPromotion.error_type()

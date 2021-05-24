@@ -4,87 +4,61 @@
 
 from __future__ import annotations
 
+from typing import NamedTuple
+
 from domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
-from domain.implementation.mappable import Mappable
-from domain.implementation.square import FromSquare, Square, ToSquare
+from domain.implementation.square import FromSquare, ToSquare
 
 from .basictype import SAN
 
 
-class MicroSAN:
-    __slots__ = ["__index", "__sans", "__san"]
+class MicroSAN(NamedTuple):
+    index: int
+    sans: list[str]
+    san: SAN
 
-    __index: int
-    __sans: list[str]
-    __san: SAN
-
-    def __init__(self, index: int, sans: list[str]):
-        self.__index = index
-        self.__sans = sans
-        self.__san = SAN("")
-
-    def san(self) -> SAN:
-        if self.__san == SAN(""):
-            self.__san = SAN(self.__sans[self.__index])
-
-        return self.__san
-
-    def index(self) -> int:
-        return self.__index
-
-    def sans(self) -> list[str]:
-        return self.__sans
-
-
-class LengthValidSAN(MicroSAN):
     @classmethod
-    def from_MicroSAN(cls, san: MicroSAN) -> LengthValidSAN:
-        if not (4 <= len(san.san()) <= 5):
-            raise RuntimeError(InvalidLength.from_index_with_SANs(san.index(), san.sans()))
-
-        return LengthValidSAN(san.index(), san.sans())
-
-
-class FromSquareValidSAN(MicroSAN):
-    @classmethod
-    def from_MicroSAN(cls, san: MicroSAN) -> FromSquareValidSAN:
-        if not FromSquare.from_SAN(san.san()).valid():
-            raise RuntimeError(InvalidFromSquare.from_index_with_SANs(san.index(), san.sans()))
-
-        return FromSquareValidSAN(san.index(), san.sans())
-
-
-class ToSquareValidSAN(MicroSAN):
-    @classmethod
-    def from_MicroSAN(cls, san: MicroSAN) -> ToSquareValidSAN:
-        if not ToSquare.from_SAN(san.san()).valid():
-            raise RuntimeError(InvalidToSquare.from_index_with_SANs(san.index(), san.sans()))
-
-        return ToSquareValidSAN(san.index(), san.sans())
-
-
-class PromotionValidSAN(MicroSAN):
-    @classmethod
-    def from_MicroSAN(cls, san: MicroSAN) -> PromotionValidSAN:
-        if len(san.san()) == 5 and san.san()[4] not in "QqRrBbNn":
-            raise RuntimeError(InvalidPromotion.from_index_with_SANs(san.index(), san.sans()))
-
-        return PromotionValidSAN(san.index(), san.sans())
+    def from_index_with_SANs(cls, index: int, sans: list[str]) -> MicroSAN:
+        return MicroSAN(index, sans, SAN(sans[index]))
 
 
 class ValidMicroSAN(MicroSAN):
     @classmethod
-    def from_MicroSAN(cls, san: MicroSAN) -> ValidMicroSAN:
+    def from_MicroSAN(cls, microsan: MicroSAN) -> ValidMicroSAN:
         valid: MicroSAN = (
-            san
-            if san.san() == SAN.castling()
+            microsan
+            if microsan.san == SAN.castling()
             else (
-                Mappable(LengthValidSAN.from_MicroSAN(san))
-                .mapped(lambda x: FromSquareValidSAN.from_MicroSAN(x))
-                .mapped(lambda x: ToSquareValidSAN.from_MicroSAN(x))
-                .mapped(lambda x: PromotionValidSAN.from_MicroSAN(x))
-                .value()
+                ValidMicroSAN(microsan.index, microsan.sans, microsan.san)
+                .valid_length()
+                .valid_from_square()
+                .valid_to_square()
+                .valid_promotion()
             )
         )
 
-        return ValidMicroSAN(valid.index(), valid.sans())
+        return ValidMicroSAN(valid.index, valid.sans, valid.san)
+
+    def valid_length(self) -> ValidMicroSAN:
+        if not (4 <= len(self.san) <= 5):
+            raise RuntimeError(InvalidLength.from_index_with_SANs(self.index, self.sans))
+
+        return self
+
+    def valid_from_square(self) -> ValidMicroSAN:
+        if not FromSquare.from_SAN(self.san).valid():
+            raise RuntimeError(InvalidFromSquare.from_index_with_SANs(self.index, self.sans))
+
+        return self
+
+    def valid_to_square(self) -> ValidMicroSAN:
+        if not ToSquare.from_SAN(self.san).valid():
+            raise RuntimeError(InvalidToSquare.from_index_with_SANs(self.index, self.sans))
+
+        return self
+
+    def valid_promotion(self) -> ValidMicroSAN:
+        if len(self.san) == 5 and self.san[4] not in "QqRrBbNn":
+            raise RuntimeError(InvalidPromotion.from_index_with_SANs(self.index, self.sans))
+
+        return self

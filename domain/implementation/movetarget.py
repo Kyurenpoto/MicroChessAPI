@@ -52,7 +52,7 @@ class MoveTarget:
 
     def microsan(self) -> MicroSAN:
         if self.__san is None:
-            self.__san = ValidMicroSAN.from_MicroSAN(MicroSAN(self.__index, self.__sans))
+            self.__san = ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(self.__index, self.__sans))
 
         return self.__san
 
@@ -60,7 +60,7 @@ class MoveTarget:
         return self.microfen().fen
 
     def san(self) -> SAN:
-        return self.microsan().san()
+        return self.microsan().san
 
 
 class CastlableMoveTarget(NamedTuple):

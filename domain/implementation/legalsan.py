@@ -15,7 +15,7 @@ from .splitablefen import ColorPart
 class LegalMicroSAN(SAN):
     def legal(self) -> bool:
         try:
-            return ValidMicroSAN.from_MicroSAN(MicroSAN(0, [self])).san() != SAN.black_double_move()
+            return ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [self])).san != SAN.black_double_move()
         except RuntimeError:
             return False
 
