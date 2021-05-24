@@ -24,7 +24,7 @@ class PureBoardPart(str):
     def from_FEN(cls, fen: FEN) -> PureBoardPart:
         return PureBoardPart(BoardPart.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen])).board)
 
-    def mirrored(self) -> PureBoardPart:
+    def piece_mirrored(self) -> PureBoardPart:
         return PureBoardPart("".join(map(lambda x: Piece(x).mirrored(), self)))
 
 
@@ -64,4 +64,4 @@ class MirroredBoardPart(str):
 
     @classmethod
     def from_FEN(cls, fen: FEN) -> MirroredBoardPart:
-        return MirroredBoardPart.from_piece_mirrored_board_part(PureBoardPart.from_FEN(fen).mirrored())
+        return MirroredBoardPart.from_piece_mirrored_board_part(PureBoardPart.from_FEN(fen).piece_mirrored())

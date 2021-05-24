@@ -9,7 +9,6 @@ from typing import NamedTuple
 
 from domain.error.boardstringerror import InvalidPieceNumber, NotEmptyOutside
 
-from .mappable import Mappable
 from .microfen import MicroFEN
 from .symbol import ExpandedSymbol
 
@@ -21,17 +20,6 @@ class BoardString(NamedTuple):
     @classmethod
     def from_MicroFEN(cls, microfen: MicroFEN) -> BoardString:
         return BoardString(microfen, "".join(map(lambda x: ExpandedSymbol.from_symbol(x), microfen.fen.split(" ")[0])))
-
-
-class EmptyOutsideMicroBoardString(BoardString):
-    @classmethod
-    def from_boardstring(cls, board: BoardString) -> EmptyOutsideMicroBoardString:
-        if (
-            reduce(lambda x, y: x | y, [set(board.board[i : i + 4]) for i in range(0, 40, 8)]) | set(board.board[40:])
-        ) != set("."):
-            raise RuntimeError(NotEmptyOutside.from_index_with_FENs(board.microfen.index, board.microfen.fens))
-
-        return EmptyOutsideMicroBoardString(board.microfen, board.board)
 
 
 class PieceRange(NamedTuple):
@@ -51,28 +39,27 @@ class PieceRange(NamedTuple):
         return self.min_val <= x <= self.max_val
 
 
-class PieceCountValidMicroBoardString(BoardString):
-    @classmethod
-    def from_boardstring(cls, board: BoardString) -> PieceCountValidMicroBoardString:
-        pieces: str = board.board.replace(".", "")
-        for i in "KkQqPpRrBbNn":
-            if not PieceRange.from_symbol(i).contained(pieces.count(i)):
-                raise RuntimeError(InvalidPieceNumber.from_index_with_FENs(board.microfen.index, board.microfen.fens))
-
-        for i in "QqRrBbNn":
-            if pieces.count(i) + pieces.count("P" if i.isupper() else "p") > PieceRange.from_symbol(i).max_val:
-                raise RuntimeError(InvalidPieceNumber.from_index_with_FENs(board.microfen.index, board.microfen.fens))
-
-        return PieceCountValidMicroBoardString(board.microfen, board.board)
-
-
 class ValidMicroBoardString(BoardString):
     @classmethod
     def from_boardstring(cls, board: BoardString) -> ValidMicroBoardString:
-        valid: BoardString = (
-            Mappable(EmptyOutsideMicroBoardString.from_boardstring(board))
-            .mapped(lambda x: PieceCountValidMicroBoardString.from_boardstring(x))
-            .value()
-        )
+        return ValidMicroBoardString(board.microfen, board.board).empty_outside().valid_piece_count()
 
-        return ValidMicroBoardString(valid.microfen, valid.board)
+    def empty_outside(self) -> ValidMicroBoardString:
+        if (
+            reduce(lambda x, y: x | y, [set(self.board[i : i + 4]) for i in range(0, 40, 8)]) | set(self.board[40:])
+        ) != set("."):
+            raise RuntimeError(NotEmptyOutside.from_index_with_FENs(self.microfen.index, self.microfen.fens))
+
+        return self
+
+    def valid_piece_count(self) -> ValidMicroBoardString:
+        pieces: str = self.board.replace(".", "")
+        for i in "KkQqPpRrBbNn":
+            if not PieceRange.from_symbol(i).contained(pieces.count(i)):
+                raise RuntimeError(InvalidPieceNumber.from_index_with_FENs(self.microfen.index, self.microfen.fens))
+
+        for i in "QqRrBbNn":
+            if pieces.count(i) + pieces.count("P" if i.isupper() else "p") > PieceRange.from_symbol(i).max_val:
+                raise RuntimeError(InvalidPieceNumber.from_index_with_FENs(self.microfen.index, self.microfen.fens))
+
+        return self
