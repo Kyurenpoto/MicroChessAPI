@@ -104,11 +104,6 @@ class ConditionalHalfmovePart(HalfmovePart):
         return self >= 50
 
 
-class StatusClue(NamedTuple):
-    fen: FEN
-    cnt_legal_moves: int
-
-
 class MicroBoardStatus(Enum):
     NONE = auto()
     CHECKMATE = auto()
@@ -117,22 +112,17 @@ class MicroBoardStatus(Enum):
     FIFTY_MOVES = auto()
 
     @classmethod
-    def from_status_check_clue(cls, clue: StatusClue) -> MicroBoardStatus:
-        if clue.cnt_legal_moves == 0:
-            return (
-                MicroBoardStatus.STALEMATE if RawCheckedFEN(clue.fen).checked() is None else MicroBoardStatus.CHECKMATE
-            )
+    def from_status_check_clue(cls, fen: FEN, cnt_legal_moves: int) -> MicroBoardStatus:
+        if cnt_legal_moves == 0:
+            return MicroBoardStatus.STALEMATE if RawCheckedFEN(fen).checked() is None else MicroBoardStatus.CHECKMATE
 
         return MicroBoardStatus.NONE
 
     @classmethod
-    def from_status_clue(cls, clue: StatusClue) -> MicroBoardStatus:
-        if BoardColorPart.from_FEN(clue.fen).insufficient():
-            return MicroBoardStatus.INSUFFICIENT_MATERIAL
-        if ConditionalHalfmovePart.from_FEN(clue.fen).over_fifty_moves():
-            return MicroBoardStatus.FIFTY_MOVES
-        return MicroBoardStatus.from_status_check_clue(clue)
-
-    @classmethod
     def from_fen_with_legal_moves(cls, fen: FEN, cnt_legal_moves: int) -> MicroBoardStatus:
-        return MicroBoardStatus.from_status_clue(StatusClue(fen, cnt_legal_moves))
+        if BoardColorPart.from_FEN(fen).insufficient():
+            return MicroBoardStatus.INSUFFICIENT_MATERIAL
+        if ConditionalHalfmovePart.from_FEN(fen).over_fifty_moves():
+            return MicroBoardStatus.FIFTY_MOVES
+
+        return MicroBoardStatus.from_status_check_clue(fen, cnt_legal_moves)
