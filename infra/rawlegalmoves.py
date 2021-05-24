@@ -42,5 +42,12 @@ class RawLegalMoves(list[str]):
     def from_FEN(cls, fen: str) -> RawLegalMoves:
         return RawLegalMoves.from_original_legal_moves(chess.Board(fen).legal_moves)
 
+    @classmethod
+    def castling(cls) -> RawLegalMoves:
+        return RawLegalMoves([RawMove.castling()])
+
     def castlable(self) -> bool:
         return RawMove.castling() in self
+
+    def corrected(self, mirrored: str) -> RawLegalMoves:
+        return RawLegalMoves(self + (RawLegalMoves.castling() if RawLegalMoves.from_FEN(mirrored).castlable() else []))

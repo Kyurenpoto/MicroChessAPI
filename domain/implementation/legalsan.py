@@ -4,32 +4,12 @@
 
 from __future__ import annotations
 
-from infra.rawlegalmoves import RawLegalMoves, RawMove
+from infra.rawlegalmoves import RawLegalMoves
 
 from .basictype import FEN, SAN
 from .microsan import MicroSAN, ValidMicroSAN
 from .movablefen import MovableFEN
 from .splitablefen import ColorPart
-
-
-class CorrectedRawLegalMoves(list[str]):
-    @classmethod
-    def from_normal_FEN(cls, fen: FEN) -> CorrectedRawLegalMoves:
-        return CorrectedRawLegalMoves(RawLegalMoves.from_FEN(fen))
-
-    @classmethod
-    def from_mirrored_FEN(cls, fen: FEN) -> CorrectedRawLegalMoves:
-        return CorrectedRawLegalMoves([RawMove.castling()] if RawLegalMoves.from_FEN(fen).castlable() else [])
-
-    @classmethod
-    def from_FEN(cls, fen: FEN) -> CorrectedRawLegalMoves:
-        if ColorPart.from_FEN(fen) == "w":
-            return CorrectedRawLegalMoves(
-                CorrectedRawLegalMoves.from_normal_FEN(fen)
-                + CorrectedRawLegalMoves.from_mirrored_FEN(MovableFEN(fen).mirrored())
-            )
-        else:
-            return CorrectedRawLegalMoves.from_normal_FEN(fen)
 
 
 class LegalMicroSAN(SAN):
@@ -46,12 +26,16 @@ class LegalSANs(list[SAN]):
         return LegalSANs(sorted(map(lambda x: SAN(x), legal_moves)))
 
     @classmethod
-    def from_corrected_raw_legal_moves(cls, legal_moves: CorrectedRawLegalMoves) -> LegalSANs:
+    def from_corrected_raw_legal_moves(cls, legal_moves: RawLegalMoves) -> LegalSANs:
         return LegalSANs.from_filtered_legal_moves(filter(lambda x: LegalMicroSAN(x).legal(), legal_moves))
 
     @classmethod
     def from_FEN(cls, fen: FEN) -> LegalSANs:
-        return LegalSANs.from_corrected_raw_legal_moves(CorrectedRawLegalMoves.from_FEN(fen))
+        return LegalSANs.from_corrected_raw_legal_moves(
+            RawLegalMoves.from_FEN(fen).corrected(MovableFEN(fen).mirrored())
+            if ColorPart.from_FEN(fen) == "w"
+            else RawLegalMoves.from_FEN(fen)
+        )
 
     @classmethod
     def initial(cls) -> LegalSANs:
