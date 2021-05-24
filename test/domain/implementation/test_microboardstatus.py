@@ -8,8 +8,15 @@ from domain.implementation.legalsan import LegalSANs
 from domain.implementation.microboardstatus import MicroBoardStatus
 
 
-def test_none() -> None:
-    assert MicroBoardStatus.from_fen_with_legal_moves(FEN.starting(), len(LegalSANs.initial())) == MicroBoardStatus.NONE
+@pytest.mark.parametrize(
+    "fen, cnt_legal_moves",
+    [
+        (FEN.starting(), len(LegalSANs.initial())),
+        (FEN("4kn1r/4p3/8/6B1/4RBNK/8/8/8 w Kk - 0 1"), 1),
+    ],
+)
+def test_none(fen: FEN, cnt_legal_moves: int) -> None:
+    assert MicroBoardStatus.from_fen_with_legal_moves(fen, cnt_legal_moves) == MicroBoardStatus.NONE
 
 
 def test_checkmate() -> None:

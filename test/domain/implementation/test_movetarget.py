@@ -14,6 +14,20 @@ from domain.implementation.basictype import FEN, SAN
 from domain.implementation.movetarget import MoveTarget, ValidMoveTarget
 
 
+@pytest.mark.parametrize(
+    "fen, san",
+    [
+        (FEN.starting(), SAN.first_move()),
+        (FEN.black_castlable(), SAN.castling()),
+        (FEN.white_castlable(), SAN.castling()),
+    ],
+)
+def test_normal(fen: FEN, san: SAN) -> None:
+    target: MoveTarget = MoveTarget.from_index_with_FENs_SANs(0, [fen], [san])
+
+    assert ValidMoveTarget.from_move_target(target) == target
+
+
 def test_cannot_castle() -> None:
     with pytest.raises(RuntimeError) as exinfo:
         ValidMoveTarget.from_move_target(MoveTarget.from_index_with_FENs_SANs(0, [FEN.starting()], [SAN.castling()]))

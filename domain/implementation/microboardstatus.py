@@ -86,9 +86,6 @@ class BoardColorPart(NamedTuple):
         )
 
     def same_color_bishop_with_opponent_pawn_knight(self) -> bool:
-        if self.board.count(self.color.bishop()) == 0:
-            return False
-
         return (
             self.board.different_color_location(self.color.bishop())
             or self.board.count(self.color.opposite().pawn()) + self.board.count(self.color.opposite().knight()) > 0
