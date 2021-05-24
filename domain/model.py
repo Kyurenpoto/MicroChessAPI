@@ -39,7 +39,7 @@ class MicroChessModel(ChessModelBase):
         return ModelNextFENResponse(next_fens=moved_fens)
 
     def fen_status(self, request: ModelFENStatusRequest) -> ModelFENStatusResponse:
-        legal_moves, statuses = ModelFENStatusResult(request.fens).value()
+        legal_moves, statuses = ModelFENStatusResult.from_FENs(request.fens)
 
         return ModelFENStatusResponse(
             statuses=statuses,

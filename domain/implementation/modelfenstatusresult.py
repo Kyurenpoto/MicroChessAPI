@@ -2,6 +2,8 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
+from __future__ import annotations
+
 from typing import NamedTuple
 
 from domain.implementation.microfen import MicroFEN
@@ -12,33 +14,39 @@ from .legalsan import LegalSANs
 from .microboardstatus import MicroBoardStatus
 
 
-class LegalMoves(NamedTuple):
-    moved_boards: list[str]
+class LegalMoves(list[list[str]]):
+    @classmethod
+    def from_valid_FENs(cls, fens: list[str]) -> LegalMoves:
+        return LegalMoves([[str(san) for san in LegalSANs.from_FEN(FEN(fen))] for fen in fens])
 
-    def value(self) -> list[list[str]]:
-        return [[str(san) for san in LegalSANs.from_FEN(FEN(fen))] for fen in self.moved_boards]
+    @classmethod
+    def from_FENs(cls, fens: list[str]) -> LegalMoves:
+        return LegalMoves.from_valid_FENs(
+            [
+                str(ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(index, fens)).fen)
+                for index in range(len(fens))
+            ]
+        )
 
 
-class Statuses(NamedTuple):
-    moved_boards: list[str]
-    legal_moves: list[list[str]]
-
-    def value(self) -> list[int]:
-        return [
-            int(MicroBoardStatus.from_fen_with_legal_moves(FEN(fen), len(moves)).value)
-            for fen, moves in zip(self.moved_boards, self.legal_moves)
-        ]
+class Statuses(list[int]):
+    @classmethod
+    def from_FENs_with_legal_moves(cls, fens: list[str], legal_moves: list[list[str]]) -> Statuses:
+        return Statuses(
+            [
+                int(MicroBoardStatus.from_fen_with_legal_moves(FEN(fen), len(moves)).value)
+                for fen, moves in zip(fens, legal_moves)
+            ]
+        )
 
 
 class ModelFENStatusResult(NamedTuple):
-    fens: list[str]
+    legal_moves: list[list[str]]
+    statuses: list[int]
 
-    def value(self) -> tuple[list[list[str]], list[int]]:
-        boards: list[str] = [
-            str(ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(index, self.fens)).fen)
-            for index in range(len(self.fens))
-        ]
-        legal_moves: list[list[str]] = LegalMoves(boards).value()
-        statuses: list[int] = Statuses(boards, legal_moves).value()
+    @classmethod
+    def from_FENs(cls, fens: list[str]) -> ModelFENStatusResult:
+        legal_moves: list[list[str]] = LegalMoves.from_FENs(fens)
+        statuses: list[int] = Statuses.from_FENs_with_legal_moves(fens, legal_moves)
 
-        return legal_moves, statuses
+        return ModelFENStatusResult(legal_moves, statuses)
