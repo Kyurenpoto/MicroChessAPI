@@ -16,34 +16,38 @@ from domain.implementation.movetarget import MoveTarget, ValidMoveTarget
 
 def test_cannot_castle() -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMoveTarget(MoveTarget(0, [FEN.starting()], [SAN.castling()])).value()
+        ValidMoveTarget.from_move_target(MoveTarget.from_index_with_FENs_SANs(0, [FEN.starting()], [SAN.castling()]))
 
     assert exinfo.value.args[0].error == CannotCastle.error_type()
 
 
 def test_empty_from_square() -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMoveTarget(MoveTarget(0, [FEN.only_king()], [SAN.first_move()])).value()
+        ValidMoveTarget.from_move_target(MoveTarget.from_index_with_FENs_SANs(0, [FEN.only_king()], [SAN.first_move()]))
 
     assert exinfo.value.args[0].error == EmptyFromSquare.error_type()
 
 
 def test_opposite_from_square() -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMoveTarget(MoveTarget(0, [FEN.starting()], [SAN.second_move()])).value()
+        ValidMoveTarget.from_move_target(MoveTarget.from_index_with_FENs_SANs(0, [FEN.starting()], [SAN.second_move()]))
 
     assert exinfo.value.args[0].error == OppositeFromSquare.error_type()
 
 
 def test_full_to_square() -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMoveTarget(MoveTarget(0, [FEN.starting()], [SAN.king_side_move()])).value()
+        ValidMoveTarget.from_move_target(
+            MoveTarget.from_index_with_FENs_SANs(0, [FEN.starting()], [SAN.king_side_move()])
+        )
 
     assert exinfo.value.args[0].error == FullToSquare.error_type()
 
 
 def test_invalid_piece_move() -> None:
     with pytest.raises(RuntimeError) as exinfo:
-        ValidMoveTarget(MoveTarget(0, [FEN.swap_king_bishop()], [SAN.king_side_move()])).value()
+        ValidMoveTarget.from_move_target(
+            MoveTarget.from_index_with_FENs_SANs(0, [FEN.swap_king_bishop()], [SAN.king_side_move()])
+        )
 
     assert exinfo.value.args[0].error == InvalidPieceMove.error_type()

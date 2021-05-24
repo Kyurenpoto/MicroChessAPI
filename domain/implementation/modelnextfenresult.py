@@ -11,9 +11,9 @@ from domain.implementation.movetarget import MoveTarget, ValidMoveTarget
 class NextFen(str):
     @classmethod
     def from_index_with_FENs_SANs(cls, index: int, fens: list[str], sans: list[str]) -> NextFen:
-        target: MoveTarget = ValidMoveTarget(MoveTarget(index, fens, sans)).value()
+        target: MoveTarget = ValidMoveTarget.from_move_target(MoveTarget.from_index_with_FENs_SANs(index, fens, sans))
 
-        return NextFen(MovableFEN(target.fen()).moved(target.san()))
+        return NextFen(MovableFEN(target.fen).moved(target.san))
 
 
 class ModelNextFENResult(list[str]):

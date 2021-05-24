@@ -2,8 +2,9 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
+from __future__ import annotations
 
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 
 from domain.error.movetargeterror import (
     CannotCastle,
@@ -17,7 +18,6 @@ from domain.implementation.validmicrofen import ValidMicroFEN
 from .basictype import FEN, SAN
 from .boardstring import BoardString
 from .legalsan import LegalSANs
-from .mappable import Mappable
 from .microfen import MicroFEN
 from .microsan import MicroSAN, ValidMicroSAN
 from .movablefen import MovableFEN
@@ -25,56 +25,22 @@ from .splitablefen import ColorPart
 from .square import FromSquare, Square, ToSquare
 
 
-class MoveTarget:
-    __slots__ = ["__index", "__fens", "__sans", "__fen", "__san"]
+class MoveTarget(NamedTuple):
+    index: int
+    fens: list[str]
+    sans: list[str]
+    fen: FEN
+    san: SAN
 
-    __index: int
-    __fens: list[str]
-    __sans: list[str]
-    __fen: Optional[MicroFEN]
-    __san: Optional[MicroSAN]
-
-    def __init__(self, index: int, fens: list[str], sans: list[str]):
-        self.__index = index
-        self.__fens = fens
-        self.__sans = sans
-        self.__fen = None
-        self.__san = None
-
-    def value(self) -> tuple[int, list[str], list[str]]:
-        return self.__index, self.__fens, self.__sans
-
-    def microfen(self) -> MicroFEN:
-        if self.__fen is None:
-            self.__fen = ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(self.__index, self.__fens))
-
-        return self.__fen
-
-    def microsan(self) -> MicroSAN:
-        if self.__san is None:
-            self.__san = ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(self.__index, self.__sans))
-
-        return self.__san
-
-    def fen(self) -> FEN:
-        return self.microfen().fen
-
-    def san(self) -> SAN:
-        return self.microsan().san
-
-
-class CastlableMoveTarget(NamedTuple):
-    target: MoveTarget
-
-    def value(self) -> MoveTarget:
-        if SAN.castling() not in LegalSANs.from_FEN(
-            self.target.fen()
-            if ColorPart.from_FEN(self.target.fen()) == "b"
-            else MovableFEN(self.target.fen()).mirrored()
-        ):
-            raise RuntimeError(CannotCastle.from_index_with_FENs_SANs(*(self.target.value())))
-
-        return self.target
+    @classmethod
+    def from_index_with_FENs_SANs(cls, index: int, fens: list[str], sans: list[str]) -> MoveTarget:
+        return MoveTarget(
+            index,
+            fens,
+            sans,
+            ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(index, fens)).fen,
+            ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(index, sans)).san,
+        )
 
 
 class Piece(str):
@@ -89,55 +55,50 @@ class Piece(str):
         return "w" if self.isupper() else "b"
 
 
-class FromSquarePieceValidMoveTarget(NamedTuple):
-    target: MoveTarget
-
-    def value(self) -> MoveTarget:
-        piece: Piece = Piece.from_board_with_square(
-            BoardString.from_MicroFEN(self.target.microfen()), FromSquare.from_SAN(self.target.san())
-        )
-        if piece == ".":
-            raise RuntimeError(EmptyFromSquare.from_index_with_FENs_SANs(*(self.target.value())))
-        if piece.color() != ColorPart.from_FEN(self.target.fen()):
-            raise RuntimeError(OppositeFromSquare.from_index_with_FENs_SANs(*(self.target.value())))
-
-        return self.target
-
-
-class ToSquarePieceValidMoveTarget(NamedTuple):
-    target: MoveTarget
-
-    def value(self) -> MoveTarget:
-        piece: Piece = Piece.from_board_with_square(
-            BoardString.from_MicroFEN(self.target.microfen()), ToSquare.from_SAN(self.target.san())
-        )
-        if piece != "." and piece.color() == ColorPart.from_FEN(self.target.fen()):
-            raise RuntimeError(FullToSquare.from_index_with_FENs_SANs(*(self.target.value())))
-
-        return self.target
-
-
-class LegalMoveMoveTarget(NamedTuple):
-    target: MoveTarget
-
-    def value(self) -> MoveTarget:
-        if self.target.san() not in LegalSANs.from_FEN(self.target.fen()):
-            raise RuntimeError(InvalidPieceMove.from_index_with_FENs_SANs(*(self.target.value())))
-
-        return self.target
-
-
-class ValidMoveTarget(NamedTuple):
-    target: MoveTarget
-
-    def value(self) -> MoveTarget:
+class ValidMoveTarget(MoveTarget):
+    @classmethod
+    def from_move_target(cls, target: MoveTarget) -> ValidMoveTarget:
         return (
-            CastlableMoveTarget(self.target).value()
-            if self.target.san() == SAN.castling()
+            ValidMoveTarget(target.index, target.fens, target.sans, target.fen, target.san).castling_in_legal_moves()
+            if target.san == SAN.castling()
             else (
-                Mappable(FromSquarePieceValidMoveTarget(self.target).value())
-                .mapped(lambda x: ToSquarePieceValidMoveTarget(x).value())
-                .mapped(lambda x: LegalMoveMoveTarget(x).value())
-                .value()
+                ValidMoveTarget(target.index, target.fens, target.sans, target.fen, target.san)
+                .valid_from_square_piece()
+                .valid_to_square_piece()
+                .san_in_legal_moves()
             )
         )
+
+    def castling_in_legal_moves(self) -> ValidMoveTarget:
+        if SAN.castling() not in LegalSANs.from_FEN(
+            self.fen if ColorPart.from_FEN(self.fen) == "b" else MovableFEN(self.fen).mirrored()
+        ):
+            raise RuntimeError(CannotCastle.from_index_with_FENs_SANs(self.index, self.fens, self.sans))
+
+        return self
+
+    def valid_from_square_piece(self) -> ValidMoveTarget:
+        piece: Piece = Piece.from_board_with_square(
+            BoardString.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [self.fen])), FromSquare.from_SAN(self.san)
+        )
+        if piece == ".":
+            raise RuntimeError(EmptyFromSquare.from_index_with_FENs_SANs(self.index, self.fens, self.sans))
+        if piece.color() != ColorPart.from_FEN(self.fen):
+            raise RuntimeError(OppositeFromSquare.from_index_with_FENs_SANs(self.index, self.fens, self.sans))
+
+        return self
+
+    def valid_to_square_piece(self) -> ValidMoveTarget:
+        piece: Piece = Piece.from_board_with_square(
+            BoardString.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [self.fen])), ToSquare.from_SAN(self.san)
+        )
+        if piece != "." and piece.color() == ColorPart.from_FEN(self.fen):
+            raise RuntimeError(FullToSquare.from_index_with_FENs_SANs(self.index, self.fens, self.sans))
+
+        return self
+
+    def san_in_legal_moves(self) -> ValidMoveTarget:
+        if self.san not in LegalSANs.from_FEN(self.fen):
+            raise RuntimeError(InvalidPieceMove.from_index_with_FENs_SANs(self.index, self.fens, self.sans))
+
+        return self
