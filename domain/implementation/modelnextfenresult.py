@@ -2,26 +2,21 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import NamedTuple
+from __future__ import annotations
 
 from domain.implementation.movablefen import MovableFEN
 from domain.implementation.movetarget import MoveTarget, ValidMoveTarget
 
 
-class NextFen(NamedTuple):
-    index: int
-    fens: list[str]
-    sans: list[str]
+class NextFen(str):
+    @classmethod
+    def from_index_with_FENs_SANs(cls, index: int, fens: list[str], sans: list[str]) -> NextFen:
+        target: MoveTarget = ValidMoveTarget(MoveTarget(index, fens, sans)).value()
 
-    def value(self) -> str:
-        target: MoveTarget = ValidMoveTarget(MoveTarget(self.index, self.fens, self.sans)).value()
-
-        return MovableFEN(target.fen()).moved(target.san())
+        return NextFen(MovableFEN(target.fen()).moved(target.san()))
 
 
-class ModelNextFENResult(NamedTuple):
-    fens: list[str]
-    sans: list[str]
-
-    def value(self) -> list[str]:
-        return [NextFen(index, self.fens, self.sans).value() for index in range(len(self.fens))]
+class ModelNextFENResult(list[str]):
+    @classmethod
+    def from_FENs_SANs(cls, fens: list[str], sans: list[str]) -> ModelNextFENResult:
+        return ModelNextFENResult([NextFen.from_index_with_FENs_SANs(index, fens, sans) for index in range(len(fens))])

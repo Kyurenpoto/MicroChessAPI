@@ -34,7 +34,7 @@ class Fake(ChessModelBase):
 
 class MicroChessModel(ChessModelBase):
     def next_fen(self, request: ModelNextFENRequest) -> ModelNextFENResponse:
-        moved_fens = ModelNextFENResult(request.fens, request.sans).value()
+        moved_fens = ModelNextFENResult.from_FENs_SANs(request.fens, request.sans)
 
         return ModelNextFENResponse(next_fens=moved_fens)
 
