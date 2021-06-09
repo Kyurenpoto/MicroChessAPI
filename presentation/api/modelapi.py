@@ -2,27 +2,19 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from application.chessenv.modelenv import MicroChessEnvironment
+from application.createdresponse import CreatedFENStatusResponse, CreatedNextFENResponse
 from domain.dto.modeldto import ModelFENStatusRequest, ModelNextFENRequest
-from domain.implementation.validmodeldto import ValidModelFENStatusRequest, ValidModelNextFENRequest
 from fastapi import APIRouter, status
-from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
+from presentation.response import ExceptionHandledResponse, HALJSONResponse
 
 router: APIRouter = APIRouter(prefix="/model")
-env: MicroChessEnvironment = MicroChessEnvironment()
 
 
 @router.post(
     "/fen-status", status_code=status.HTTP_200_OK, description="The status and legal moves of the requested FEN"
 )
-async def fen_status(request: ModelFENStatusRequest) -> JSONResponse:
-    try:
-        return JSONResponse(
-            content=jsonable_encoder(await env.fen_status(ValidModelFENStatusRequest.from_request(request)))
-        )
-    except RuntimeError as ex:
-        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=jsonable_encoder(ex.args[0]))
+async def fen_status(request: ModelFENStatusRequest) -> HALJSONResponse:
+    return ExceptionHandledResponse(CreatedFENStatusResponse(request)).handled()
 
 
 @router.post(
@@ -30,10 +22,5 @@ async def fen_status(request: ModelFENStatusRequest) -> JSONResponse:
     status_code=status.HTTP_200_OK,
     description="FEN as a result of applying requested SAN to requested FEN",
 )
-async def next_fen(request: ModelNextFENRequest) -> JSONResponse:
-    try:
-        return JSONResponse(
-            content=jsonable_encoder(await env.next_fen(ValidModelNextFENRequest.from_request(request)))
-        )
-    except RuntimeError as ex:
-        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=jsonable_encoder(ex.args[0]))
+async def next_fen(request: ModelNextFENRequest) -> HALJSONResponse:
+    return ExceptionHandledResponse(CreatedNextFENResponse(request)).handled()
