@@ -11,7 +11,7 @@ from typing import NamedTuple
 from src.domain.implementation.basictype import FEN
 from src.domain.implementation.boardstring import BoardString
 from src.domain.implementation.microfen import MicroFEN
-from src.domain.implementation.splitablefen import ColorPart, HalfmovePart
+from src.infra.splitablefen import ColorPart, HalfmovePart
 from src.infra.rawcheckedfen import RawCheckedFEN
 
 

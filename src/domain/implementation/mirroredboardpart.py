@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from src.domain.implementation.basictype import FEN
 from src.domain.implementation.microfen import MicroFEN
-from src.domain.implementation.splitablefen import BoardPart
+from src.infra.splitablefen import BoardPart
 
 
 class Piece(str):

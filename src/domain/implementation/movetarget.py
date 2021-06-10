@@ -19,7 +19,7 @@ from src.domain.implementation.legalsan import LegalSANs
 from src.domain.implementation.microfen import MicroFEN
 from src.domain.implementation.microsan import MicroSAN, ValidMicroSAN
 from src.domain.implementation.movablefen import MovableFEN
-from src.domain.implementation.splitablefen import ColorPart
+from src.infra.splitablefen import ColorPart
 from src.domain.implementation.square import FromSquare, Square, ToSquare
 from src.domain.implementation.validmicrofen import ValidMicroFEN
 

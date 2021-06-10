@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 import chess
-from src.domain.implementation.splitablefen import CastlingPart, ColorPart, ReplacableSplitedFEN
+from src.infra.splitablefen import CastlingPart, ColorPart, ReplacableSplitedFEN
 
 
 class SymbolizableColorPart(ColorPart):

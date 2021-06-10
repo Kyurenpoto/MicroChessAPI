@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from src.domain.implementation.basictype import FEN, SAN
 from src.domain.implementation.mirroredboardpart import MirroredBoardPart
-from src.domain.implementation.splitablefen import CastlingPart, ColorPart, FullmovePart, ReplacableSplitedFEN
+from src.infra.splitablefen import CastlingPart, ColorPart, FullmovePart, ReplacableSplitedFEN
 from src.infra.rawmovedfen import RawMovedFEN
 
 

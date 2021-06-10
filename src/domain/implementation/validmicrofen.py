@@ -13,7 +13,7 @@ from src.domain.error.microfenerror import (
     InvalidTurnPart,
 )
 from src.domain.implementation.microfen import MicroFEN
-from src.domain.implementation.splitablefen import (
+from src.infra.splitablefen import (
     BoardPart,
     CastlingPart,
     ColorPart,

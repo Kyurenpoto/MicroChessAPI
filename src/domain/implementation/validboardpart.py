@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from src.domain.error.boardparterror import InvalidRowNumber, InvalidSquareNumber, InvalidSymbol
 from src.domain.implementation.boardstring import BoardString, ValidMicroBoardString
-from src.domain.implementation.splitablefen import BoardPart
+from src.infra.splitablefen import BoardPart
 from src.domain.implementation.symbol import ExpandedSymbol
 
 

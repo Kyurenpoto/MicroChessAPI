@@ -7,7 +7,7 @@ from __future__ import annotations
 from src.domain.implementation.basictype import FEN, SAN
 from src.domain.implementation.microsan import MicroSAN, ValidMicroSAN
 from src.domain.implementation.movablefen import MovableFEN
-from src.domain.implementation.splitablefen import ColorPart
+from src.infra.splitablefen import ColorPart
 from src.infra.rawlegalmoves import RawLegalMoves
 
 
