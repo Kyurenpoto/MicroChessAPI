@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
-from domain.implementation.basictype import FEN
-from domain.implementation.legalsan import LegalSANs
-from domain.implementation.microboardstatus import MicroBoardStatus
+from src.domain.implementation.basictype import FEN
+from src.domain.implementation.legalsan import LegalSANs
+from src.domain.implementation.microboardstatus import MicroBoardStatus
 
 
 @pytest.mark.parametrize(

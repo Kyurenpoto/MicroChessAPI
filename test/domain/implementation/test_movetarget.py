@@ -3,15 +3,15 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
-from domain.error.movetargeterror import (
+from src.domain.error.movetargeterror import (
     CannotCastle,
     EmptyFromSquare,
     FullToSquare,
     InvalidPieceMove,
     OppositeFromSquare,
 )
-from domain.implementation.basictype import FEN, SAN
-from domain.implementation.movetarget import MoveTarget, ValidMoveTarget
+from src.domain.implementation.basictype import FEN, SAN
+from src.domain.implementation.movetarget import MoveTarget, ValidMoveTarget
 
 
 @pytest.mark.parametrize(

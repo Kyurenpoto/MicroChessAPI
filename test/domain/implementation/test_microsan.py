@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
-from domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
-from domain.implementation.basictype import SAN
-from domain.implementation.microsan import MicroSAN, ValidMicroSAN
+from src.domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
+from src.domain.implementation.basictype import SAN
+from src.domain.implementation.microsan import MicroSAN, ValidMicroSAN
 
 
 def test_normal() -> None:

@@ -4,7 +4,7 @@
 
 import pytest
 from httpx import AsyncClient
-from main import app
+from src.main import app
 
 
 @pytest.fixture

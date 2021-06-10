@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
-from domain.error.boardstringerror import InvalidPieceNumber, NotEmptyOutside
-from domain.implementation.basictype import FEN
-from domain.implementation.microfen import MicroFEN
-from domain.implementation.validmicrofen import ValidMicroFEN
+from src.domain.error.boardstringerror import InvalidPieceNumber, NotEmptyOutside
+from src.domain.implementation.basictype import FEN
+from src.domain.implementation.microfen import MicroFEN
+from src.domain.implementation.validmicrofen import ValidMicroFEN
 
 
 @pytest.mark.parametrize(

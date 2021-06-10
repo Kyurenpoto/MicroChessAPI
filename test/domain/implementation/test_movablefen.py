@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
-from domain.implementation.basictype import FEN, SAN
-from domain.implementation.movablefen import MovableFEN
+from src.domain.implementation.basictype import FEN, SAN
+from src.domain.implementation.movablefen import MovableFEN
 
 
 def test_normal() -> None:

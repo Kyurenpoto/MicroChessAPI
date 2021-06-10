@@ -2,8 +2,8 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from domain.implementation.basictype import FEN
-from domain.implementation.legalsan import LegalSANs
+from src.domain.implementation.basictype import FEN
+from src.domain.implementation.legalsan import LegalSANs
 
 
 def test_normal() -> None:

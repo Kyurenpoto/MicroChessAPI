@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
-from domain.error.dtoerror import EmptyFENs, EmptySANs, NotMatchedNumberFENsSANs
-from domain.implementation.basictype import FEN, SAN
-from domain.implementation.legalsan import LegalSANs
 from fastapi import status
 from httpx import AsyncClient
+from src.domain.error.dtoerror import EmptyFENs, EmptySANs, NotMatchedNumberFENsSANs
+from src.domain.implementation.basictype import FEN, SAN
+from src.domain.implementation.legalsan import LegalSANs
 
 
 @pytest.mark.asyncio
