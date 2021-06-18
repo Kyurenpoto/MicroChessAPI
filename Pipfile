@@ -8,6 +8,7 @@ chess = "*"
 fastapi = "*"
 unicorn = {extras = ["standard"], version = "*"}
 uvicorn = {extras = ["standard"], version = "*"}
+dependency-injector = "*"
 
 [dev-packages]
 pytest = "*"

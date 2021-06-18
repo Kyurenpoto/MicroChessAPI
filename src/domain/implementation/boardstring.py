@@ -47,7 +47,7 @@ class ValidMicroBoardString(BoardString):
         if (
             reduce(lambda x, y: x | y, [set(self.board[i : i + 4]) for i in range(0, 40, 8)]) | set(self.board[40:])
         ) != set("."):
-            raise RuntimeError(NotEmptyOutside.from_index_with_FENs(self.microfen.index, self.microfen.fens))
+            raise RuntimeError(NotEmptyOutside.from_index_with_FENs(self.microfen.index, self.microfen.fens).created())
 
         return self
 
@@ -59,6 +59,8 @@ class ValidMicroBoardString(BoardString):
 
         for i in "QqRrBbNn":
             if pieces.count(i) + pieces.count("P" if i.isupper() else "p") > PieceRange.from_symbol(i).max_val:
-                raise RuntimeError(InvalidPieceNumber.from_index_with_FENs(self.microfen.index, self.microfen.fens))
+                raise RuntimeError(
+                    InvalidPieceNumber.from_index_with_FENs(self.microfen.index, self.microfen.fens).created()
+                )
 
         return self

@@ -3,10 +3,15 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 from abc import ABCMeta, abstractmethod
+from typing import NamedTuple
 
+from dependency_injector.wiring import Provide, inject
+from src.config import Container
 from src.domain.dto.modeldto import (
+    ModelAPIInfo,
     ModelFENStatusRequest,
     ModelFENStatusResponse,
+    ModelInternal,
     ModelNextFENRequest,
     ModelNextFENResponse,
 )
@@ -37,16 +42,41 @@ class Fake(ChessModelBase):
         )
 
 
+class CreatedFENStatusResponse(NamedTuple):
+    statuses: list[int]
+    legal_moves: list[list[str]]
+
+    @inject
+    def created(
+        self,
+        internal_model: ModelInternal = Provide[Container.internal_model],
+        api_info: ModelAPIInfo = Provide[Container.api_info],
+    ) -> ModelFENStatusResponse:
+        return ModelFENStatusResponse(
+            statuses=self.statuses,
+            legal_moves=self.legal_moves,
+        )
+
+
+class CreatedNextFENResponse(NamedTuple):
+    next_fens: list[str]
+
+    @inject
+    def created(
+        self,
+        internal_model: ModelInternal = Provide[Container.internal_model],
+        api_info: ModelAPIInfo = Provide[Container.api_info],
+    ) -> ModelNextFENResponse:
+        return ModelNextFENResponse(next_fens=self.next_fens)
+
+
 class MicroChessModel(ChessModelBase):
-    def next_fen(self, request: ModelNextFENRequest) -> ModelNextFENResponse:
-        moved_fens = ModelNextFENResult.from_FENs_SANs(request.fens, request.sans)
-
-        return ModelNextFENResponse(next_fens=moved_fens)
-
     def fen_status(self, request: ModelFENStatusRequest) -> ModelFENStatusResponse:
         legal_moves, statuses = ModelFENStatusResult.from_FENs(request.fens)
 
-        return ModelFENStatusResponse(
-            statuses=statuses,
-            legal_moves=legal_moves,
-        )
+        return CreatedFENStatusResponse(statuses, legal_moves).created()
+
+    def next_fen(self, request: ModelNextFENRequest) -> ModelNextFENResponse:
+        moved_fens = ModelNextFENResult.from_FENs_SANs(request.fens, request.sans)
+
+        return CreatedNextFENResponse(moved_fens).created()

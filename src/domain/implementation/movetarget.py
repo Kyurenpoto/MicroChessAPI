@@ -19,9 +19,9 @@ from src.domain.implementation.legalsan import LegalSANs
 from src.domain.implementation.microfen import MicroFEN
 from src.domain.implementation.microsan import MicroSAN, ValidMicroSAN
 from src.domain.implementation.movablefen import MovableFEN
-from src.infra.splitablefen import ColorPart
 from src.domain.implementation.square import FromSquare, Square, ToSquare
 from src.domain.implementation.validmicrofen import ValidMicroFEN
+from src.infra.splitablefen import ColorPart
 
 
 class MoveTarget(NamedTuple):
@@ -67,7 +67,7 @@ class ValidMoveTarget(MoveTarget):
         if SAN.castling() not in LegalSANs.from_FEN(
             self.fen if ColorPart.from_FEN(self.fen) == "b" else MovableFEN(self.fen).mirrored()
         ):
-            raise RuntimeError(CannotCastle.from_index_with_FENs_SANs(self.index, self.fens, self.sans))
+            raise RuntimeError(CannotCastle.from_index_with_FENs_SANs(self.index, self.fens, self.sans).created())
 
         return self
 
@@ -76,9 +76,9 @@ class ValidMoveTarget(MoveTarget):
             BoardString.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [self.fen])), FromSquare.from_SAN(self.san)
         )
         if piece == ".":
-            raise RuntimeError(EmptyFromSquare.from_index_with_FENs_SANs(self.index, self.fens, self.sans))
+            raise RuntimeError(EmptyFromSquare.from_index_with_FENs_SANs(self.index, self.fens, self.sans).created())
         if piece.color() != ColorPart.from_FEN(self.fen):
-            raise RuntimeError(OppositeFromSquare.from_index_with_FENs_SANs(self.index, self.fens, self.sans))
+            raise RuntimeError(OppositeFromSquare.from_index_with_FENs_SANs(self.index, self.fens, self.sans).created())
 
         return self
 
@@ -87,12 +87,12 @@ class ValidMoveTarget(MoveTarget):
             BoardString.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [self.fen])), ToSquare.from_SAN(self.san)
         )
         if piece != "." and piece.color() == ColorPart.from_FEN(self.fen):
-            raise RuntimeError(FullToSquare.from_index_with_FENs_SANs(self.index, self.fens, self.sans))
+            raise RuntimeError(FullToSquare.from_index_with_FENs_SANs(self.index, self.fens, self.sans).created())
 
         return self
 
     def san_in_legal_moves(self) -> ValidMoveTarget:
         if self.san not in LegalSANs.from_FEN(self.fen):
-            raise RuntimeError(InvalidPieceMove.from_index_with_FENs_SANs(self.index, self.fens, self.sans))
+            raise RuntimeError(InvalidPieceMove.from_index_with_FENs_SANs(self.index, self.fens, self.sans).created())
 
         return self

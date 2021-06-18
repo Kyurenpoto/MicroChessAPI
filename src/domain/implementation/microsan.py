@@ -32,24 +32,24 @@ class ValidMicroSAN(MicroSAN):
 
     def valid_length(self) -> ValidMicroSAN:
         if not (4 <= len(self.san) <= 5):
-            raise RuntimeError(InvalidLength.from_index_with_SANs(self.index, self.sans))
+            raise RuntimeError(InvalidLength.from_index_with_SANs(self.index, self.sans).created())
 
         return self
 
     def valid_from_square(self) -> ValidMicroSAN:
         if not FromSquare.from_SAN(self.san).valid():
-            raise RuntimeError(InvalidFromSquare.from_index_with_SANs(self.index, self.sans))
+            raise RuntimeError(InvalidFromSquare.from_index_with_SANs(self.index, self.sans).created())
 
         return self
 
     def valid_to_square(self) -> ValidMicroSAN:
         if not ToSquare.from_SAN(self.san).valid():
-            raise RuntimeError(InvalidToSquare.from_index_with_SANs(self.index, self.sans))
+            raise RuntimeError(InvalidToSquare.from_index_with_SANs(self.index, self.sans).created())
 
         return self
 
     def valid_promotion(self) -> ValidMicroSAN:
         if len(self.san) == 5 and self.san[4] not in "QqRrBbNn":
-            raise RuntimeError(InvalidPromotion.from_index_with_SANs(self.index, self.sans))
+            raise RuntimeError(InvalidPromotion.from_index_with_SANs(self.index, self.sans).created())
 
         return self

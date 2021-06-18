@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from src.domain.error.boardparterror import InvalidRowNumber, InvalidSquareNumber, InvalidSymbol
 from src.domain.implementation.boardstring import BoardString, ValidMicroBoardString
-from src.infra.splitablefen import BoardPart
 from src.domain.implementation.symbol import ExpandedSymbol
+from src.infra.splitablefen import BoardPart
 
 
 class ValidBoardPart(BoardPart):
@@ -17,17 +17,17 @@ class ValidBoardPart(BoardPart):
 
     def valid_symbol(self) -> ValidBoardPart:
         if not set(self.board).issubset(set("12345678/PpKkQqRrNnBb")):
-            raise RuntimeError(InvalidSymbol.from_index_with_FENs(self.fen.index, self.fen.fens))
+            raise RuntimeError(InvalidSymbol.from_index_with_FENs(self.fen.index, self.fen.fens).created())
 
         return self
 
     def valid_size(self) -> ValidBoardPart:
         splited: list[str] = self.board.split("/")
         if len(splited) != 8:
-            raise RuntimeError(InvalidRowNumber.from_index_with_FENs(self.fen.index, self.fen.fens))
+            raise RuntimeError(InvalidRowNumber.from_index_with_FENs(self.fen.index, self.fen.fens).created())
         for row in splited:
             if len("".join(map(lambda x: ExpandedSymbol.from_symbol(x), row))) != 8:
-                raise RuntimeError(InvalidSquareNumber.from_index_with_FENs(self.fen.index, self.fen.fens))
+                raise RuntimeError(InvalidSquareNumber.from_index_with_FENs(self.fen.index, self.fen.fens).created())
 
         return self
 

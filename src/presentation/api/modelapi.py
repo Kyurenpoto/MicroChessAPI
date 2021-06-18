@@ -11,7 +11,10 @@ router: APIRouter = APIRouter(prefix="/model")
 
 
 @router.post(
-    "/fen-status", status_code=status.HTTP_200_OK, description="The status and legal moves of the requested FEN"
+    "/fen-status",
+    name="fen-status",
+    description="The status and legal moves of the requested FEN",
+    status_code=status.HTTP_200_OK,
 )
 async def fen_status(request: ModelFENStatusRequest) -> HALJSONResponse:
     return ExceptionHandledResponse(CreatedFENStatusResponse(request)).handled()
@@ -19,8 +22,9 @@ async def fen_status(request: ModelFENStatusRequest) -> HALJSONResponse:
 
 @router.post(
     "/next-fen",
-    status_code=status.HTTP_200_OK,
+    name="next-fen",
     description="FEN as a result of applying requested SAN to requested FEN",
+    status_code=status.HTTP_200_OK,
 )
 async def next_fen(request: ModelNextFENRequest) -> HALJSONResponse:
     return ExceptionHandledResponse(CreatedNextFENResponse(request)).handled()

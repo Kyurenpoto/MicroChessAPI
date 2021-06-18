@@ -7,7 +7,10 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 from typing import NamedTuple, Union
 
+from dependency_injector import providers
+from src.config import container
 from src.domain.dto.modeldto import (
+    ModelAPIInfo,
     ModelFENStatusRequest,
     ModelFENStatusResponse,
     ModelNextFENRequest,
@@ -37,9 +40,13 @@ class ICreatedResponse(metaclass=ABCMeta):
 
 class CreatedFENStatusResponse(FENStatusRequestData, ICreatedResponse):
     def created(self) -> Union[ModelFENStatusResponse, ModelNextFENResponse]:
+        container.api_info.override(providers.Factory(ModelAPIInfo, name="fen-status", method="post"))
+
         return MicroChessModel().fen_status(ValidModelFENStatusRequest.from_request(self.request))
 
 
 class CreatedNextFENResponse(NextFENRequestData, ICreatedResponse):
     def created(self) -> Union[ModelFENStatusResponse, ModelNextFENResponse]:
+        container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
         return MicroChessModel().next_fen(ValidModelNextFENRequest.from_request(self.request))

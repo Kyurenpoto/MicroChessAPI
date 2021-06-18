@@ -2,32 +2,42 @@
 
 # SPDX-License-Identifier: GPL-3.0-only
 
-from typing import List, Union
+from typing import Union
 
 from pydantic import BaseModel
+from submodules.fastapi_haljson.src.halmodel import HALBase
+
+
+class ModelInternal(BaseModel):
+    routes: dict[str, str]
+
+
+class ModelAPIInfo(BaseModel):
+    name: str
+    method: str
 
 
 class ModelNextFENRequest(BaseModel):
-    fens: List[str]
-    sans: List[str]
+    fens: list[str]
+    sans: list[str]
 
 
 class ModelNextFENResponse(BaseModel):
-    next_fens: List[str]
+    next_fens: list[str]
 
 
 class ModelFENStatusRequest(BaseModel):
-    fens: List[str]
+    fens: list[str]
 
 
 class ModelFENStatusResponse(BaseModel):
-    statuses: List[int]
-    legal_moves: List[List[str]]
+    statuses: list[int]
+    legal_moves: list[list[str]]
 
 
 class ModelErrorResponse(BaseModel):
     message: str
     location: str
     param: str
-    value: Union[List[str], List[List[str]]]
+    value: Union[list[str], list[list[str]]]
     error: str

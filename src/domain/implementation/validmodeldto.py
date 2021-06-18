@@ -20,19 +20,19 @@ class ValidModelNextFENRequest(ModelNextFENRequest):
 
     def not_empty_FENs(self) -> ValidModelNextFENRequest:
         if len(self.fens) == 0:
-            raise RuntimeError(EmptyFENs.from_FENs(self.fens))
+            raise RuntimeError(EmptyFENs.from_FENs(self.fens).created())
 
         return self
 
     def not_empty_SANs(self) -> ValidModelNextFENRequest:
         if len(self.sans) == 0:
-            raise RuntimeError(EmptySANs.from_SANs(self.sans))
+            raise RuntimeError(EmptySANs.from_SANs(self.sans).created())
 
         return self
 
     def matched_number_FENs_SANs(self) -> ValidModelNextFENRequest:
         if len(self.fens) != len(self.sans):
-            raise RuntimeError(NotMatchedNumberFENsSANs.from_FENs_SANs(self.fens, self.sans))
+            raise RuntimeError(NotMatchedNumberFENsSANs.from_FENs_SANs(self.fens, self.sans).created())
 
         return self
 
@@ -44,6 +44,6 @@ class ValidModelFENStatusRequest(ModelFENStatusRequest):
 
     def not_empty_FENs(self) -> ValidModelFENStatusRequest:
         if len(self.fens) == 0:
-            raise RuntimeError(EmptyFENs.from_FENs(self.fens))
+            raise RuntimeError(EmptyFENs.from_FENs(self.fens).created())
 
         return self
