@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
+from dependency_injector import providers
+from src.config import Container
+from src.domain.dto.modeldto import ModelAPIInfo
 from src.domain.error.boardstringerror import InvalidPieceNumber, NotEmptyOutside
 from src.domain.implementation.basictype import FEN
 from src.domain.implementation.microfen import MicroFEN
@@ -16,7 +19,9 @@ from src.domain.implementation.validmicrofen import ValidMicroFEN
         (FEN("4knbr/4p3/8/7P/4RBNK/8/8/7r w Kk - 0 1")),
     ],
 )
-def test_not_empty_outside(fen: FEN) -> None:
+def test_not_empty_outside(fen: FEN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
@@ -50,7 +55,9 @@ def test_not_empty_outside(fen: FEN) -> None:
         (FEN("4knbr/4p3/8/7P/4RBN1/8/8/8 w Kk - 0 1")),
     ],
 )
-def test_invalid_piece_number(fen: FEN) -> None:
+def test_invalid_piece_number(fen: FEN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 

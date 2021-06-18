@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
+from dependency_injector import providers
+from src.config import Container
+from src.domain.dto.modeldto import ModelAPIInfo
 from src.domain.error.microsanerror import InvalidFromSquare, InvalidLength, InvalidPromotion, InvalidToSquare
 from src.domain.implementation.basictype import SAN
 from src.domain.implementation.microsan import MicroSAN, ValidMicroSAN
@@ -23,7 +26,9 @@ def test_castling() -> None:
         (SAN("xxxxxx")),
     ],
 )
-def test_invalid_length(san: SAN) -> None:
+def test_invalid_length(san: SAN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [san]))
 
@@ -38,7 +43,9 @@ def test_invalid_length(san: SAN) -> None:
         (SAN("a1e4")),
     ],
 )
-def test_invalid_from_square(san: SAN) -> None:
+def test_invalid_from_square(san: SAN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [san]))
 
@@ -53,7 +60,9 @@ def test_invalid_from_square(san: SAN) -> None:
         (SAN("e4a1")),
     ],
 )
-def test_invalid_to_square(san: SAN) -> None:
+def test_invalid_to_square(san: SAN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [san]))
 
@@ -66,7 +75,9 @@ def test_invalid_to_square(san: SAN) -> None:
         (SAN("e4e4x")),
     ],
 )
-def test_invalid_promotion(san: SAN) -> None:
+def test_invalid_promotion(san: SAN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroSAN.from_MicroSAN(MicroSAN.from_index_with_SANs(0, [san]))
 

@@ -6,28 +6,8 @@ from __future__ import annotations
 
 from typing import NamedTuple
 
-from fastapi import status
-from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
 from src.application.createdresponse import ICreatedResponse
-
-
-class HALJSONResponse(JSONResponse):
-    media_type = "application/hal+json"
-
-
-class OkResponse(HALJSONResponse):
-    @classmethod
-    def from_response_data(cls, data) -> OkResponse:
-        return OkResponse(content=jsonable_encoder(data))
-
-
-class UnprocessableEntityResponse(HALJSONResponse):
-    @classmethod
-    def from_response_data(cls, data) -> UnprocessableEntityResponse:
-        return UnprocessableEntityResponse(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=jsonable_encoder(data)
-        )
+from submodules.fastapi_haljson.src.halresponse import HALJSONResponse, OkResponse, UnprocessableEntityResponse
 
 
 class ExceptionHandledResponse(NamedTuple):

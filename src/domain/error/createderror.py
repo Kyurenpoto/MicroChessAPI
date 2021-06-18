@@ -24,7 +24,7 @@ class CreatedErrorResponse(NamedTuple):
         api_info: ModelAPIInfo = Provide[Container.api_info],
     ) -> ModelErrorResponse:
         return ModelErrorResponse(
-            # links=HALBase.from_routes_with_requested(internal_model.routes, api_info.name, api_info.method).links,
+            links=HALBase.from_routes_with_requested(internal_model.routes, api_info.name, api_info.method).links,
             message=self.message,
             location="body",
             param=self.param,

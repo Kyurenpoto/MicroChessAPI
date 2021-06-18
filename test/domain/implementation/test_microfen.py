@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 import pytest
+from dependency_injector import providers
+from src.config import Container
+from src.domain.dto.modeldto import ModelAPIInfo
 from src.domain.error.microfenerror import (
     InvalidCastlingPart,
     InvalidEnpassantPart,
@@ -36,7 +39,9 @@ def test_normal(fen: FEN) -> None:
         (FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 0")),
     ],
 )
-def test_invalid_structure(fen: FEN) -> None:
+def test_invalid_structure(fen: FEN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
@@ -52,7 +57,9 @@ def test_invalid_structure(fen: FEN) -> None:
         (FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 B Kk - 0 1")),
     ],
 )
-def test_invalid_turn_part(fen: FEN) -> None:
+def test_invalid_turn_part(fen: FEN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
@@ -68,7 +75,9 @@ def test_invalid_turn_part(fen: FEN) -> None:
         (FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w kK - 0 1")),
     ],
 )
-def test_invalid_castling_part(fen: FEN) -> None:
+def test_invalid_castling_part(fen: FEN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
@@ -82,7 +91,9 @@ def test_invalid_castling_part(fen: FEN) -> None:
         (FEN("4knbr/4p2P/8/8/4RBNK/8/8/8 b Kk h5 0 1")),
     ],
 )
-def test_invalid_enpassant_part(fen: FEN) -> None:
+def test_invalid_enpassant_part(fen: FEN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
@@ -98,7 +109,9 @@ def test_invalid_enpassant_part(fen: FEN) -> None:
         (FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 51 1")),
     ],
 )
-def test_invalid_halfmove_part(fen: FEN) -> None:
+def test_invalid_halfmove_part(fen: FEN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 
@@ -115,7 +128,9 @@ def test_invalid_halfmove_part(fen: FEN) -> None:
         (FEN("4knbr/4p3/8/7P/4RBNK/8/8/8 w Kk - 0 81")),
     ],
 )
-def test_invalid_fullmove_part(fen: FEN) -> None:
+def test_invalid_fullmove_part(fen: FEN, container: Container) -> None:
+    container.api_info.override(providers.Factory(ModelAPIInfo, name="next-fen", method="post"))
+
     with pytest.raises(RuntimeError) as exinfo:
         ValidMicroFEN.from_MicroFEN(MicroFEN.from_index_with_FENs(0, [fen]))
 

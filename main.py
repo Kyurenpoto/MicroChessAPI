@@ -7,9 +7,9 @@ import argparse
 import uvicorn
 from fastapi import FastAPI
 
-import src.domain.error as error
+import src.domain.error.createderror as createderror
 import src.domain.model as model
-from src.config import Container
+from src.config import container
 from src.presentation.api.modelapi import router
 
 app: FastAPI = FastAPI()
@@ -18,11 +18,11 @@ app.include_router(router)
 
 
 def wire() -> None:
-    app.state.container = Container()
+    app.state.container = container
     app.state.container.config.from_dict(
         {"routes": {route.name: route.path for route in router.routes}, "name": "", "method": ""}
     )
-    app.state.container.wire(modules=[model], packages=[error])
+    app.state.container.wire(modules=[createderror, model])
 
 
 def unwire() -> None:

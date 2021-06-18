@@ -19,6 +19,7 @@ from src.domain.implementation.basictype import FEN
 from src.domain.implementation.legalsan import LegalSANs
 from src.domain.implementation.modelfenstatusresult import ModelFENStatusResult
 from src.domain.implementation.modelnextfenresult import ModelNextFENResult
+from submodules.fastapi_haljson.src.halmodel import HALBase
 
 
 class ChessModelBase(metaclass=ABCMeta):
@@ -53,6 +54,7 @@ class CreatedFENStatusResponse(NamedTuple):
         api_info: ModelAPIInfo = Provide[Container.api_info],
     ) -> ModelFENStatusResponse:
         return ModelFENStatusResponse(
+            links=HALBase.from_routes_with_requested(internal_model.routes, api_info.name, api_info.method).links,
             statuses=self.statuses,
             legal_moves=self.legal_moves,
         )
@@ -67,7 +69,10 @@ class CreatedNextFENResponse(NamedTuple):
         internal_model: ModelInternal = Provide[Container.internal_model],
         api_info: ModelAPIInfo = Provide[Container.api_info],
     ) -> ModelNextFENResponse:
-        return ModelNextFENResponse(next_fens=self.next_fens)
+        return ModelNextFENResponse(
+            links=HALBase.from_routes_with_requested(internal_model.routes, api_info.name, api_info.method).links,
+            next_fens=self.next_fens,
+        )
 
 
 class MicroChessModel(ChessModelBase):

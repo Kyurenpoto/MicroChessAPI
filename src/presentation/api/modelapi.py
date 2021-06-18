@@ -5,7 +5,8 @@
 from fastapi import APIRouter, status
 from src.application.createdresponse import CreatedFENStatusResponse, CreatedNextFENResponse
 from src.domain.dto.modeldto import ModelFENStatusRequest, ModelNextFENRequest
-from src.presentation.response import ExceptionHandledResponse, HALJSONResponse
+from src.presentation.response import ExceptionHandledResponse
+from submodules.fastapi_haljson.src.halresponse import HALJSONResponse
 
 router: APIRouter = APIRouter(prefix="/model")
 

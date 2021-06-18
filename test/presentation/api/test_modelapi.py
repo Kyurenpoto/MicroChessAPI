@@ -8,6 +8,7 @@ from httpx import AsyncClient
 from src.domain.error.dtoerror import EmptyFENs, EmptySANs, NotMatchedNumberFENsSANs
 from src.domain.implementation.basictype import FEN, SAN
 from src.domain.implementation.legalsan import LegalSANs
+from submodules.fastapi_haljson.src.halmodel import HALBase
 
 
 @pytest.mark.asyncio
@@ -19,6 +20,17 @@ async def test_fen_status_normal(async_client: AsyncClient) -> None:
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
+        "links": {
+            rel: {"href": url.href}
+            for rel, url in HALBase.from_routes_with_requested(
+                {
+                    "fen-status": "/model/fen-status",
+                    "next-fen": "/model/next-fen",
+                },
+                "fen-status",
+                "post",
+            ).links.items()
+        },
         "statuses": [1],
         "legal_moves": [LegalSANs.initial()],
     }
@@ -40,7 +52,20 @@ async def test_next_fen_normal(async_client: AsyncClient) -> None:
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"next_fens": [FEN.first_move()]}
+    assert response.json() == {
+        "links": {
+            rel: {"href": url.href}
+            for rel, url in HALBase.from_routes_with_requested(
+                {
+                    "fen-status": "/model/fen-status",
+                    "next-fen": "/model/next-fen",
+                },
+                "next-fen",
+                "post",
+            ).links.items()
+        },
+        "next_fens": [FEN.first_move()],
+    }
 
 
 @pytest.mark.asyncio

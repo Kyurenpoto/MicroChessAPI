@@ -22,7 +22,7 @@ class ModelNextFENRequest(BaseModel):
     sans: list[str]
 
 
-class ModelNextFENResponse(BaseModel):
+class ModelNextFENResponse(HALBase):
     next_fens: list[str]
 
 
@@ -30,7 +30,7 @@ class ModelFENStatusRequest(BaseModel):
     fens: list[str]
 
 
-class ModelFENStatusResponse(BaseModel):
+class ModelFENStatusResponse(HALBase):
     statuses: list[int]
     legal_moves: list[list[str]]
 
